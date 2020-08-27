@@ -1,0 +1,203 @@
+<section>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/policyDashboard">Quote / Policy</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">{{Policy.Number}} Extension Endorsement</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-container" style="min-height: 500px;">
+        <div ng-if="Policy != null">
+            <div class="row">
+                <div class="well well-sm col-sm-12" style="margin-bottom:10px; background-color:#0096db; border:#4f5a67;color:white">
+                    <span style="font-size:1.4em">Policy Information - {{Policy.PolicyNumber}}</span>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>Endorsement Number</strong></label>
+                                <div class="col-md-4">
+                                    <input disabled type="text" class="form-control" ng-model="Policy.EndorsementNumber" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="clear:both">
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>Insured</strong></label>
+                                <div class="col-md-8" tooltip="{{Policy.InsuredName}}">
+                                    <div style="padding-top:10px;">{{Policy.InsuredName | limitTo:100 }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>Effective Date</strong></label>
+                                <div class="col-md-8">
+                                    <div style="padding-top:10px;">{{Policy.PolicyEffective | date: 'MM/dd/yyyy'  }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>Policy Number</strong></label>
+                                <div class="col-md-8">
+                                    <div style="padding-top:10px;">{{Policy.PolicyNumber }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>Expiration Date</strong></label>
+                                <div class="col-md-8">
+                                    <div style="padding-top:10px;">{{Policy.PolicyExpiration | date: 'MM/dd/yyyy'  }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="well well-sm col-sm-12" style="margin-bottom:10px; background-color:#0096db; border:#4f5a67;color:white">
+                    <span style="font-size:1.4em">Extension Information</span>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"><strong>New Expiration Date</strong></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="Policy.ExtensionExpiration" jqdatepickerendorsement ng-min-date="Policy.PolicyEffective" ng-blur="calculateExtension(Policy, false)" datechange="calculateExtension(Policy, true)" datebeforeshow="effectiveDateBeforeShow()" dateonclose="effectiveDateClosed()" ng-disabled="Bound" />
+                                </div>
+                                <div ng-show="MakeNonPremium" class="col-md-4">
+                                    <input type="checkbox" ng-model="Policy.MakeNonPremium" ng-disabled="Bound" /> Make Non-Premium
+                                </div>
+                            </div>
+                            <div ng-show="Policy.MakeNonPremium != true && Policy.DevelopedRate > 0">
+                                <div class="form-group" ng-repeat="premium in Policy.PremiumBreakdowns | orderBy: 'Index'" ng-if="premium.Coverage != 'Fee' && premium.Coverage != 'Tax'">
+                                    <label class="col-md-4 control-label"><strong>Premium - {{premium.Coverage}}</strong></label>
+                                    <div class="col-md-8">
+                                        <input ng-disabled="Bound" class="form-control" type="number" min="0.00" step="0.01" ng-model="premium.Amount" ng-blur="calculateExtension(Policy, true)" style="padding-top: 10px; width: 30%" />
+                                    </div>
+                                </div>
+                                <div style="font-weight:bold;font-size:1.2em">Taxes</div>
+                                <div class="form-group" ng-repeat="tax in Policy.PremiumBreakdowns | filter: {Coverage: 'Tax', PremiumType: 0}">
+                                    <label class="col-md-4 control-label"><strong>{{tax.Name}}</strong></label>
+                                    <div class="col-md-8">
+                                        <div style="padding-top:10px;">{{tax.Amount | currency }}</div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label"><strong>Premium Total</strong></label>
+                                    <div class="col-md-8">
+                                        <div style="padding-top:10px;">{{Policy.PremiumAfterFeesAndTaxes | currency }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12" style="margin-top: 80px;">
+                    <button class="btn btn-default blue-steel pull-left" ng-click="backToDashboard()">Back To Dashboard</button>
+                    <!--<button class="btn btn-default yellow-casablanca pull-right" ng-click="bindExtensionEndorsement()" ng-if="!Bound">Extend Policy</button>-->
+                    <div ng-show="!Bound">
+                        <div class="btn-group pull-right dropup" role="group">
+                            <button type="button" class="btn yellow-casablanca dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Extend Policy
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" style="margin-bottom:-15px;">
+                                <li ng-click="confirmBindEndorsementContact()"><a href="#">Send to Agent</a></li>
+                                <li ng-click="bindExtensionEndorsement(false)"><a href="#">Do not send to Agent</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <button class="btn btn-default yellow-casablanca pull-right" ng-click="downloadEndorsement()" ng-show="Bound && canDownloadEndorsement()">Download Endorsement</button>
+                </div>
+
+                <div class="col-md-12" style="margin-top: 30px">
+                    <div class="alert alert-danger" ng-show="Errors.length > 0">
+                        <h4>Oops...</h4>
+                        <ul>
+                            <li ng-repeat="error in Errors">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <script type="text/ng-template" id="confirmBindContact.html">
+            <div class="modal-header">
+                <h4 class="modal-title">Send to Contact</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            Send Endorsement info to the following
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <label style="margin-top: 15px;">Contact Email</label>
+                            <input type="text" class="form-control" ng-model="emailTo" style="margin-top: 10px; width: 200px; float: right; border: 1px solid black" ng-init="contactEmail" ng-disabled="parent.Policy.Bound" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <label style="margin-top: 15px;">Contact Name</label>
+                            <input type="text" class="form-control" ng-model="finalContactName" style="margin-top: 10px; width: 200px; float: right; border: 1px solid black" ng-init="contactName" ng-disabled="parent.Policy.Bound" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-push">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modalLiability_commands">
+                    <button type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+                    <button type="button" class="btn yellow-casablanca" ng-click="add()">Bind</button>
+                </div>
+            </div>
+            <div class="row" ng-show="Errors.length > 0" style="margin-top:10px">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <ul>
+                            <li ng-repeat="error in Errors">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </script>
+    </div>
+</section>

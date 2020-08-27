@@ -1,0 +1,22 @@
+﻿
+#currentZone {
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 2px 4px;
+}
+
+.customControls {
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 2px 4px;
+}
+
+.checkbox-list {
+    max-height: 349px;
+    overflow-y: auto;
+}
+

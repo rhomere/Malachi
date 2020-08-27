@@ -1,0 +1,247 @@
+﻿<div class="row">
+  <div class="col-md-8">
+    <form name="form" class="form-horizontal" role="form" id="submission-form" style="margin-top: 30px;">
+      <div class="alert alert-danger" role="alert" ng-show="ErrorMessage.length > 0">{{ErrorMessage}}</div>
+      <div class="alert alert-warning" role="alert" ng-show="WarningMessage.length > 0">{{ErrorMessage}}</div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">MEP<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <ui-select ng-model="parent.Policy.MinimumEarnedPremium"
+                     append-to-body="true"
+                     theme="bootstrap"
+                     reset-search-input="false"
+                     ng-disabled="!parent.canModify()">
+            <ui-select-match placeholder="Select Minimum Earned Premium">{{$select.selected}}</ui-select-match>
+            <ui-select-choices repeat="value in MinimumEarnedPremiums | filter: $select.search">
+              <div ng-bind-html="value | highlight: $select.search">
+              </div>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="parent.Policy.EndorsementNumber">
+        <label class="col-sm-3 control-label">Agency Name<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.AgencyDetail.AgencyName" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="parent.Policy.EndorsementNumber">
+        <label class="col-sm-3 control-label">Agent Name<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.AgencyDetail.LicensedAgentName" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="!parent.Policy.EndorsementNumber">
+        <label class="col-sm-3 control-label">Agency Name<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.AgencyDetail.AgencyName" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="!parent.Policy.EndorsementNumber">
+        <label class="col-sm-3 control-label">Agent Name<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.AgencyDetail.ContactName" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <!--Retail Agency Address 1 - Auto complete-->
+      <div class="form-group">
+        <label for="mailing-address" class="col-sm-3 control-label">Mailing Address</label>
+        <div class="col-sm-7">
+          <label style="color: #0096db; margin-right:5px; font-size: 13px;">Search Address</label>
+          <label style="font-size: 13px;">Manually Enter P.O. Boxes</label>
+          <input id="mailing-address" ng-autocomplete class="form-control input-sm" ng-disabled="!parent.canModify(false)" ng-model="parent.Policy.AgencyDetail.Address.ShortAddress" details="details" />
+        </div>
+        <div class="col-sm-2" style="padding-top: 25px; padding-left: 0px;">
+          <input id="mailing-address2" class="form-control input-sm" ng-disabled="!parent.canModify(false)" ng-model="parent.Policy.AgencyDetail.Address.StreetAddress2" placeholder="Suite #" />
+        </div>
+        <div class="col-sm-offset-3 col-sm-9" style="margin-top: 10px">
+          <label style="color:#0096db"><a ng-click="toggleManaulAddressEntry = !toggleManaulAddressEntry">Manually Enter Address</a></label>
+          <input ng-show="toggleManaulAddressEntry" class="form-control input-sm" ng-model="parent.Policy.AgencyDetail.Address.StreetAddress1" ng-disabled="!parent.canModify(false)" placeholder="Address 1" />
+        </div>
+        <div class="col-sm-offset-3 col-sm-9" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+          <input class="form-control input-sm" ng-model="parent.Policy.AgencyDetail.Address.StreetAddress2" ng-disabled="!parent.canModify(false)" placeholder="Address 2" />
+        </div>
+        <div class="col-sm-offset-3 col-sm-9" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+          <input class="form-control input-sm" ng-model="parent.Policy.AgencyDetail.Address.Zip" ng-disabled="!parent.canModify(false)" ng-blur="getStateByZip()" placeholder="Zip" />
+        </div>
+        <div class="col-sm-offset-3 col-sm-9" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+          <input class="form-control input-sm" ng-model="parent.Policy.AgencyDetail.Address.City" ng-disabled="!parent.canModify(false)" placeholder="City" />
+        </div>
+        <div class="col-sm-offset-3 col-sm-9" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+          <input class="form-control input-sm" ng-model="parent.Policy.AgencyDetail.Address.State" ng-disabled="true" placeholder="State" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label" style="padding-left: 0px;">Agency Producer Code<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.AgencyDetail.AgencyCode" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label" style="padding-left: 0px;">Agency Commission<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.ProducingAgencyCommission" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label" style="padding-left: 0px;">Transaction Commission<span style="color: red;"> *</span></label>
+        <div class="col-sm-9">
+          <input type="text" ng-model="parent.Policy.Commission" class="form-control" ng-disabled="!parent.canModify()">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-left: 0px;">
+        <h4><strong>Underwriting Requirements</strong></h4>
+        <textarea class="form-control" ng-model="parent.Policy.CurrentVersion.Subjectivities" ng-disabled="!parent.canModify(false)" style="height:258px"></textarea>
+      </div>
+    </form>
+</div>
+    <div class="col-md-4">
+        <div ng-disabled="!parent.canModify()" ng-if="parent.Policy.Endorsement == null" style="margin-top: 30px;">
+            <div style="margin-top: 9px; padding: 9px 8px 8px 8px; background-color: #16216c; color: white;"><strong>{{(RiskCompanies | filter : { Id : parent.Policy.CurrentVersion.FocusedRiskCompanyId })[0].Name}}</strong></div>
+            <table class="table table-condensed-tight" style="margin-top: 10px; margin-bottom: 10px;">
+                <tbody id="premium-details-table" ng-repeat="premium in parent.Policy.CurrentVersion.Premiums" ng-show="premium.RiskCompanyId == parent.Policy.CurrentVersion.FocusedRiskCompanyId">
+                    <tr>
+                        <td style="padding-left: 4px; padding-right: 4px; font-size: 1.1em"><strong>Total Premium</strong></td>
+                        <td style="padding-left: 4px; padding-right: 4px; font-size: 1.1em"><strong>{{premium.PremiumAfterFeesAndTaxes | currency}}</strong></td>
+                    </tr>
+                    <tr ng-repeat="breakdown in FeesAndTaxes | orderBy:'Index'">
+                        <td style="padding: 4px">{{breakdown.Name}}</td>
+                        <td style="padding: 4px">
+                            {{breakdown.Amount | currency}}
+                            <div ng-if="breakdown.Name == 'Policy Fee' && parent.Policy.HomeStateCode == 'TX'" class="pull-right" style="display: inline-block;">TX 50/50</div>
+                            <input ng-if="breakdown.Name == 'Policy Fee' && parent.Policy.HomeStateCode == 'TX'" type="checkbox" ng-disabled="!parent.canModify(false)" ng-checked="IsTexasSplit" ng-click="addRemoveTexasSplit()" class="pull-right" style="margin-right: 4px; margin-top: 2px;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row form-group" ng-show="showInspectionType()">
+                <label class="col-sm-4 control-label" style="padding-top: 7px">Inspection Type</label>
+                <div class="col-sm-8">
+                    <ui-select ng-model="parent.Policy.InspectionType"
+                               append-to-body="true"
+                               theme="bootstrap"
+                               on-select="inspectionTypeSelected()"
+                               ng-disabled="!parent.canModify(false) || parent.Policy.Endorsement != null"
+                               reset-search-input="false"
+                               search-enabled="false">
+                        <ui-select-match placeholder="Select an inspection type">{{$select.selected.Name}}</ui-select-match>
+                        <ui-select-choices repeat="inspectionType.Value as inspectionType in InspectionTypes | filter: $select.search">
+                            <div ng-bind-html="inspectionType.Name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;" ng-if="!hideEditFees()">
+                <div class="col-sm-12">
+                    <button ng-if="parent.PolicyId != null" type="submit" class="btn yellow-casablanca pull-right"
+                            ng-hide="!parent.canModify(false) || !canUpdateFees" ng-click="editFees()">
+                        Fees and Taxes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" ng-show="ErrorList.length > 0">
+    <div class="alert alert-danger">
+        <h4>Oops...</h4>
+        <ul>
+            <li ng-repeat="error in ErrorList">
+                {{error}}
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <button ng-if="parent.PolicyId != null" type="submit" class="btn yellow-casablanca pull-right" ng-hide="!parent.canModify(false)" ng-click="saveChanges()">Save Changes</button>
+    </div>
+</div>
+
+
+
+<script type="text/ng-template" id="editFees.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Fees and Taxes</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-condensed-tight" style="margin-top: 10px; margin-bottom: 10px;">
+                    <tbody id="premium-details-table">
+                        <tr>
+                            <th style="width:200px;">Type</th>
+                            <th>Amount</th>
+                            <th>
+                            </th>
+                        </tr>
+                        <tr ng-repeat="breakdown in breakdowns">
+                            <td>
+                                <ui-select ng-model="breakdown.Name"
+                                           ng-show="!breakdown.ShowInput"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           on-select="breakdownTypeSelected(breakdown)"
+                                           ng-disabled="!parent.canModify(false) || parent.Policy.Endorsement != null"
+                                           reset-search-input="false"
+                                           search-enabled="false">
+                                    <ui-select-match placeholder="Select Fee or Tax">{{$select.selected}}</ui-select-match>
+                                    <ui-select-choices repeat="breakdown in BreakDownTypes | filter: $select.search">
+                                        <div ng-bind-html="breakdown | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <input type="text" placeholder="Enter Fee Name" ng-show="breakdown.ShowInput" ng-disabled="!parent.canModify(false)" class="form-control" ng-model="breakdown.Name">
+                            </td>
+                            <td>
+                                <input type="text" ng-disabled="!parent.canModify(false)" class="form-control" ng-model="breakdown.Amount">
+                            </td>
+                            <td>
+                                <button id="modalProperty_ok" style="float: right;" type="button" class="btn btn-default" ng-click="deleteBreakdown()"><span class="glyphicon glyphicon-trash"></span></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button id="modalProperty_ok" style="float: right;" type="button" class="btn btn-default" ng-click="add()"><span class="glyphicon glyphicon-plus"></span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" ng-show="ErrorList.length > 0">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    <ul>
+                        <li ng-repeat="error in ErrorList">
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn yellow-casablanca" ng-click="update()">Save</button>
+        </div>
+    </div>
+</script>
+

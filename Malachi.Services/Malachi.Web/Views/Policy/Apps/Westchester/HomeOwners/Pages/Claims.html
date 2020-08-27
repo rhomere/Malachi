@@ -1,0 +1,134 @@
+﻿<div class="page-header visible-xs">
+    <h3>Claims</h3>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="col-sm-4 margin-bottom-15">
+            <p>Have any losses occurred in the last 5 years?</p>
+            <label class="radio-inline">
+                <input type="radio" name="hasClaims" ng-model="parent.Policy.AnyLossesInFiveYears" ng-value="true" ng-click="updateAnyLossesInFiveYears(true)"> Yes
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="hasClaims" ng-model="parent.Policy.AnyLossesInFiveYears" ng-disabled="parent.Policy.CurrentVersion.PolicyVersionClaims.length > 0" ng-value="false" ng-click="updateAnyLossesInFiveYears(false)"> No
+            </label>
+        </div>
+        <br />
+        <div class="row space-bottom" ng-show="parent.Policy.AnyLossesInFiveYears" >
+            <div class="col-md-12">
+                <button id="AddLocation" class="btn yellow-casablanca" ng-show="parent.canModify(false)" ng-click="newClaim()"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Prior Claim</button>
+            </div>
+        </div>
+        <div class="row">
+            <div id="location-list" class="col-md-12">
+
+                <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+                    <ul>
+                        <li ng-repeat="error in Errors">{{error}}</li>
+                    </ul>
+                </div>
+
+                <div class="location callout" ng-repeat="claim in parent.Policy.CurrentVersion.PolicyVersionClaims | orderBy: 'Number'">
+                    <div class="row">
+                        <div class="location-title col-md-7 col-sm-7" ng-click="updateClaim(claim)">
+                            <div class="col-md-12" style="font-weight: bold; color: #337ab7;">Claim {{claim.Number}}</div>
+                            <div class="location-info">Month Reported</div>
+                            <div class="location-info">{{claim.MonthReported}}</div>
+                            <div class="location-info">Year Reported</div>
+                            <div class="location-info">{{claim.YearReported}}</div>
+                            <div class="location-info">Cause of Loss</div>
+                            <div class="location-info">{{claim.CauseOfLoss}}</div>
+                            <div class="location-info">Claim Amount</div>
+                            <div class="location-info">{{claim.ClaimAmount}}</div>
+                        </div>
+                        <div class="col-md-5 col-sm-5 text-center">
+                            <button type="button" class="btn yellow-casablanca btn-sm" ng-show="parent.canModify(false)" ng-click="deleteClaim(claim)"><span class="glyphicon glyphicon-trash margin-right"></span>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <script type="text/ng-template" id="claimModelContent.html">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modalLocation_title">Claim</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row" >
+                <div class="col-md-12">
+                    <div >
+                        <div class="col-md-12">
+                            <div class="form-group location-addr-field">
+                                <label class="col-md-5 control-label"><strong>Month Reported</strong></label>
+                                <div class="col-md-7">
+                                    <ui-select ng-model="claim.MonthReported"
+                                               theme="bootstrap"
+                                               reset-search-input="false"
+                                               ng-change="saved=false">
+                                        <ui-select-match placeholder="Select a Month">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in Months | filter: $select.search: searchByBeginsWith">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                            <div class="form-group location-addr-field">
+                                <label class="col-md-5"><strong>Year Reported</strong></label>
+                                <div class="col-md-7">
+                                    <input class="form-control input-sm" ng-model="claim.YearReported" type="text" ng-blur="claimChange()" />
+                                </div>
+                            </div>
+                            <div class="form-group location-addr-field">
+                                <label class="col-md-5"><strong>Cause of Loss</strong></label>
+                                <div class="col-md-7">
+                                    <ui-select ng-model="claim.CauseOfLoss"
+                                               theme="bootstrap"
+                                               reset-search-input="false"
+                                               ng-change="saved=false">
+                                        <ui-select-match placeholder="Select a Cause of Loss">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in CausesOfLoss | filter: $select.search: searchByBeginsWith">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                            <div class="form-group location-addr-field">
+                                <label class="col-md-5"><strong>Claim Amount</strong></label>
+                                <div class="col-md-7">
+                                    <input class="form-control input-sm" ng-model="claim.ClaimAmount" type="number" ng-blur="claimChange()" />
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" role="alert" ng-show="showClaimNumberError">Claim number already exists.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="alert alert-danger" ng-show="ErrorList.length > 0">
+                        <h4>Oops...</h4>
+                        <ul>
+                            <li ng-repeat="error in ErrorList">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-push">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+                <button type="button" class="btn yellow-casablanca" ng-disabled="busy" ng-click="save()">Save</button>
+            </div>
+        </div>
+    </script>
+</div>

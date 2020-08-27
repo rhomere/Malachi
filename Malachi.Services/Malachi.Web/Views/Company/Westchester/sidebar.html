@@ -1,0 +1,107 @@
+.<div class="page-sidebar navbar-collapse collapse">
+  <!-- BEGIN SIDEBAR MENU -->
+  <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+  <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+  <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+  <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+  <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+  <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+   <ul style="z-index: 9999999;" class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+     <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+
+     <li class="start">
+       <a href="#/Dashboard">
+         <i class="icon-home"></i>
+         <span class="title">Dashboard</span>
+       </a>
+     </li>
+     <li>
+       <a href="#/policyDashboard">
+         <i class="icon-paper-plane"></i>
+         <span class="title">Quotes / Policies</span>
+       </a>
+     </li>
+     <li>
+       <a href="#/Guidelines">
+         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+         <span class="title">Guidelines</span>
+       </a>
+     </li>
+     <li class="" ng-if="isInRole('Contract View')">
+       <a href="#/contracts">
+         <i class="icon-book-open"></i>
+         <span class="title">Contracts</span>
+       </a>
+     </li>
+     <li class="">
+       <a href="#/forms">
+         <i class="icon-docs"></i>
+         <span class="title">Forms</span>
+       </a>
+     </li>
+     <li class="" ng-if="isInRole('Global Admin')">
+       <a href="javascript:;">
+         <i class="icon-settings"></i>
+         <span class="title">Settings</span>
+         <span class="arrow "></span>
+       </a>
+       <ul class="sub-menu">
+         <li ng-if="isInRole('Risk Company View')">
+           <a href="#/riskcompanies">Risk Companies</a>
+         </li>
+         <li ng-if="isInRole('Insurer View')">
+           <a href="#/insurers">Insurers</a>
+         </li>
+         <li ng-if="isInRole('Broker View')">
+           <a href="#/brokers">Brokers</a>
+         </li>
+         <li ng-if="isInRole('MGA View')">
+           <a href="#/mga">MGAs</a>
+         </li>
+         <li ng-if="isInRole('User Admin')">
+           <a href="#/users">Users</a>
+         </li>
+         <li ng-if="isInRole('MGA View')">
+           <a href="#/statetaxes">Taxes</a>
+         </li>
+       </ul>
+     </li>
+     <li class="" ng-if="isInRole('Submit Reviewer')">
+       <a href="#/submits">
+         <i class="fa fa-check-square-o"></i>
+         <span class="badge badge-danger" style="position: absolute; left: 32px; top: 18px;" ng-if="submitCount != -1 && submitCount != 0">{{submitCount}}</span>
+         <span class="title">Submits</span>
+       </a>
+     </li>
+
+     <li class="">
+       <a href="#/Contact">
+         <i class="icon-call-end"></i>
+         <span class="title">Contact</span>
+       </a>
+     </li>
+
+     <li class="" ng-if="isInRole('Global Admin')">
+       <a href="#/Organization">
+         <i class="fa fa-info-circle"></i>
+         <span class="title">Organization Info</span>
+       </a>
+     </li>
+
+     <li class="" ng-if="isInRole('Global Admin')">
+       <a href="#/appmanager">
+         <i class="fa fa-square-o"></i>
+         <span class="title">App Manager</span>
+       </a>
+     </li>
+     <!--<li>
+       <a href="">
+         <i class="fa fa-bar-chart" aria-hidden="true"></i>
+         <span class="title">
+           <ng-structure-insights type="simple"></ng-structure-insights>
+         </span>
+       </a>
+     </li>-->
+   </ul>
+  <!-- END SIDEBAR MENU -->
+</div>	

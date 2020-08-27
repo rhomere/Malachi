@@ -1,0 +1,82 @@
+﻿<section class="content not-a-class">
+
+  <!-- BREAD CRUMBS -->
+  <div class="page-bar">
+    <ul class="page-breadcrumb">
+      <li>
+        <i class="icon-home"></i>
+        <a href="#">Dashboard</a>
+        <i class="fa fa-angle-right"></i>
+      </li>
+      <li>
+        <a href="#">Public Adjusters Dashboard</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module-box">
+
+    <!--Page Title-->
+    <div class="row">
+      <div class="col-md-12 bottom-buffer">
+        <div class="portlet box blue-soft" style="border-bottom: none; border-left: none; border-right: none; margin-bottom: 0;">
+          <div class="portlet-title" id="min-height-38">
+            <div class="caption">
+              PUBLIC ADJUSTERS DASHBOARD
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+
+    <div class="row">
+
+      <!-- NEW Adjuster First Name -->
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Adjuster's Name</label>
+          <input type="text" class="form-control" ng-model="adjuster.name" />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <!--Success message -->
+      <div ng-show="success" class="hidethis col-md-3">
+        <div class="bg-success" style="padding: 5px; text-align: center; width: 150px;">
+          Success!
+        </div>
+      </div>
+
+      <!--Fill success message -->
+      <div ng-show="!success" class="col-md-3">
+      </div>
+
+      <!-- Save Adjuster Btn-->
+      <div class="col-md-9">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-cell-big-claim pull-right" ng-click="addPublicAdjuster()">
+            Add Adjuster
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--Error List-->
+  <div style="margin: auto; width: 1200px;" ng-show="Errors.length > 0">
+    <div class="alert alert-danger" style="margin: 30px 0 0 0;">
+      <ul>
+        <li ng-repeat="error in Errors">
+          {{error}}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</section>

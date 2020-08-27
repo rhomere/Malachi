@@ -1,0 +1,86 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/contracts">Contracts</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/Coverage">Coverages {{Contract.Name}}</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-book-open"></i>Coverages {{Contract.Name}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:10px"></th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="coverage in Coverages | orderBy: 'Index'">
+                                <td>
+                                    <input type="checkbox" checklist-model="Contract.Coverages" checklist-value="coverage.Id" checklist-change="updateContractCoverages()">
+                                </td>
+                                <td>{{coverage.Name}}</td>
+                                <td style="text-align: right">
+                                    <div class="btn-group dropup">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" >
+                                            <li ng-if="(coverage.Name == 'Property' || coverage.Name == 'Homeowners') && Contract.InheritFromContractId == null">
+                                                <a ng-click="goTo(Contract, 'ratesheet')">
+                                                    Rates
+                                                </a>
+                                            </li>
+                                            <li ng-if="coverage.Name == 'Liability' && Contract.InheritFromContractId == null">
+                                                <a ng-click="goTo(Contract, 'classcodes')">
+                                                    Class Codes
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a ng-click="goTo(Contract, 'minimumpremiums', coverage)">
+                                                    Minimum Premium
+                                                </a>
+                                            </li>
+                                            <li ng-if="coverage.Name == 'Property'">
+                                                <a ng-click="goTo(Contract, 'contracttotalInsuredValues', coverage)">
+                                                    Total Insured Value
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->

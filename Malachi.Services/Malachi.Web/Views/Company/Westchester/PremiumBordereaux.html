@@ -1,0 +1,125 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Premium Bordereaux</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+    </div>
+</div>
+ 
+
+<div class="row">
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+        <h2>Premium Bordereaux</h2>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <label for="effectiveDate" class="control-label" tooltip-placement="right" tooltip-html-unsafe="Accounting effective date is the date the policy is effective or effective date of the transaction which ever is later">Accounting Effective</label>
+                </span>
+                <input type="text" class="form-control " id="effectiveDate" ng-model="PremiumBordereaux.Effective" jqdatepicker />
+                <span class="input-group-addon">
+                    <label for="expirationDate" class="control-label">To</label>
+                </span>
+                <input type="text" class="form-control " id="expirationDate" ng-model="PremiumBordereaux.To" jqdatepicker />
+                <span class="input-group-btn">
+                    <button class="btn yellow-casablanca" ng-click="requestReport()" type="button" ng-disabled="PremiumBordereaux.Effective == null || PremiumBordereaux.To == null">
+                    <span class="fa fa-download" style="margin-right:10px"></span>Request Report</button>
+                </span>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger" ng-if="errorList.length > 0">
+            <h3>Oops...</h3>
+
+            <ul ng-repeat="error in errorList">
+                <li>{{error}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-if="states.length > 0">
+    <h3>States</h3>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Please select the states to be included in the report:</label>
+            <ul class="check-listbox">
+                <li ng-repeat="state in states">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="PremiumBordereaux.States" checklist-value="state.Code">
+                            {{state.Name}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <button class="btn btn-default" ng-click="selectStates(true)">Select All States</button> <button class="btn btn-default" ng-click="selectStates(false)">Clear State Selection</button>
+
+    </div>
+    <div class="col-sm-6"></div>
+</div>
+
+<div class="row">
+    <h3>Brokers</h3>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Please select the brokers that you want to see contracts for:</label>
+            <ul class="check-listbox">
+                <li ng-repeat="broker in brokers | orderBy: 'broker'">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="PremiumBordereaux.Brokers" checklist-value="broker">
+                            {{broker}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <button class="btn btn-default" ng-click="getMarkets()" ng-if="PremiumBordereaux.Brokers.length > 0">Get Markets</button>
+    </div>
+    <div class="col-sm-6"></div>
+</div>
+
+<div class="row" ng-if="markets.length > 0">
+    <h3>Markets</h3>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Please select the markets that you want to see on the bordereaux:</label>
+            <ul class="check-listbox">
+                <li ng-repeat="market in markets | orderBy: ['Name', 'Contract']">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="PremiumBordereaux.Markets" checklist-value="market.Contract">
+                            {{market.Name}} - {{market.Contract}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <button class="btn btn-default" ng-click="selectMarkets(true)">Select All Markets</button>
+        <button class="btn btn-default" ng-click="selectMarkets(false)">Clear Market Selection</button>
+
+        <div class="alert alert-danger" style="margin-top: 10px;" ng-if="errorList.length > 0">
+            <h3>Oops...</h3>
+
+            <ul ng-repeat="error in errorList">
+                <li>{{error}}</li>
+            </ul>
+        </div>
+
+    </div>
+    <div class="col-sm-6"></div>
+</div>

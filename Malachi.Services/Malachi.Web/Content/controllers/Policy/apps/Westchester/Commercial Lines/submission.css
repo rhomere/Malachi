@@ -1,0 +1,16 @@
+﻿
+#mailing-address {
+    padding-top: 5px;
+}
+#additional-insured-form {
+    display: none;
+}
+h3 {
+    margin-top: 5px;
+}
+
+.submissionSelected {
+    border: 3px solid #fbf7d0 !important;
+    background-color: #fbf7d0 !important;
+    /*color: red !important;*/
+}

@@ -1,0 +1,422 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="/#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">Contracts</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer">
+            <div class="portlet box blue-soft" style="border-bottom: none;border-left: none;border-right: none;margin-bottom: 0;">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-book-open"></i>Contracts
+                    </div>
+                </div>
+                <div class="portlet-body" ng-show="!newContract">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-fit-height yellow-casablanca" type="button" ng-click="addNewContract()">
+                                    <i class="fa fa-plus margin-right"></i>New Contract
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="searchName" ng-change="searchNameChanged()" placeholder="Search by contract number...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="contractscroller.search(searchName, AppFilter)"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div ng-show="!HiddenFilter" class="col-sm-3 pull-right">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <select class="form-control" ng-options="app.Id as app.Name for app in AppFilters" ng-model="AppFilter" ng-change="searchNameChanged()">
+                                        <option value="">All Apps</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portlet-body" ng-show="newContract">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <div class="form-body">
+                        <div class="form-group">
+                          <label>Contract Number</label>
+                          <input type="text" class="form-control" ng-model="Contract.Name">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <label>Effective Date</label>
+                      <div data-date-format="mm/dd/yyyy" class="input-group date-picker input-daterange">
+                        <input name="from" class="form-control" ng-model="Contract.Effective" jqdatepicker tooltip="Contract will be effective on this day.">
+                        <span class="input-group-addon">to </span>
+                        <input name="to" class="form-control" ng-model="Contract.Expiration" jqdatepicker tooltip="Contract will be expired end of this day.">
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-body">
+                        <div class="form-group">
+                          <label>Description</label>
+                          <input type="text" class="form-control" ng-model="Contract.Description">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-body">
+                        <div class="form-group">
+                          <label>App</label>
+                          <select class="form-control" ng-options="app.Id as app.Name for app in Apps" ng-model="Contract.AppId"></select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Assigned Insurers</label>
+                        <select class="form-control" ng-options="insurer.Id as insurer.Name for insurer in Insurers" ng-model="Contract.InsurerId" ng-change="refreshZoneGroups(Contract.InsurerId)"></select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Assigned Brokers</label>
+                        <select class="form-control" ng-options="broker.Id as broker.Name for broker in Brokers" ng-model="Contract.BrokerId"></select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Zone Group</label>
+                        <select class="form-control" ng-options="zoneGroup.Id as zoneGroup.Name for zoneGroup in ZoneGroups" ng-model="Contract.ZoneGroupId"></select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label tooltip="Inherits Ratesheets, Eligibility, Forms, Class Codes and Zones">Linked To Contract</label>
+                        <select class="form-control" ng-options="contract.Id as (contract.Name + ' (' + contract.InsurerName + ')') for contract in AllContracts" ng-model="Contract.InheritFromContractId"></select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Risk Company</label>
+                        <select class="form-control" ng-options="riskCompany.Id as riskCompany.Name for riskCompany in RiskCompanies" ng-model="Contract.RiskCompanyId">
+                          <option value="">None Assigned</option> <!-- Default option to show if not contract risk company override selected -->
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Settings</label>
+                        <div class="checkbox-list">
+                          <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="Contract.Enabled">
+                            Enabled
+                          </label>
+                          <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="Contract.WindExclusive" ng-disabled="Contract.AOPExclusive">
+                            Wind Exclusive
+                          </label>
+                            <label class="checkbox-inline">
+                            <input type="checkbox" ng-model="Contract.AOPExclusive" ng-disabled="Contract.WindExclusive">
+                            AOP Exclusive
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Assigned Managing General Agents</label>
+                        <ul class="check-listbox">
+                          <li ng-repeat="mga in ManagingGeneralAgents | orderBy: 'Name'">
+                            <div class="checkbox">
+                              <label>
+                                <input type="checkbox" checklist-model="Contract.AssignedManagingGeneralAgents" checklist-value="mga.Id">
+                                {{mga.Name}}
+                              </label>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <accordion close-others="true">
+                        <!-- Syndicate Details -->
+                        <div style="padding: 0; margin: 0" ng-if="isLloydsContract()">
+                          <h3>Syndicate Details</h3>
+                          <accordion-group heading="Click to expand" is-open="Accordion.SyndicateDetails.isOpen">
+                            <div class="row">
+                              <div class="col-sm-12">
+                                <button class="btn btn-success" ng-click="addContractSyndicate()">Add Syndicate</button>
+                              </div>
+
+                              <div class="col-sm-12" ng-show="Contract.ContractSyndicates.length > 0">
+                                <table class="table table-hover">
+                                  <thead>
+                                    <tr>
+                                      <th class="col-sm-3">Coverage</th>
+                                      <th class="col-sm-3">Syndicate #</th>
+                                      <th class="col-sm-3">Syndicate %</th>
+                                      <th class="col-sm-3"></th>
+                                    </tr>
+                                  </thead>
+
+                                  <tbody>
+                                    <tr ng-repeat="syndicate in Contract.ContractSyndicates | orderBy: 'CoverageId'">
+                                      <td class="col-sm-3">
+                                        <select class="form-control"
+                                                ng-options="coverage.Id as coverage.Name for coverage in Coverages"
+                                                ng-model="syndicate.CoverageId"></select>
+                                      </td>
+                                      <td class="col-sm-3"><input type="text" class="form-control" ng-model="syndicate.SyndicateCode" /></td>
+                                      <td class="col-sm-3">
+                                        <div class="input-group">
+                                          <input type="text" class="form-control" ng-model="syndicate.SplitPercentage" />
+                                          <span class="input-group-addon"><span>%</span></span>
+                                        </div>
+                                      </td>
+                                      <td class="col-sm-3"><button class="btn yellow-casablanca" ng-click="removeContractSyndicate(syndicate)">Remove</button></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </accordion-group>
+                        </div>
+
+                        <!-- State Details -->
+                        <h3>State Details</h3>
+                        <accordion-group heading="Click to expand" is-open="Accordion.StateDetails.isOpen">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th class="col-xs-4">State</th>
+                                <th class="col-xs-2">Min Split</th>
+                                <th class="col-xs-2">Max Split</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="detail in Contract.StateDetails | orderBy: 'State'">
+                                <td>{{detail.State}}</td>
+                                <td>
+                                  <div class="input-group">
+                                    <span class="input-group-addon">
+                                      <span>%</span>
+                                    </span>
+                                    <input type="text" class="form-control" ng-model="detail.MinSplit">
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="input-group">
+                                    <span class="input-group-addon">
+                                      <span>%</span>
+                                    </span>
+                                    <input type="text" class="form-control" ng-model="detail.MaxSplit">
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </accordion-group>
+                      </accordion>
+                    </div>
+                  </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div role="alert" class="alert alert-warning alert-dismissible fade in" ng-show="Contract.ValidationMessages.length > 0">
+                                <ul>
+                                    <li ng-repeat="warning in Contract.ValidationMessages">{{warning}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div role="alert" class="alert alert-danger alert-dismissible fade in" ng-show="Errors.length > 0">
+                                <ul>
+                                    <li ng-repeat="error in Errors">{{error}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="pull-right" style="margin-top: 10px">
+                                <button class="btn btn-danger btn-sm" ng-click="cancelContract()">
+                                    <i class="fa fa-ban margin-right"></i>Cancel
+                                </button>
+                                <button class="btn btn-success btn-sm" ng-click="saveContract(Contract)">
+                                    <i class="fa fa-save margin-right"></i>Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div ng-show="newContract == false">
+	            <div class="portlet-title">
+		            <ul class="nav nav-tabs pull-left">
+			            <li class="active">
+				            <a data-toggle="tab" href="#" aria-expanded="false" ng-click="searchContract('', 1, 15,'Effective', AppFilter)">Effective</a>
+			            </li>
+			            <li class="">
+				            <a data-toggle="tab" href="#" aria-expanded="true" ng-click="searchContract('', 1, 15, 'Expired', AppFilter)">Expired</a>
+			            </li>
+			            <li class="">
+				            <a data-toggle="tab" href="#" aria-expanded="true" ng-click="searchContract('', 1, 15, 'Disabled', AppFilter)">Disabled</a>
+			            </li>
+		            </ul>
+	            </div>
+
+                <table class="table table-stats table-condensed table-striped" infinite-scroll='contractscroller.nextPage(searchName, AppFilter)' infinite-scroll-disabled='contractscroller.busy || contractscroller.noResult' infinite-scroll-distance='0' infinite-scroll-use-document-bottom="true">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Insurer</th>
+                            <th style="width: 12%">Contract Number</th>
+                            <th style="width: 14%">Linked To</th>
+                            <th style="width: 18%">Description</th>
+                            <th style="width: 16%">Broker</th>
+                            <th style="width: 8%">Effective</th> 
+                            <th style="width: 6%"></th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="contract in contractscroller.items">
+                        <td>{{InsurerName(contract)}}</td>
+                        <td>
+                            <i class="fa fa-exclamation-triangle" style="color: #cb5a5e" ng-if="contract.ValidationMessages.length > 0" 
+                               tooltip-placement="top" tooltip-html-unsafe="{{getContractErrorsTooltip(contract)}}"></i>
+                            <a href="javascript:void(0)" ng-click="selectContract(contract)">{{contract.Name}}</a>
+                        </td>
+                        <td>{{ContractName(contract.InheritFromContractId)}}</td>
+                        <td>{{contract.Description}}</td>
+                        <td>{{BrokerName(contract)}}</td>
+                        <td>{{contract.Effective | date:'MM/dd/yyyy'}}</td> 
+                        <td style="text-align: right">
+                            <div class="btn-group dropup">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <a ng-click="GoToCoverages(contract)">
+                                            Coverages
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="GoToEligibilityQuestions(contract)">
+                                            Eligbility Questions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="GoToRatingQuestions(contract)">
+                                            Rating Questions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="GoToEligibility(contract)">
+                                            Eligibility
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="GoToCommissions(contract)">
+                                            Commissions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="GoToNotes(contract)">
+                                            Notes
+                                        </a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li>
+                                        <a ng-click="Copy(contract)">
+                                            Copy
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="ReCache(contract)">
+                                            Refresh Cache
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+
+
+<div>
+    <script type="text/ng-template" id="copyModelContent.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Select Insurer To Copy To</h4>
+        </div>
+        <div class="modal-body" id="form-body">
+            <div class="row" style="margin-bottom: 10px">
+
+                <div class="col-sm-12" style="margin-bottom:20px">
+                    <div class="form-group">
+                        <label class="col-sm-12" style="display: inline-block;margin-top: 8px;"><strong>Select Insurer</strong></label>
+                        <div class="col-sm-12" style="display: inline-block;margin-top: 8px;">
+                            <select class="form-control" ng-options="insurer.Id as insurer.Name for insurer in Insurers" ng-model="selectedInsurerId"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" ng-show="ErrorList.length > 0">
+                            <h4>Oops...</h4>
+                            <ul>
+                                <li ng-repeat="error in ErrorList">
+                                    {{error}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-push">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+                    <button type="button" class="btn btn-default" ng-click="copy()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>

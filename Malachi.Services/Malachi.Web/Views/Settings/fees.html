@@ -1,0 +1,333 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/fees">Fee</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-calculator"></i>Fees
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar" ng-if="Fees.length == 0">
+                        <div class="page-toolbar" style="width: 100%;">
+                            <div class="btn-group pull-left">
+                                <button class="btn btn-fit-height green-meadow" type="button" ng-click="copyFromExistingMGA()">
+                                    <i class="fa fa-files-o margin-right"></i>Copy From Existing MGA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <select class="form-control" ng-options="state.Code as state.Name for state in States" ng-model="CurrentStateCode" ng-change="stateChange()"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12" ng-if="CurrentStateCode">
+                            <div ng-show="!newFee">
+                                <div class="row" style="margin-bottom: 10px">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary" ng-click="newFeeClick()">New Fee</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Code</th>
+                                                    <th>Amount</th>
+                                                    <th>Minimum Amount</th>
+                                                    <th>Maximum Amount</th>
+                                                    <th>Type</th>
+                                                    <th>Taxable</th>
+                                                    <th>Effective</th>
+                                                    <th>Expiration</th>
+                                                    <th>Allow Modify</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="fee in stateFees() | orderBy: ['Name', '-Amount']">
+                                                    <td>{{fee.Name}}</td>
+                                                    <td>{{fee.Code}}</td>
+                                                    <td>{{fee.Amount}}</td>
+                                                    <td>{{fee.MinAmount}}</td>
+                                                    <td>{{fee.MaxAmount}}</td>
+                                                    <td>{{fee.CalculateType == 0 ? 'Percent' : 'Flat'}}</td>
+                                                    <td>{{fee.TaxableFee ? 'Yes' : 'No'}}</td>
+                                                    <td>{{fee.Effective | date:'MM/dd/yyyy'}}</td>
+                                                    <td>{{fee.Expiration | date:'MM/dd/yyyy'}}</td>
+                                                    <td>{{fee.AllowModify ? 'Yes' : 'No'}}</td>
+                                                    <td style="text-align: right">
+                                                        <button class="btn default margin-right" type="button" ng-click="selectFee(fee)">Edit</button>
+                                                        <!--<button class="btn default margin-right" type="button" ng-click="copyFee(fee)">Copy</button>
+                                                        <button class="btn default" type="button" ng-click="deleteFee(fee)">Delete</button>-->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-show="newFee">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" ng-model="Fee.Name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Code</label>
+                                                <input type="text" class="form-control" ng-model="Fee.Code">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label>Effective Date</label>
+                                        <div class="input-group date-picker input-daterange">
+                                            <input name="from" class="form-control" ng-model="Fee.Effective" jqdatepicker>
+                                            <span class="input-group-addon">to </span>
+                                            <input name="to" class="form-control" ng-model="Fee.Expiration" jqdatepicker>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Type</label>
+                                                <select class="form-control" ng-model="Fee.CalculateType">
+                                                    <option value="0">Percent of Total Premium</option>
+                                                    <option value="1">Flat</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Fee.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Fee.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Fee.Amount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Minimum Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Fee.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Fee.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Fee.MinAmount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Maximum Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Fee.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Fee.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Fee.MaxAmount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label>Settings</label>
+                                        <div class="checkbox-list">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Fee.TaxableFee">
+                                                Taxable
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Fee.AllowModify">
+                                                Allow Modification by UW
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Fee.IncludeForEndorsements">
+                                                Include For Endorsements
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Fee.FullyEarned">
+                                                Fully Earned
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Assigned to RiskCompanies</label>
+                                            <ul class="check-listbox">
+                                                <li ng-repeat="rcs in SelectedRiskCompanies | orderBy: 'Name'">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" checklist-model="Fee.RiskCompanies" checklist-value="rcs">
+                                                            {{rcs.Name}}
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Conditions</label>
+                                                <div class="row" style="margin-bottom: 10px">
+                                                    <div class="col-sm-12">
+                                                        <button class="btn btn-primary" ng-click="newConditionalGroup()">New Condition Group </button>
+                                                    </div>
+                                                </div>
+
+                                                <accordion close-others="true">
+                                                    <accordion-group ng-repeat="group in Fee.Conditions | orderBy: 'GroupIndex'">
+                                                        <accordion-heading>
+                                                            {{group.Name}}
+                                                        </accordion-heading>
+
+                                                        <div class="row" ng-repeat="condition in group.Conditions | orderBy: 'Index'">
+                                                            <div ng-include src="'views/contracts/ContractConditions.html'"></div>
+
+                                                            <div class="col-sm-1 pull-right" style="width: auto;">
+                                                                <div class="form-body">
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-danger" ng-click="deleteCondition(condition, group)" ng-mouseenter="hoverParent($event,true)" ng-mouseleave="hoverParent($event,false)" ng-if="group[0] != condition" style="margin-top: 25px">Delete</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="form-body">
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-warning" ng-click="newCondition(group)">And Condition</button>
+                                                                        <button class="btn btn-danger pull-right" ng-click="deleteGroup(group, Fee.Conditions)">Delete Group</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </accordion-group>
+                                                </accordion>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div role="alert" class="alert alert-danger alert-dismissible fade in" ng-show="Errors.length > 0">
+                                            <ul>
+                                                <li ng-repeat="error in Errors">{{error}}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="pull-right" style="margin-top: 10px">
+                                            <button class="btn btn-danger btn-sm" ng-click="cancelFee(Fee)">
+                                                <i class="fa fa-ban margin-right"></i>Cancel
+                                            </button>
+                                            <button class="btn btn-success btn-sm" ng-click="saveFee(Fee)">
+                                                <i class="fa fa-save margin-right"></i>Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+
+<div>
+    <script type="text/ng-template" id="selectCopyFeeFromMgaController.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Copy Fees From MGA</h4>
+        </div>
+        <div class="modal-body" id="form-body">
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Select MGA to Copy From:</label>
+                        <select class="form-control" ng-options="mga.Id as mga.Name for mga in ManagingGeneralAgents" ng-model="FromMgaId"></select>
+                    </div>
+                </div>
+                <div class="col-md-12" ng-show="Errors.length > 0">
+                    <div class="alert alert-danger">
+                        <h4>Oops...</h4>
+                        <ul>
+                            <li ng-repeat="error in Errors">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-push">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div>
+                <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+                <button type="button" class="btn yellow-casablanca" ng-disabled="busy" ng-click="copy()">Import</button>
+            </div>
+        </div>
+    </script>
+</div>

@@ -1,0 +1,141 @@
+﻿<!-- Main content -->
+<section class="content not-a-class">
+	<!-- BREAD CRUMBS -->
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="icon-home"></i>
+				<a href="#">Dashboard</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a href="#">Claims</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="module-box">
+
+		<!--Page Title-->
+		<div class="row">
+			<div class="col-md-12 bottom-buffer">
+				<div class="portlet box blue-soft" style="border-bottom: none; border-left: none;border-right: none; margin-bottom: 0;">
+					<div class="portlet-title">
+						<div class="caption">
+							CLAIMS DASHBOARD
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- TABLES -->
+		<div class="panel-body plr0" style="margin-top: 40px;">
+
+			<!-- TABS -->
+			<div class="portlet-title">
+				<ul class="nav nav-tabs pull-left">
+					<li ng-class="{active: isSelectedTab('policies')}">
+						<a href="#" ng-click="selectTab('policies')">
+							<span class="glyphicon icon-doc" style="margin-right: 5px;"></span>
+							Policies
+						</a>
+					</li>
+					<li ng-class="{active: isSelectedTab('claims')}">
+						<a href="#" ng-click="selectTab('claims')">
+							<span class="glyphicon icon-wallet" style="margin-right: 5px;"></span>
+							Claims
+						</a>
+					</li>
+				</ul>
+			</div> <!-- END OF TABS -->
+			<!-- SEARCH BOXES -->
+			<div class="row">
+				<div class="col-md-3 pull-right">
+					<div class="input-group" ng-show="isSelectedTab('policies')">
+						<input type="text" class="form-control" ng-model="searchInfo" placeholder="Policy number" ng-keyup="$event.keyCode == 13 ? searchPoliciesByNumber(searchInfo) : null">
+						<span class="input-group-btn">
+							<button class="btn btn-primary" type="button" ng-click="searchPoliciesByNumber(searchInfo)"><i class="fa fa-search"></i></button>
+						</span>
+					</div>
+					<div class="input-group" ng-show="isSelectedTab('claims')">
+						<input type="text" class="form-control" ng-model="searchInfo" placeholder="Claim number" ng-keyup="$event.keyCode == 13 ? searchClaimByNumber(searchInfo) : null">
+						<span class="input-group-btn">
+							<button class="btn btn-primary" type="button" ng-click="searchClaimByNumber(searchInfo)"><i class="fa fa-search"></i></button>
+						</span>
+					</div>
+				</div>
+			</div> <!-- END OF SEARCH BOXES -->
+
+			<br />
+
+			<!-- POLICIES TABLE-->
+			<p ng-if="!policies && isSelectedTab('policies')" class="alert alert-danger">No policies found!</p>
+			<div ng-if="isSelectedTab('policies') && policies">
+				<!--Error List-->
+				<div ng-if="Errors.length > 0">
+					<div class="alert alert-danger">
+						<ul>
+							<li ng-repeat="error in Errors">
+								{{error}}
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<table ng-if="policies.length > 0" class="table table-hover">
+					<tr class="bgGrey">
+						<th>Policy #</th>
+						<th>Named Insured </th>
+						<th>Effective</th>
+						<th>Has Claims</th>
+					</tr>
+					<tr ng-repeat="policy in policies">
+						<td>
+							<a href="#" ng-click="openPolicyView(policy)">{{policy.PolicyNumber}}</a>
+						</td>
+						<td>{{policy.NamedInsured}}</td>
+						<td>{{policy.Effective | date}}</td>
+						<td>{{policy.HasClaims ? "YES" : "NO"}}</td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- CLAIMS TABLE-->
+			<p ng-if="!claims && isSelectedTab('claims')" class="center alert alert-danger">No claims found!</p>
+			<div ng-if="isSelectedTab('claims') && claims">
+
+				<!--Error List-->
+				<div ng-if="Errors.length > 0">
+					<div class="alert alert-danger">
+						<ul>
+							<li ng-repeat="error in Errors">
+								{{error}}
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<table ng-if="claims.length > 0" class="table table-hover">
+					<tr class="bgGrey">
+						<th>Claim Number</th>
+						<th>Named Insured</th>
+						<th>Loss Type</th>
+						<th>Date of Loss</th>
+						<th>Status</th>
+					</tr>
+					<tr ng-repeat="claim in claims">
+						<td>
+							<a href="#" ng-click="openClaimView(claim.Id)">{{claim.ClaimOfficialNumber}}</a>
+						</td>
+						<td>{{claim.NamedInsured}}</td>
+						<td>{{claim.LossType}}</td>
+						<td>{{claim.DateOfLoss | date}}</td>
+						<td style="color: {{getStatusColor(claim.Status)}}">{{getStatus(claim.Status)}}</td>
+					</tr>
+				</table>
+			</div>
+
+		</div> <!-- END OF TABLES -->
+	</div>
+</section>

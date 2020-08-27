@@ -1,0 +1,127 @@
+<!-- BEGIN PAGE HEADER-->
+
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Dashboard</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12" style="margin-bottom: 30px">
+    </div>
+</div>
+
+<div class="col-md-6 col-sm-12 responsivePanel-12" style="padding-bottom: 25px;">
+    <!-- BEGIN Portlet PORTLET-->
+    <div class="portlet light" style="margin-bottom: 15px;">
+        <div class="portlet-title">
+            <div class="caption font-blue-sharp">
+                <i class="icon-paper-plane wc-blue" style="font-size: 20px;"></i>
+                <span class="caption-subject bold wc-blue" style="font-size: 20px;"> Create New Quote</span>
+                <span class="caption-helper">Choose an app to begin your quote</span>
+                <!--<span class="caption-helper">Choose an app to begin your quote</span>-->
+            </div>
+        </div>
+        <div class="portlet-body row">
+            <div class="col-sm-2" ng-repeat="app in Apps | orderBy: 'Index'" style="text-align: center; padding-bottom: 10px; min-width: 130px; color:#16216c;" ng-if="app.Name != 'RLI Commercial Underwriting Portal' && app.Name != 'Agency Portal Homeowners' && app.Name != 'Flood Portal'">
+                <a href="#" ng-click="newQuote(app)">
+                    <div style="display: inline-block; width: 60px;">
+                        <img ng-src="{{'data:image/png;base64,' + app.Icon}}" style="width: 60px; margin-bottom: 5px;" />
+                    </div>
+                    <br>
+                    <div style="display: inline-block; width: 100%;">
+                        {{app.Name}}
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- END Portlet PORTLET-->
+</div>
+
+<div class="col-md-6 col-sm-12 responsivePanel-12" id="announcement-info" style="padding-bottom: 25px;">
+    <!-- BEGIN Portlet PORTLET-->
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="glyphicon glyphicon-bullhorn wc-blue" style="font-size: 20px;"></i>
+                <span class="caption-subject bold wc-blue" style="font-size: 20px;"> Announcements </span>
+            </div>
+            <button ng-show="announcementAdmin" data-select2-open="single-append-text" ng-click="openAnnouncement()" class="btn btn-default" style="float: right;">
+                <i class="fa fa-pencil-square-o" aria-hidden="true" style="color: #000000"></i>
+            </button>
+        </div>
+        <div class="portlet-body" style="height: 125px;">
+            <h3 ng-show="subject">{{ subject }}</h3>
+            <p style="font-size: 1.25em; text-align: justify; text-justify: inter-word;" ng-show="body">
+                {{ body }}
+            </p>
+        </div>
+    </div>
+    <!-- END Portlet PORTLET-->
+</div>
+
+<style>
+    /* will show text as white inside buttons when active*/
+    .time.active {
+        color: white !important;
+    }
+
+    .btn-transparent:hover {
+        color: white !important;
+    }
+</style>
+
+<script type="text/ng-template" id="Announcement.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Create Announcement</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <form class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group" style="margin-bottom: 0px;">
+                                <label class="col-md-12" style="padding-left: 0px; margin-bottom: 10px;">Subject</label>
+                                <input type="text" placeholder="Enter Announcement Subject (Optional)" style="margin-bottom: 20px; width: 50%; padding: 5px 10px;" ng-model="subject">
+                                <label class="col-md-12" style="padding-left: 0px; margin-bottom: 10px;">Body</label>
+                                <textarea placeholder="Enter Announcement Content" style="height: 120px; width: 100%; padding: 5px 10px; resize: none;" ng-model="body"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div ng-show="Errors.length > 0" class="alert alert-danger" role="alert" style="margin-top:10px;">
+                                    <ul>
+                                        <li ng-repeat="error in Errors">
+                                            {{error}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn yellow-casablanca" ng-click="close()" ng-disabled="busy">Cancel</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="submit()" ng-disabled="busy">Submit</button>
+        </div>
+    </div>
+</script>

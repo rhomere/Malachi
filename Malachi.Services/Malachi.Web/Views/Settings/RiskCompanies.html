@@ -1,0 +1,141 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/RiskCompany">Risk Companies</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer" ng-show="newRiskCompany == false">
+            <div class="portlet box blue-soft" style="border-bottom: none;border-left: none;border-right: none;margin-bottom: 0;">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-settings"></i>Risk Companies
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-fit-height yellow-casablanca" type="button" ng-click="addNewRiskCompany()">
+                                    <i class="fa fa-plus margin-right"></i>New Risk Company
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="searchName" ng-change="searchNameChanged()" placeholder="Search for risk companies...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="riskcompanyscroller.search(searchName)"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <table class="table table-stats table-condensed table-striped" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th style="width:5%"></th>
+                        <th style="width:50%">Name</th>
+                        <th style="width:15%">Code</th>
+                        <th style="width:30%"></th>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table table-stats table-condensed table-striped" infinite-scroll='riskcompanyscroller.nextPage()' infinite-scroll-disabled='riskcompanyscroller.busy' infinite-scroll-distance='0' infinite-scroll-use-document-bottom="true">
+                <tbody>
+                    <tr ng-repeat="riskCompany in riskcompanyscroller.items">
+                        <td style="width:5%">{{$index+1}}</td>
+                        <td style="width:50%">{{riskCompany.Name}}</td>
+                        <td style="width:15%">{{riskCompany.Code}}</td>
+                        <td style="text-align: right; width:30%;">
+                            <button class="btn default margin-right" type="button" ng-click="selectRiskCompany(riskCompany)">Edit</button>
+                            <button class="btn default margin-right" type="button" ng-click="GoTo('policyregisters',riskCompany)">Policy Register</button>
+                            <button class="btn default margin-right" type="button" ng-click="GoTo('riskCompanyForms',riskCompany)">Forms</button>
+                            <button class="btn default" type="button" ng-click="deleteRiskCompany(riskCompany)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12 bottom-buffer" ng-show="newRiskCompany == true">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-settings"></i> Risk Company {{RiskCompany.Name}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" ng-model="RiskCompany.Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Code</label>
+                                        <input type="text" class="form-control" ng-model="RiskCompany.Code">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Allow Property Credit</label>
+                                        <input type="checkbox" class="checkbox" ng-model="RiskCompany.AllowPropertyCredit"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Allow Liability Credit</label>
+                                        <input type="checkbox" class="checkbox" ng-model="RiskCompany.AllowLiabilityCredit"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="pull-right" style="margin-top: 10px">
+                                    <button class="btn btn-danger btn-sm" ng-click="cancelRiskCompany(RiskCompany)">
+                                        <i class="fa fa-ban margin-right"></i>Cancel
+                                    </button>
+                                    <button class="btn btn-success btn-sm" ng-click="saveRiskCompany(RiskCompany)">
+                                        <i class="fa fa-save margin-right"></i>Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->

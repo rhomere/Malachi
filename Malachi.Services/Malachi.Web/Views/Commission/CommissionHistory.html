@@ -1,0 +1,78 @@
+﻿<section class="content">
+    <!-- BREAD CRUMBS -->
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">Commission</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="module-box center">
+
+        <!--Page Title-->
+        <div class="com-title">
+            COMMISSION HISTORY
+        </div>
+        
+        <!-- MESSAGE -->
+       
+        <div style="margin: 20px 0;">
+            <div class="alert alert-info" ng-if="!isCurrentReleased">
+                <span class="center">Commission report for <strong>{{months[currentMonth] | uppercase}}</strong> is not released yet.</span>
+            </div>
+        </div>
+
+        <div ng-if="Errors.length > 0" style="margin: 20px 0;">
+            <div class="alert alert-danger" >
+                <span ng-repeat="error in Errors" class="center">{{error}}</span>
+            </div>
+        </div>
+
+        <!-- MONTHLY REPORTS -->
+        <div class="card" ng-if="reports.length > 0" ng-repeat="report in reports">
+
+            <!-- HEADER -->
+            <div class="{{report.isReleased ? 'header-released' : 'header'}}">
+                <!-- DATE -->
+                <span class="date">{{report.date}}</span>
+                <!-- BUTTON -->
+                <span class="button">
+                    <a class="link" href="#" ng-click="download(report)">Download</a>
+                </span>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="table-container">
+
+                <table class="tables table-hover">
+
+                    <!-- HEADER -->
+                    <thead>
+                    <tr class="header-row">
+                        <th></th>
+                        <th>Total</th>
+                        <th>Net Revenue</th>
+                        <th>Commission</th>
+                    </tr>
+                    </thead>
+
+                    <!-- BODY -->
+                    <tbody>
+                    <tr ng-repeat="record in report.records">
+                        <td role="gridcell">{{record.name}}</td>
+                        <td role="gridcell">{{record.code !== 'WO' ? (record.total | currency) : ''}}</td>
+                        <td role="gridcell">{{record.code !== 'WO' ? (record.netRevenue | currency) : ''}}</td>
+                        <td role="gridcell">{{record.commission | currency}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

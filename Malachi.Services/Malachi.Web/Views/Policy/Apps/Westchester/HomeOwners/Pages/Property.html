@@ -1,0 +1,1401 @@
+﻿<div class="page-header visible-xs">
+    <h3>Property</h3>
+</div>
+
+<div id="listProperty" class="row">
+    <div class="col-md-12">
+        <div class="row space-bottom">
+            <div class="col-md-12">
+                <button id="add-building" class="btn yellow-casablanca" ng-disabled="!parent.canModify(false) || Locations[0].Properties.length > 0 || Locations.length < 1" ng-click="add_property('Building')"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Home</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" ng-repeat="location in Locations | orderBy: 'LocationNumber'" ng-show="location.Properties.length > 0">
+                    <div class="panel-heading"><strong>Location  {{location.LocationNumber}}</strong> <span>{{location.Address.ShortAddress}}, {{location.Address.County}}</span></div>
+                    <div class="panel-body">
+                        <div ng-repeat="property in location.Properties | orderBy: 'BuildingNumber'">
+                            <div class="bg-blue-soft">
+                                <button class="btn btn-link" style="color:#fff;" ng-click="modify(location, property)">Building {{property.BuildingNumber}}: {{property.Description | limitTo: 100}}</button>
+                                <button class="btn btn-link pull-right" style="color:#fff;" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Delete" ng-click="delete(location, property)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                                <button class="btn btn-link pull-right" style="color:#fff;" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Edit" ng-click="modify(location, property)"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                                <button class="btn btn-link pull-right" style="color:#fff;" ng-show="!parent.canModify(false)" tooltip-placement="top" tooltip="View" ng-click="modify(location, property)"><span class="glyphicon glyphicon-eye-open"></span> View</button>
+                            </div>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="col-md-4">Occupancy</th>
+                                        <th class="col-md-4">Coverage</th>
+                                        <th class="col-md-2">Year Built</th>
+                                        <th class="col-md-2">TIV </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{property.Occupancy}}</td>
+                                        <td>HO-3</td>
+                                        <td>{{property.YearBuilt}}</td>
+                                        <td class="">{{property.TIV | currency : $ : 0}} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Mortgagees and Additional Insured</strong> <button class="btn btn-sm yellow-casablanca pull-right" style="margin-top:-5px;padding-right: 20px;padding-left: 19px;  width: 275px;" 
+                                                                                   ng-show="parent.canModify(false)" ng-disabled="Locations.length < 1 || Locations[0].Properties.length < 1 || Mortgagees.length >= 2" 
+                                                                                   ng-click="addAdditionalInsured()" tooltip-placement="top" tooltip="Unable to add more than (2) Mortgagees/Additional Insured"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Mortgagee/Additional Insured</button></div>
+                    <div style="clear:both"></div>
+                    <table class="table table-hover" ng-show="Mortgagees.length > 0 || LossPayees.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Loc/Bldg</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th></th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="mortgagee in Mortgagees | orderBy: ['LocationNumber','BuildingNumber']">
+                                <td>1-1</td>
+                                <td>Mortgagee</td>
+                                <td><span tooltip="{{mortgagee.Name}}">{{mortgagee.Name | limitTo:'30'}}</span></td>
+                                <td><span tooltip="{{mortgagee.LoanNumber}}">{{mortgagee.LoanNumber | limitTo: '24'}}</span></td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <button class="btn btn-link" tooltip-placement="top" tooltip="Edit" ng-show="parent.canModify(false)" ng-click="updateMortgagee(mortgagee)"><span class="glyphicon glyphicon-edit"></span></button>
+                                        <button class="btn btn-link" tooltip-placement="top" tooltip="Delete" ng-show="parent.canModify(false)" ng-click="deleteMortgagee(mortgagee)"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <tr ng-repeat="lossPayee in LossPayees | orderBy: ['LocationNumber','BuildingNumber']">
+                            <td>{{lossPayee.LocationNumber + ' - ' + lossPayee.BuildingNumber}}</td>
+                            <td>Loss Payee</td>
+                            <td><span tooltip="{{lossPayee.Name + ' '}}">{{lossPayee.Name | limitTo: '16'}}</span></td>
+                            <td>{{lossPayee.LossPayeeType == 0 ? "Loss Payable" : "Lender's Loss Payable" | limitTo: '100'}}</td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <button class="btn btn-link" tooltip-placement="top" tooltip="Edit" ng-show="parent.canModify(false)" ng-click="updateLossPayee(lossPayee)"><span class="glyphicon glyphicon-edit"></span></button>
+                                        <button class="btn btn-link" tooltip-placement="top" tooltip="Delete" ng-show="parent.canModify(false)" ng-click="deleteLossPayee(lossPayee)"><span class="glyphicon glyphicon-trash"></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-6">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Additional Coverages</strong><button class="btn btn-sm yellow-casablanca pull-right" style="margin-top:-5px; width: 179px;" ng-show="parent.canModify(false)" ng-disabled="Locations.length < 1 || Locations[0].Properties.length < 1" ng-click="addAdditionalCoverage()"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Coverage</button></div>
+                    <div style="clear:both"></div>
+                    <table class="table table-hover" ng-show="PropertyAdditionalCoverages.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Location/Building</th>
+                                <th>Type</th>
+                                <th>Sub-Type</th>
+                                <th>Amount</th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="additionalCoverage in PropertyAdditionalCoverages | orderBy: ['Name', 'Type']">
+                                <td>1 - 1</td>
+                                <td>{{additionalCoverage.Name}}</td>
+                                <td>{{additionalCoverage.Type ? additionalCoverage.Type : ' ' }}</td>
+                                <td>{{additionalCoverage.Amount ? additionalCoverage.Amount : ' ' }}</td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <button class="btn btn-link" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Delete" ng-click="deleteAdditionalCoverage(additionalCoverage)"><span class="glyphicon glyphicon-trash"></span></button>
+                                        <button class="btn btn-link" ng-show="parent.canModify(false) && additionalCoverage.Type" tooltip-placement="top" tooltip="Edit" ng-click="updateIncreasedSpecialLimit(additionalCoverage)"><span class="glyphicon glyphicon-edit"></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Property Deductibles</strong><button class="btn btn-sm yellow-casablanca pull-right" style="margin-top:-5px; width: 179px;" ng-show="parent.canModify(false)" ng-disabled="Locations.length < 1 || Locations[0].Properties.length < 1" ng-click="addPropertyDeductible()"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Deductible</button></div>
+                    <div style="clear:both"></div>
+                    <table class="table table-hover" ng-show="PropertyDeductibles.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Location/Building</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="deductible in PropertyDeductibles">
+                                <td>1 - 1</td>
+                                <td>{{deductible.Name}}</td>
+                                <td>{{deductible.Amount}}</td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <button class="btn btn-link" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Delete" ng-click="deletePropertyDeductible(deductible)" ng-disabled="deductibleDisabled(deductible.Name)"><span class="glyphicon glyphicon-trash"></span></button>
+                                        <button class="btn btn-link" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Edit" ng-click="updatePropertyDeductible(deductible)" ng-disabled="updateDeductibleDisabled(PropertyDeductibles, deductible.Name)"><span class="glyphicon glyphicon-edit"></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-danger" ng-show="ErrorList.length > 0">
+                        <ul>
+                            <li ng-repeat="error in ErrorList">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Sublimits</strong><button class="btn btn-sm yellow-casablanca pull-right" style="margin-top:-5px; width: 179px;" ng-show="parent.canModify(false)" ng-disabled="Locations.length < 1 || Locations[0].Properties.length < 1 || isSublimitDisabled()" ng-click="addSublimit()"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Sublimit</button></div>
+                    <div style="clear:both"></div>
+                    <table class="table table-hover" ng-show="PropertySublimits.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Location/Building</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sublimit in PropertySublimits | orderBy: ['Name']">
+                                <td>1 - 1</td>
+                                <td>{{sublimit.Name}}</td>
+                                <td>{{sublimit.Amount ? sublimit.Amount : ' ' }}</td>
+                                <td>
+                                    <div style="width: 100px;">
+                                        <button class="btn btn-link" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Delete" ng-click="deleteSublimit(sublimit)"><span class="glyphicon glyphicon-trash"></span></button>
+                                        <button class="btn btn-link" ng-show="parent.canModify(false)" tooltip-placement="top" tooltip="Edit" ng-click="updateSublimit(sublimit)"><span class="glyphicon glyphicon-edit"></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="modifyProperty" ng-controller="test_Homeowners_modifyPropertyCtrl" style="display: none" class="row">
+    <div class="col-md-12">
+        <div class="modal-header">
+            <h4 class="modal-title" id="Location-number">Location {{ Location.LocationNumber }} - Building {{ Property.BuildingNumber }} : {{Location.Address.ShortAddress}}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <form id="form-Property" class="form-horizontal" role="form">
+                    <div class="scrollable">
+                        <div id="risk" data-page="0">
+                            <div class="col-md-6">
+                                <div class="property-form">
+                                    <!--Vacant Home-->
+                                    <div class="form-group" ng-if="parent.Policy.Endorsement == null">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Vacant Home</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.VacantHome"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Vacant Home') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.VacantHome" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.VacantHome" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Occupied By-->
+                                    <div class="form-group" ng-if="parent.Policy.Endorsement == null">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Occupied By</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.OccupiedBy"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select Occupied By">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Occupied By') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.OccupiedBy" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.OccupiedBy" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Limits-->
+                                    <div class="form-group" ng-repeat="limit in Property.Limits | orderBy: 'LimitName'" ng-hide="isIncreaseLimit(limit.LimitName)">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">{{showLimitName(limit)}}</label>
+                                        <div class="col-sm-9" ng-if="showLimitName(limit) != 'Personal Liability' && showLimitName(limit) != 'Medical Payments'">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">$</span>
+                                                <input type="text" class="form-control input-sm" style="height:30px" ng-model="limit.Amount" ng-blur="requireRerate(); defaultLimits(limit);" ng-disabled="!parent.canModify()" ng-keypress="filterCharValue($event)" ng-keyup="koonamiCode($event)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-9" ng-if="showLimitName(limit) == 'Personal Liability' || showLimitName(limit) == 'Medical Payments'">
+                                            <ui-select ng-model="limit.Amount"
+                                                       append-to-body="true"
+                                                       theme="bootstrap"
+                                                       ng-disabled="!parent.canModify()"
+                                                       ng-change="defaultLimits(limit);"
+                                                       reset-search-input="false">
+                                                <ui-select-match placeholder="Select a Limit">{{$select.selected}}</ui-select-match>
+                                                <ui-select-choices repeat="value in GetCharacteristicValues(showLimitName(limit)) | filter: $select.search">
+                                                    <div ng-bind-html="value | highlight: $select.search">
+                                                    </div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>
+
+                                    <!--Theft Exclusion-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-5 control-label" style="padding-right: 0px;">Theft Exclusion</label>
+                                        <div class="col-sm-1">
+                                            <div class="input-group">
+                                                <input style="margin-right: 5px; margin-top: 10px;" type="checkbox" ng-checked="Property.TheftExclusion" ng-model="Property.TheftExclusion" ng-disabled="!parent.canModify()" ng-change="theftExclusionChecked()" />
+                                            </div>
+                                        </div>
+
+                                        <label for="" class="col-sm-5 control-label" style="padding-right: 0px;">Pressurized Water Damage Exclusion</label>
+                                        <div class="col-sm-1">
+                                            <div class="input-group">
+                                                <input style="margin-right: 5px; margin-top: 10px;" type="checkbox" ng-checked="Property.PressurizedWaterDamageExclusion" ng-model="Property.PressurizedWaterDamageExclusion" ng-disabled="!parent.canModify()" />
+                                            </div>
+                                        </div>
+
+                                        <label for="" class="col-sm-5 control-label" style="padding-right: 0px;">Personal Property Exclusion</label>
+                                        <div class="col-sm-1">
+                                            <div class="input-group">
+                                                <input style="margin-right: 5px; margin-top: 10px;" type="checkbox" ng-checked="Property.PersonalPropertyExclusion" ng-model="Property.PersonalPropertyExclusion" ng-disabled="!parent.canModify()" />
+                                            </div>
+                                        </div>
+
+                                        <label for="" class="col-sm-5 control-label" style="padding-right: 0px;">Outdoor Property Exclusion</label>
+                                        <div class="col-sm-1">
+                                            <div class="input-group">
+                                                <input style="margin-right: 5px; margin-top: 10px;" type="checkbox" ng-checked="Property.OutdoorPropertyExclusion" ng-model="Property.OutdoorPropertyExclusion" ng-disabled="!parent.canModify()" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Occupancy-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Occupancy</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.Occupancy"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select a Occupancy">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Occupancy') | filter: $select.search: searchByBeginsWith">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.Occupancy" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.Occupancy" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Fire Protection Station-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Rented to others?</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.RentedToOthers"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Rented To Others') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.RentedToOthers" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.RentedToOthers" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Construction-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Construction</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.Construction"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               on-select="constructionChanged()"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select a Construction">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Construction') | filter: $select.search: searchByBeginsWith">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.Construction" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.Construction" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Sprinkreled-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Sprinklered</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.Sprinklered"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Sprinklered') | filter: $select.search: searchByBeginsWith">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.Sprinklered" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.Sprinklered" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Fireplace-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Fireplace</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.FirePlaceIndication"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Fire Place') | filter: $select.search: searchByBeginsWith">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.FirePlaceIndication" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.FirePlaceIndication" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Central Station Alarm-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Central Station Alarm</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.CentralStationAlarm"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Central Station Alarm') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search">
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.CentralStationAlarm" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.CentralStationAlarm" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Central Burglar Alarm-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Central Burglar Alarm</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.CentralBurglarAlarm"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Central Burglar Alarm') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search">
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.CentralBurglarAlarm" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.CentralBurglarAlarm" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Fire Protection Station-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Station within 5 mi?</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.FireStationFiveMiles"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Fire Station Five Miles') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.FireStationFiveMiles" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.FireStationFiveMiles" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Fire Protection Hydrant-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Hydrant within 1000 ft?</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.FireHydrantThousandFeet"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false">
+                                                        <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Fire Hydrant Thousand Feet') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search"></div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.FireHydrantThousandFeet" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.FireHydrantThousandFeet" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Year Built-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Year Built</label>
+                                        <div class="col-sm-9">
+                                            <div class="row">
+                                                <div class="col-sm-11" style="padding-right: 0px;">
+                                                    <ui-select ng-model="Property.YearBuilt"
+                                                               append-to-body="true"
+                                                               theme="bootstrap"
+                                                               ng-disabled="!parent.canModify()"
+                                                               reset-search-input="false"
+                                                               on-select="yearBuiltChanged($item, $model)">
+                                                        <ui-select-match placeholder="Select a Year Built">{{$select.selected}}</ui-select-match>
+                                                        <ui-select-choices repeat="value in GetCharacteristicValues('Year Built') | filter: $select.search">
+                                                            <div ng-bind-html="value | highlight: $select.search">
+                                                            </div>
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                                <div class="col-sm-1" style="padding-top: 8px;">
+                                                    <span ng-if="!Property.YearBuilt" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                    <span ng-if="Property.YearBuilt" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Year Update-->
+                                    <div class="form-group">
+                                        <label for="" class="col-sm-3 control-label hover-guideline" style="padding-right: 0px;">Year Update</label>
+                                        <div class="col-sm-9">
+                                            <table class="table table-no-border table-condensed-tight">
+                                                <tr>
+                                                    <td>Roof</td>
+                                                    <td>Wiring</td>
+                                                    <td>Plumbing</td>
+                                                    <td>HVAC</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ui-select ng-model="Property.RoofUpdate"
+                                                                   append-to-body="true"
+                                                                   theme="bootstrap"
+                                                                   ng-disabled="!parent.canModify()"
+                                                                   reset-search-input="false"
+                                                                   style="width: 100%"
+                                                                   on-select="roofUpdateChanged($item, $model)">
+                                                            <ui-select-match class="ui-select-required" placeholder="Roof">{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="value in GetCharacteristicValues('Year Built') | filter: $select.search">
+                                                                <div ng-bind-html="value | highlight: $select.search">
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </td>
+                                                    <td>
+                                                        <ui-select ng-model="Property.WiringUpdate"
+                                                                   append-to-body="true"
+                                                                   theme="bootstrap"
+                                                                   ng-disabled="!parent.canModify()"
+                                                                   reset-search-input="false"
+                                                                   style="width: 100%"
+                                                                   on-select="wiringUpdateChanged($item, $model)">
+                                                            <ui-select-match class="ui-select-required" placeholder="Wiring">{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="value in GetCharacteristicValues('Year Built') | filter: $select.search">
+                                                                <div ng-bind-html="value | highlight: $select.search">
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </td>
+                                                    <td>
+                                                        <ui-select ng-model="Property.PlumbingUpdate"
+                                                                   append-to-body="true"
+                                                                   theme="bootstrap"
+                                                                   ng-disabled="!parent.canModify()"
+                                                                   reset-search-input="false"
+                                                                   style="width: 100%"
+                                                                   on-select="plumbingUpdateChanged($item, $model)">
+                                                            <ui-select-match class="ui-select-required" placeholder="Plumbing">{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="value in GetCharacteristicValues('Year Built') | filter: $select.search">
+                                                                <div ng-bind-html="value | highlight: $select.search">
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </td>
+                                                    <td>
+                                                        <ui-select ng-model="Property.HVACUpdate"
+                                                                   append-to-body="true"
+                                                                   theme="bootstrap"
+                                                                   ng-disabled="!parent.canModify()"
+                                                                   reset-search-input="false"
+                                                                   style="width: 100%"
+                                                                   on-select="hvacUpdateChanged($item, $model)">
+                                                            <ui-select-match class="ui-select-required" placeholder="HVAC">{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="value in GetCharacteristicValues('Year Built') | filter: $select.search">
+                                                                <div ng-bind-html="value | highlight: $select.search">
+                                                                </div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 hidden-sm hidden-xs bottom-buffer property-form">
+                                <div class="row clear">
+                                    <div class="col-md-12">
+                                        <div id="map_canvas" style="width: 100%; height: 230px" tabindex="-1"></div>
+                                    </div>
+                                    <div id="floating-panel" style="height: 100%; margin: 0 auto;" ng-show="showLocationToggle">
+                                        <button id="street-view-btn" ng-click="toggleStreetView()" style="position: absolute; margin-top: 10px; margin-right: -20px;">Building Street View</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 property-form">
+                                <!--Number of Stories-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Number of Stories</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.NumberOfStories"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Number of Stories">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Number of Stories') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.NumberOfStories" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.NumberOfStories" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Number of Bathrooms-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Number of Bathrooms</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.NumberOfBathrooms"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Number of Bathrooms">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Number of Bathrooms') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.NumberOfBathrooms" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.NumberOfBathrooms" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Roof Shape-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Roof Shape</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.RoofShape"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Roof Shape">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Roof Shape') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.RoofShape" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.RoofShape" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Roof Cover-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Roof Cover</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.RoofCover"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Roof Cover">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Roof Cover') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.RoofCover" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.RoofCover" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Roof Anchor-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Roof Anchor</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.RoofAnchor"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Roof Anchor">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Roof Anchor') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.RoofAnchor" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.RoofAnchor" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Roof Sheathing-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Roof Sheathing</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.RoofSheathing"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Roof Sheathing">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Roof Sheathing') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.RoofSheathing" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.RoofSheathing" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--ACV Roof-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">ACV Roof</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.ACVRoof"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('ACV Roof') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.ACVRoof" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.ACVRoof" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Opening Protection -->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Opening Protection</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.OpeningProtection"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select an Opening Protection">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Opening Protection') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.OpeningProtection" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.OpeningProtection" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Square Feet-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Square Feet</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-model="Property.SquareFeet" />
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.SquareFeet" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.SquareFeet" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Parcel Size-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Parcel Size</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-model="Property.ParcelSize" />
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.ParcelSize" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.ParcelSize" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Cladding-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Cladding</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.Cladding"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Cladding">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Cladding') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.Cladding" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.Cladding" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Property Pool-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Property Pool</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.PropertyPool"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select an answer">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Property Pool') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.PropertyPool" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.PropertyPool" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Flood Zone-->
+                                <div class="form-group">
+                                    <label for="" class="col-sm-3 control-label" style="padding-right: 0px;">Flood Zone</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-11" style="padding-right: 0px;">
+                                                <ui-select ng-model="Property.FloodZone"
+                                                           append-to-body="true"
+                                                           theme="bootstrap"
+                                                           ng-disabled="!parent.canModify()"
+                                                           reset-search-input="false">
+                                                    <ui-select-match placeholder="Select a Flood Zone">{{$select.selected}}</ui-select-match>
+                                                    <ui-select-choices repeat="value in GetCharacteristicValues('Flood Zone') | filter: $select.search">
+                                                        <div ng-bind-html="value | highlight: $select.search">
+                                                        </div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                            <div class="col-sm-1" style="padding-top: 8px;">
+                                                <span ng-if="!Property.FloodZone" class="glyphicon glyphicon-remove-sign" style="color: red;"></span>
+                                                <span ng-if="Property.FloodZone" class="glyphicon glyphicon-ok-sign" style="color: green;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row" ng-show="ErrorList.length > 0">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <h4>Oops...</h4>
+                        <ul>
+                            <li ng-repeat="error in ErrorList">
+                                {{error}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-push">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <table class="modal-footer-info pull-left">
+                <tr>
+                    <td>Distance to Coast</td>
+                    <td>{{Location.DistanceToCoast}} miles</td>
+                    <td>Property Crime</td>
+                    <td>{{Location.PropertyCrime}}</td>
+                    <td>Violent Crime</td>
+                    <td>{{Location.ViolentCrime}}</td>
+                </tr>
+            </table>
+            <div id="modalLocation_commands" class="pull-right">
+                <button type="button" class="btn yellow-casablanca pull-right" ng-show="parent.canModify(false)" style="margin-left:5px;" ng-disabled="disableSaveButton" ng-click="save()">Save & Close</button>
+                <button type="button" class="btn btn-default pull-right" ng-click="close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="addProperty.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Add New Building</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <form class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="LocationNumber" class="control-label"><strong>Location</strong></label>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control input-sm" ng-options="'Location ' + location.LocationNumber + ' - ' + location.Address.ShortAddress for location in Locations | orderBy: 'LocationNumber'" ng-model="Location"></select>
+                            </div>
+                        </div>
+                        <div id="modalProperty_alert" class="alert alert-danger top-buffer" role="alert" style="display: none">Unexpected error occured. Please try again.</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button"  -dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn btn-primary" ng-click="add()">Add</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addPropertyDeductible.html">
+    <div class="modal-header">
+        <h4 class="modal-title">{{isUpdating ? "Edit Property Deductible" : "Add Property Deductible"}}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <!-- Type -->
+                                <label for="" class="col-sm-4 control-label">Type</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="propertyDeductible.Name"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="isUpdating || !parent.canModify()"
+                                               reset-search-input="false"
+                                               ng-change="deductibleTypeSelected()">
+                                        <ui-select-match placeholder="Select a Property Deductible">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in deductibleTypesToShow() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+
+                            <!-- Amount (if no options) -->
+                            <div class="form-group" ng-show="!hasOptions()">
+                                <label for="" class="col-sm-4 control-label">Amount</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" class="form-control input-sm currency" ng-disabled="!parent.canModify()" ng-model="propertyDeductible.Amount" data-mask="#" style="height:30px">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amount (if there are options) -->
+                            <div class="form-group" ng-show="hasOptions()">
+                                <label for="" class="col-sm-4 control-label">Amount</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="propertyDeductible.Amount"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="!parent.canModify()"
+                                               reset-search-input="false"
+                                               ng-change="amountSelected()">
+                                        <ui-select-match placeholder="Select a Deductible">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in getDeductibleOptions() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subject To Minimum Of (w/ options only) -->
+                        <div class="form-group" ng-show="hasSublimit()">
+                            <label for="" class="col-sm-4 control-label">Sublimit</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="propertyDeductible.Sublimit"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           ng-disabled="!parent.canModify()"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select a Sublimit">{{$select.selected}}</ui-select-match>
+                                    <ui-select-choices repeat="value in getSublimitOptions() | filter: $select.search">
+                                        <div ng-bind-html="value | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="errors.length > 0" style="margin-left: 15px; margin-right: 15px;">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn yellow-casablanca" ng-click="save()">{{isUpdating ? "Update" : "Add"}}</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addAdditionalCoverage.html">
+    <div class="modal-header">
+        <h4 class="modal-title">{{isUpdating ? "Edit Additional Coverage" : "Add Additional Coverage"}}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <!-- Type -->
+                                <label for="" class="col-sm-4 control-label">Type</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="additionalCoverage.Name"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="isUpdating || !parent.canModify()"
+                                               reset-search-input="false">
+                                        <ui-select-match placeholder="Select an Additional Coverage">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in additionalCoverageTypesToShow() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+
+                            <!-- Amount (if there are options) -->
+                            <div class="form-group" ng-show="hasOptions()">
+                                <label for="" class="col-sm-4 control-label">Increased Special Limit Type</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="additionalCoverage.Type"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="isUpdating || !parent.canModify()"
+                                               reset-search-input="false"
+                                               ng-change="increasedSpecialLimitSelected()">
+                                        <ui-select-match placeholder="Select a Increased Special Limit Type">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in getCoverageOptions() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-show="isIncreasedSpecialLimit()">
+                                <label for="" class="col-sm-4 control-label hoverGuideline" style="cursor:pointer;">Amount</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" class="form-control input-sm currency" style="height:30px" ng-model="additionalCoverage.Amount" ng-blur="requireRerate()" ng-disabled="!parent.canModify()" data-mask="#">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="errors.length > 0" style="margin-left: 15px; margin-right: 15px;">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn yellow-casablanca" ng-click="save()">{{isUpdating ? "Update" : "Add"}}</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addSublimit.html">
+    <div class="modal-header">
+        <h4 class="modal-title">{{isUpdating ? "Edit Sublimit" : "Add Sublimit"}}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <!-- Type -->
+                                <label for="" class="col-sm-4 control-label">Type</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="sublimit.Name"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="isUpdating || !parent.canModify()"
+                                               reset-search-input="false">
+                                        <ui-select-match placeholder="Select a Sublimit">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in sublimitToShow() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="col-sm-4 control-label">Amount</label>
+                                <div class="col-sm-8">
+                                    <ui-select ng-model="sublimit.Amount"
+                                               append-to-body="true"
+                                               theme="bootstrap"
+                                               ng-disabled="!parent.canModify()"
+                                               reset-search-input="false"
+                                               ng-change="amountSelected()">
+                                        <ui-select-match placeholder="Select a Sublimit">{{$select.selected}}</ui-select-match>
+                                        <ui-select-choices repeat="value in getSublimitOptions() | filter: $select.search">
+                                            <div ng-bind-html="value | highlight: $select.search">
+                                            </div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="errors.length > 0" style="margin-left: 15px; margin-right: 15px;">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn yellow-casablanca" ng-click="save()">{{isUpdating ? "Update" : "Add"}}</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addAdditionalInsured.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Add New Additional Insured</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <form class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="AIType" value="Mortgagee"> Mortgagee
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="AIType" value="Loss Payee"> Additional Insured
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Name</label>
+                                <input type="text" class="form-control" ng-model="AI.Name" />
+                            </div>
+                            <div class="form-group" ng-show="AIType == 'Mortgagee'">
+                                <label class="control-label">Loan Number</label>
+                                <input type="text" class="form-control" ng-model="AI.LoanNumber" />
+                            </div>
+                            <div class="form-group" ng-show="AIType == 'Loss Payee'">
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="AI.LossPayeeType" value="0"> Loss Payable
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="AI.LossPayeeType" value="1"> Lender's Loss Payable
+                                </label>
+                            </div>
+                            <div class="form-group" ng-show="AIType == 'Loss Payee'">
+                                <label class="control-label">Description of Property</label>
+                                <textarea class="form-control" ng-model="AI.DescriptionOfProperty"> </textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="mailing-address" class="control-label">Mailing Address</label>
+                                <div>
+                                    <label style="color:#0096db; margin-right:10px">Search Address</label>
+                                    <label>Manually Enter P.O. Boxes</label>
+                                    <input id="mailing-address" ng-autocomplete class="form-control input-sm" ng-model="AI.Address.ShortAddress" details="details" />
+                                </div>
+                                <div style="margin-top: 10px">
+                                    <label style="color:#337ab7"><a ng-click="toggleManaulAddressEntry = !toggleManaulAddressEntry">Manually Enter Address</a></label>
+                                    <input ng-show="toggleManaulAddressEntry" class="form-control input-sm" ng-model="AI.Address.StreetAddress1" placeholder="Address 1" />
+                                </div>
+                                <div style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                                    <input class="form-control input-sm" ng-model="AI.Address.StreetAddress2" placeholder="Address 2" />
+                                </div>
+                                <div style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                                    <input class="form-control input-sm" ng-model="AI.Address.Zip" placeholder="Zip" ng-blur="updateStateFromZip()" />
+                                </div>
+                                <div style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                                    <input class="form-control input-sm" ng-model="AI.Address.City" placeholder="City" />
+                                </div>
+                                <div style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                                    <input class="form-control input-sm" ng-model="AI.Address.State" placeholder="State" ng-disabled="true" />
+                                </div>
+                            </div>
+
+                            <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+                                <ul>
+                                    <li ng-repeat="error in Errors">{{error}}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+        <div class="row" ng-show="ErrorList.length > 0">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    <ul>
+                        <li ng-repeat="error in ErrorList">
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+            <button id="modalProperty_ok" type="button" class="btn yellow-casablanca" ng-click="add()">{{AI.PropertyId == null ? "Add" : "Update"}}</button>
+        </div>
+    </div>
+</script>
+<!-- Field Definition/Description -->
+<script type="text/ng-template" id="fieldDescription.html">
+
+    <div class="modal-header"><h4 class="modal-title">Field Description</h4></div>
+
+    <div class="modal-body">
+        <div data-ng-include="'/Views/Company/test/Guidelines/'+guideline+'.html'"></div>
+        <div class="modal-push"></div>
+    </div>
+
+    <div class="modal-footer">
+        <div id="modalProperty_commands">
+            <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+        </div>
+    </div>
+
+</script>
+

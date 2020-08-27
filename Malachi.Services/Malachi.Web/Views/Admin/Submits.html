@@ -1,0 +1,285 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/Submit">Submits</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer" ng-show="newSubmit == false">
+            <div class="portlet box blue-soft" style="border-bottom: none;border-left: none;border-right: none;margin-bottom: 0;">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-docs"></i>Submits
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-3 pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="searchName" ng-change="searchNameChanged()" placeholder="Search by submission or policy number...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="submitscroller.search(searchName, filterBy, 0)"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 pull-right">
+                            <div class="input-group" style="width:100%">
+                                <select type="text" class="form-control" ng-model="filterBy" ng-change="filterChanged()">
+                                    <option>Unread</option>
+                                    <option>Approved</option>
+                                    <option>Denied</option>
+                                    <option>All</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div ng-show="newSubmit == false">
+                <table class="table table-stats table-condensed table-striped" style="margin-bottom: 0px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Submission Number</th>
+                            <th style="width: 10%">Policy Number</th>
+                            <th style="width: 10%">Status</th>
+                            <th style="width: 20%">Named Insured</th>
+                            <th style="width: 20%">Risk Company</th>
+                            <th style="width: 10%">Requested On</th>
+                            <th style="width: 10%">Requested By</th>
+                            <th style="width: 10%"></th>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="table table-stats table-condensed table-striped" infinite-scroll='submitscroller.nextPage(searchName, filterBy)' infinite-scroll-disabled='submitscroller.busy || submitscroller.noResults' infinite-scroll-distance='0' infinite-scroll-use-document-bottom="true">
+                    <tr ng-repeat="submit in submitscroller.items | orderBy: '-DateSubmit'">
+                        <td style="width: 10%; font-weight: bold; font-size: 1.2em;" ng-class="{'success' : submit.Read == null, 'danger' : submit.BindRequest != null && submit.Bound == false }">{{submit.SubmissionNumber}}</td>
+                        <td style="width: 10%; font-weight: bold; font-size: 1.2em;">{{submit.PolicyNumber}}</td>
+                        <td style="width: 10%;"><span ng-class="{'label label-success' : submit.Approved, 'label label-warning' : submit.Approved == false}">{{submit.Approved ? 'Approved' :submit.Read != null ? 'Denied' : 'Not Read' }}</span></td>
+                        <td style="width: 20%;">{{submit.NamedInsured | limitTo: '100' }}</td>
+                        <td style="width: 20%;">{{submit.RiskCompanyName}}</td>
+                        <td style="width: 10%;">{{submit.DateSubmit | date: 'shortDate' }}</td>
+                        <td style="width: 10%;">{{submit.UserFirstName}} {{submit.UserLastName}}</td>
+                        <td style="width: 10%; text-align: right">
+                            <button class="btn btn-sm default margin-right" type="button" ng-click="selectSubmit(submit)" style="width: 100px">Edit</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 bottom-buffer" ng-show="newSubmit == true">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-warning"></i> Submit {{Submit.Number}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="portlet-body">
+                        <div class="row">
+
+                            <div class="col-sm-2" ng-if="Submit.Approved == false && Submit.DateLastDenied != null && Submit.Bound == false" style="width: 160px;">
+                                <div style="width:150px; text-align:center" class="well well-sm bg-red-intense bg-font-red-intense">Denied</div>
+                            </div>
+                            <div class="col-sm-2" ng-if="Submit.Approved && Submit.Bound == false" style="width: 160px;">
+                                <div style="width:150px; text-align:center" class="well well-sm bg-green-turquoise bg-font-green-turquoise">Approved</div>
+                            </div>
+                            <div class="col-sm-2" ng-if="Submit.BindRequest != null && Submit.Bound == false" style="width: 160px;">
+                                <div style="width:150px; text-align:center" class="well well-sm bg-yellow-casablanca bg-font-yellow-casablanca">Submitted to Bind</div>
+                            </div>
+                            <div class="col-sm-2" ng-if="Submit.Bound" style="width: 160px;">
+                                <div style="width:150px; text-align:center" class="well well-sm bg-blue-soft bg-font-blue-soft">Bound</div>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">Managing General Agent</label>
+                                        <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.ManagingGeneralAgentName}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">Office</label>
+                                        <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.OfficeName}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear:both"></div>
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">Reference Number</label>
+                                        <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.Id}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-1" style="width: 180px">
+                                <div class="form-body">
+                                    <div class="form-group" ng-show="Submit.PolicyNumber != null && Submit.PolicyNumber != ''">
+                                        <label style="font-weight: bold; color: black">Policy Number</label>
+                                        <a href="#" class="open-policy" ng-click="openParentPolicy(Submit)">{{Submit.PolicyNumber}}</a>
+                                    </div>
+                                    <div class="form-group" ng-show="Submit.SubmissionNumber != null && Submit.SubmissionNumber != ''">
+                                        <label style="font-weight: bold; color: black; display: block;">Policy Number</label>
+                                        <a href="#" class="open-policy" ng-click="openParentPolicy(Submit)">{{Submit.SubmissionNumber}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1" style="width: 180px">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight: bold; color: black">Renewal Number</label>
+                                        <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.RenewalOf}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label style="font-weight:bold">Requester Email</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.UserName}}</div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label style="font-weight:bold">Requester Name</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.UserFirstName}} {{Submit.UserLastName}}</div>
+                            </div>
+
+                            <div style="clear:both"></div>
+                            <div class="col-sm-2">
+                                <label style="font-weight:bold">Last Approved</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.DateLastApproved | date: 'shortDate'}}</div>
+                            </div>
+
+                            <div class="col-sm-2" ng-if="Submit.ExternalApprovedBy == null">
+                                <label style="font-weight:bold">Last Approved By</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.LastApprovedByUserName}}</div>
+                            </div>
+
+                            <div class="col-sm-2" ng-if="Submit.ExternalApprovedBy != null">
+                                <label style="font-weight:bold">Approved By Underwriter</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.ExternalApprovedBy}}</div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label style="font-weight:bold">Last Denied</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.DateLastDenied | date: 'shortDate'}}</div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <label style="font-weight:bold">Last Denied By</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.LastDeniedByUserName}}</div>
+                            </div>
+
+                            <div class="col-sm-2" ng-if="rootScope.Organization['Name'] == 'Bass Online'">
+                                <label style="font-weight:bold">Carrier</label>
+                                <div class="well well-sm bg-grey-cararra bg-font-grey-cararra" style="height:36px">{{Submit.RiskCompanyName}}</div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">User Notes</label>
+                                        <textarea class="form-control" ng-disabled="true" style="height:200px" ng-model="Submit.UserNotes"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label style="font-weight:bold">Carrier Notes</label>
+                                        <textarea class="form-control" style="height:200px" ng-model="Submit.CarrierNotes"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4" ng-if="Submit.GroupedFiles.length > 0">
+                                <h3>Attached Files</h3>
+                                <div class="form-body">
+                                    <div class="form-group" ng-repeat="group in Submit.GroupedFiles">
+                                        <div class="input-group">
+                                            <span class="input-group-addon" style="width: 235px;text-align: left;font-size: 1.2em;">{{group[0].Name}}</span>
+                                            <select class="form-control input-sm" ng-options="g.UploadedDate for g in group" ng-model="group.SubmitFile"></select>
+                                            <span class="input-group-btn">
+                                                <button ng-click="downloadSubmitFile(group.SubmitFile)" class="btn btn-primary btn-sm">Download</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <h3>Submit Reasons</h3>
+                                <div id="submit-reasons" style="min-height: 25px">
+                                    <ul ng-repeat="r in Submit.Reasons">
+                                        <li>{{r}}</li>
+                                    </ul>
+                                    <ul ng-show="Submit.Reasons.length == 0">
+                                        <li>No submit reasons provided.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="pull-right" style="margin-top: 10px">
+                                    <button class="btn btn-default" ng-click="cancelSubmit(Submit)">
+                                        <i class="fa fa-ban margin-right"></i>Cancel
+                                    </button>
+                                    <button id="delete-submit" class="btn btn-default" data-toggle="modal" data-target="#delete-modal" ng-show="Submit.Read == null" style="background-color: red; color: white">
+                                        <i class="fa fa-ban margin-right" style="color: white"></i>Delete
+                                    </button>
+                                    <button class="btn btn-warning" ng-click="denySubmit(Submit)" ng-show="Submit.Bound == false">
+                                        <i class="fa fa-times margin-right"></i>Deny
+                                    </button>
+                                    <button class="btn btn-success" ng-click="approveSubmit(Submit)" ng-show="Submit.Bound == false">
+                                        <i class="fa fa-check margin-right"></i>Approve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<div id="delete-modal" class="modal" aria-labelledby="deleteModalLabel" aria-hidden="true" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete this Submit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="deleteSubmit(Submit)" data-dismiss="modal" style="background-color: red; color: white;">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.content -->

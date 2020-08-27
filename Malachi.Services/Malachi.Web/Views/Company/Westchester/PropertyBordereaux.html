@@ -1,0 +1,39 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Property Bordereaux</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+    </div>
+</div>
+ 
+
+<div class="row">
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+        <h2>Property Bordereaux</h2>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <label for="effectiveDate" class="control-label">Trans Effective</label>
+                </span>
+                <input type="text" class="form-control " id="effectiveDate" ng-model="Effective" jqdatepicker />
+                <span class="input-group-addon">
+                    <label for="expirationDate" class="control-label">To</label>
+                </span>
+                <input type="text" class="form-control " id="expirationDate" ng-model="To" jqdatepicker />
+                <span class="input-group-btn">
+                    <button class="btn yellow-casablanca" ng-click="downloadReport()" type="button" ng-disabled="Effective == null || To == null"><span class="fa fa-download" style="margin-right:10px"></span>Download Report</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,107 @@
+﻿
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Guidelines / FAQ</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12" style="margin-bottom: 10px">
+        <div ng-if="Errors.length > 0" class="alert alert-danger" role="alert" style="text-align:left;">
+            <ul>
+                <li ng-repeat="error in Errors">{{error}}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-if="ShowAdminFunc">
+    <!--openAnnouncement-->
+    <button class="btn yellow-casablanca" type="button" ng-click="openGuideline()">
+        <span class="glyphicon glyphicon-plus"></span>
+        Add
+    </button>
+    <!--<input type="file" ngf-select="" ng-model="favicon" name="file" accept="'image/*'" ngf-pattern="'image/*'">-->
+</div>
+
+<!--Previous Loading-->
+<!--<div style="width: 100%; display: block;text-align:center; margin-top:40px" ng-if="Loading">
+    <!--<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+    <span style="display: inline-block;vertical-align: top">Loading...</span>-->
+<!--</div>-->
+<!--Current Loading-->
+<div id="guidelines-loading" style="width: 100%; display: block;text-align:center;">
+    
+</div>
+
+<div class="row">
+    <div class="col-md-3" id="guidelines-hierarchy"></div>
+    <div class="col-md-9">
+        <embed ng-src="{{getPdfEmbeddedSrc()}}" style="width: 100%; height: 800px" type='application/pdf'>
+    </div>
+</div>
+<!--End-->
+<!--Guidelines page-->
+<!--End-->
+<!--Begin-->
+<!--Guidelines Modal-->
+<!--Begin-->
+<div>
+    <script type="text/ng-template" id="GuideLinesModal.html">
+        <div class="modal-header">
+            <h4 class="modal-title">Guidelines / FAQ</h4>
+        </div>
+        <div class="modal-body">
+            <tabset>
+                <tab heading="Document" active="Document.Active">
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-sm-3">
+                            <label class="control-label">Enter Directory:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control input-sm" ng-model="Document.Directory"
+                                   placeholder="/Folder Name 1/Folder Name 2" />
+                        </div>
+                        <div class="col-sm-3">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-sm-3">
+                            <label class="control-label">Upload Document:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control input-sm" ng-model="Document.Name"
+                                   placeholder="Click 'Browse' to upload a document." readonly="readonly" />
+                            <input type="file" id="affCFile" style="width: 1px; visibility: hidden;"
+                                   accept="application/pdf" onchange="angular.element(this).scope().onFileUploaded(this)" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="affCFile" class="btn btn-sm btn-success">
+                                <i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Browse
+                            </label>
+                        </div>
+                    </div>
+                    <div ng-if="Errors.length > 0" class="alert alert-danger" role="alert" style="text-align:left;">
+                        <ul>
+                            <li ng-repeat="error in Errors">{{error}}</li>
+                        </ul>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" ng-click="close()">Cancel</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="next()">Next</button><!--ng-disabled="disableNextBtn"-->
+        </div>
+    </script>
+</div>
+-->

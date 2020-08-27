@@ -1,0 +1,142 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/contracts">Contracts</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/MinimumPremiums">Minimum Premiums {{Contract.Name}}</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer" ng-show="newMinimumPremium == false">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-book-open"></i>Minimum Premiums {{Contract.Name}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-fit-height grey-salt" type="button" ng-click="addNewMinimumPremium()">
+                                    <i class="fa fa-plus margin-right"></i>New Minimum Premium
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>MP</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="minimumPremium in MinimumPremiums | filter: { CoverageId: Coverage.Id }">
+                                <td>{{$index+1}}</td>
+                                <td>{{minimumPremium.Amount | limitTo: 150}}</td>
+                                <td style="text-align: right">
+                                    <button class="btn default margin-right" type="button" ng-click="selectMinimumPremium(minimumPremium)">Edit</button>
+                                    <button class="btn default" type="button" ng-click="deleteMinimumPremium(minimumPremium)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 bottom-buffer" ng-show="newMinimumPremium == true">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-book-open"></i> Minimum Premiums
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label>Minimum Premiums</label>
+                                    <input type="text" class="form-control" ng-model="MinimumPremium.Amount" placeholder="Enter Minimum Premium Amount" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label>Conditions</label>
+                                    <div class="row" style="margin-bottom: 10px">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-primary" ng-click="newConditionalGroup()">New Condition Group </button>
+                                        </div>
+                                    </div>
+
+                                    <accordion close-others="true">
+                                        <accordion-group ng-repeat="group in MinimumPremium.Conditions | orderBy: 'GroupIndex'">
+                                            <accordion-heading>
+                                                {{group.Name}}
+                                            </accordion-heading>
+
+                                            <div class="row" ng-repeat="condition in group.Conditions | orderBy: 'Index'">
+                                                <div ng-include src="'views/contracts/ContractConditions.html'"></div>
+                                                <div class="col-sm-1 pull-right">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <button class="btn btn-danger" ng-click="deleteCondition(condition, group)" ng-mouseenter="hoverParent($event,true)" ng-mouseleave="hoverParent($event,false)" ng-if="group[0] != condition" style="margin-top:25px">Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-body">
+                                                        <div class="form-group">
+                                                            <button class="btn btn-warning" ng-click="newCondition(group)">And Condition</button>
+                                                            <button class="btn btn-danger pull-right" ng-click="deleteGroup(group, MinimumPremium.Conditions)">Delete Group</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </accordion-group>
+                                    </accordion>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="pull-right" style="margin-top: 10px">
+                                <button class="btn btn-danger btn-sm" ng-click="cancelMinimumPremium()">
+                                    <i class="fa fa-ban margin-right"></i>Cancel
+                                </button>
+                                <button class="btn btn-success btn-sm" ng-click="saveMinimumPremium()">
+                                    <i class="fa fa-save margin-right"></i>Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->

@@ -1,0 +1,59 @@
+<!-- Page Header: Start -->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#">Credit Audit</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+    </div>
+</div>
+<!-- Page Header: End --> 
+
+<!-- Container: Start -->
+<div class="row">
+    <div class="col-sm-12" style="margin-bottom: 10px;">
+        <h2>Credit Audit</h2>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <label for="effectiveDate" class="control-label">Effective From</label>
+                </span>
+                
+                <input type="text" class="form-control " id="effectiveDate" ng-model="EffectiveFrom" jqdatepicker />
+                
+                <span class="input-group-addon">
+                    <label for="expirationDate" class="control-label">To</label>
+                </span>
+                
+                <input type="text" class="form-control " id="expirationDate" ng-model="EffectiveTo" jqdatepicker />
+                
+                <div class="input-group-btn">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        Quick Selection
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li ng-click="setDates(DateType.THIS_WEEK)"><a href="#">This Week</a></li>
+                        <li ng-click="setDates(DateType.THIS_MONTH)"><a href="#">This Month</a></li>
+                        <li ng-click="setDates(DateType.THIS_QUARTER)"><a href="#">This Quarter</a></li>
+                        <li ng-click="setDates(DateType.THIS_YEAR)"><a href="#">This Year</a></li>
+                    </ul>
+                </div>
+
+                <span class="input-group-btn">
+                    <button class="btn yellow-casablanca" ng-click="requestReport()" type="button" ng-disabled="!areDatesPicked()">
+                        <span class="fa fa-download" style="margin-right: 10px"></span>Request Report
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container: End -->

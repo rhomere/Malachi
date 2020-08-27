@@ -1,0 +1,54 @@
+﻿
+
+<div ng-controller="test_Commercial_Lines_Coverages_RSUI_Covington_Equipment_Breakdown">
+    <div class="row" style="margin:0">
+        <div class="col-md-12">
+            <div class="form-horizontal">
+                <div class="form-group" ng-show="Coverage.DevelopedPremium > 0" style="margin-bottom: 10px">
+                    <label class="col-sm-2 control-label">
+                        Developed Premium:
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="Coverage.DevelopedPremium" class="form-control" ng-readonly="true">
+                    </div>
+                </div>
+
+                <div class="form-group" ng-show="Coverage.DevelopedPremium > 0">
+                    <label class="col-sm-2 control-label">
+                        Premium Override:
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="Coverage.Premium" class="form-control">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <b>Submit</b>
+                    <ul>
+                        <li>Risks with one or more Equipment Breakdown losses within the past five years</li>
+                        <li>Medical Offices and Health Care Facilities with Total Insured Value in excess of $250,000</li>
+                        <li>Total Insured Value limits that exceed your agency authority</li>
+                        <li>Property classifications described as “Submit” in the Underwriting Manual</li>
+                        <li>Risks with any single piece of equipment valued at more than $100,000</li>
+                    </ul>
+                    <b>Prohibited</b>
+                    <ul>
+                        <li>Any risk with equipment requiring a jurisdictional inspection and/or certification (i.e. boilers and pressure vessels, elevators, etc.)</li>
+                        <li>Risks with high-value, specialized machinery such as MRI machines or Cat Scan machines</li>
+                        <li>Inland Marine exposures</li>
+                        <li>Manufacturing or Processing risks (ISO GL Classes 5xxxx)</li>
+                        <li>Contracting risks (ISO GL Classes 9xxxx)</li>
+                        <li>Equipment more than 25 years old</li>
+                        <li>Property classifications described as “Prohibited” in the Underwriting Manual</li>
+                        <li>Any account which generates electrical power, regardless of whether it is for private or public use</li>
+                        <li>Equipment Breakdown coverage for car washes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

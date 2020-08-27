@@ -1,0 +1,41 @@
+﻿
+.exposure {
+    font-weight: bold;
+    color: #337ab7;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 1em;
+}
+
+hr {
+    margin: 2px;
+}
+
+
+div .blue-steel {
+    background-color: #4B77BE;
+}
+
+    div .blue-steel .btn {
+        color: #fff;
+    }
+
+        div .blue-steel .btn:hover {
+            color: #fff;
+        }
+
+.selectedClassCode .ui-select-bootstrap .ui-select-match > span {
+    overflow: hidden;
+    text-overflow: clip;
+    white-space:normal;
+    height: 30px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+.classCodeChoices .ui-select-choices-row > a {
+    white-space: normal !important;
+}

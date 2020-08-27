@@ -1,0 +1,401 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/Form">Forms</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer" ng-show="!newForm && !oldForm" >
+            <div class="portlet box blue-soft" style="border-bottom: none;border-left: none;border-right: none;margin-bottom: 0;">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-docs"></i>Forms
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-fit-height yellow-casablanca" type="button" ng-click="addNewForm()">
+                                    <i class="fa fa-plus margin-right"></i>New Form
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="searchName" ng-change="searchNameChanged()" placeholder="Search for forms...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="formscroller.search(searchName)">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <table class="table table-stats table-condensed table-striped" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th style="width:5%"></th>
+                        <th style="width:10%">File</th>
+                        <th style="width:15%">Number</th>
+                        <th style="width:5%">Edition</th>
+                        <th style="width:50%">Description</th>
+                        <th style="width:15%"></th>
+                    </tr>
+                </thead>
+            </table>
+
+            <table class="table table-stats table-condensed table-striped" infinite-scroll='formscroller.nextPage(searchName)' infinite-scroll-disabled='formscroller.busy || formscoller.noResult' infinite-scroll-distance='0' infinite-scroll-use-document-bottom="true">
+                <tr ng-repeat="form in formscroller.items">
+                    <td style="width:5%">{{$index+1}}</td>
+                    <td style="width:10%"><button class="btn btn-link" ng-show="form.HasFile" ng-click="downloadForm(form)"><i class="fa fa-download"></i></button></td>
+                    <td style="width:15%">{{form.Number}}</td>
+                    <td style="width:5%">{{form.Edition}}</td>
+                    <td style="width:50%">{{form.Description | limitTo: 100}}</td>
+                    <td style="width: 15%; text-align: right;" ng-if="isInRole('Global Admin')">
+                        <button class="btn default margin-right" type="button" ng-click="selectForm(form)">Edit</button>
+                        <button class="btn default" type="button" ng-click="deleteForm(form)">Delete</button>
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+
+    <div class="col-md-12 bottom-buffer" ng-show="newForm || oldForm"> 
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-warning"></i> Form {{Form.Number}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Number</label>
+                                        <input type="text" class="form-control" ng-model="Form.Number" ng-disabled="oldForm">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Edition</label>
+                                        <input type="text" class="form-control" ng-model="Form.Edition">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea class="form-control" ng-model="Form.Description" style="height: 200px; resize: none;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4" style="clear:both">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Coverage</label>
+                                        <ui-select ng-model="Form.CoverageId"
+                                                   theme="bootstrap"
+                                                   reset-search-input="false"
+                                                   append-to-body="true">
+                                            <ui-select-match placeholder="Pick a coverage">{{$select.selected.Name}}</ui-select-match>
+                                            <ui-select-choices repeat="value.Id as value in Coverages"
+                                                               refresh-delay="0">
+                                                <div ng-bind-html="value.Name | highlight: $select.search">
+                                                </div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label>Upload Form (PDF): </label>
+                                <input type="file" ngf-select="" ng-model="formFile" name="file" accept="application/pdf" ngf-pattern="application/pdf">
+                            </div>
+
+                            <div class="col-sm-12" style="margin-top:10px">
+                                <button class="btn btn-primary" ng-click="newFormTable()"><i class="fa fa-table margin-right"></i> New Table</button>
+                                <button class="btn btn-primary" ng-click="newFormField()"><i class="fa fa-th-list margin-right"></i> New Field</button>
+                                <button class="btn btn-primary" ng-click="newFormFieldOptions()"><i class="fa fa-list margin-right"></i> New Options</button>
+
+                                <div class="well" ng-repeat="table in Form.Tables" style="margin-top:20px;">
+                                    <div class="form-group">
+                                        <label class="col-sm-1">Name:</label>
+                                        <input type="text" class="form-input input-sm" ng-model="table.Name" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1">Max Rows:</label>
+                                        <input type="number" class="form-input input-sm" ng-model="table.MaxRows" />
+                                    </div>
+
+                                    <button class="btn btn-primary" ng-click="newFormField(table)"><i class="fa fa-th-list margin-right"></i> New Field</button>
+                                    <button class="btn btn-primary" ng-click="newFormFieldOptions(table)"><i class="fa fa-list margin-right"></i> New Options</button>
+                                    <button class="btn btn-danger" ng-click="deleteTable(table)">Delete Table</button>
+
+
+                                    <div ui-sortable ng-model="table.Fields">
+                                        <div class="well well-sm movable" ng-repeat="field in table.Fields" style="margin-top:10px; border:1px solid #ccc">
+                                            <div class="form-horizontal" ng-if="field.OptionItems == null || field.OptionItems.length == 0">
+                                                <div class="form-group" style="margin-bottom:5px">
+                                                    <div class="col-sm-2">
+                                                        <select class="form-control" ng-model="field.FieldType">
+                                                            <option value="Label">Label</option>
+                                                            <option value="Text">Text</option>
+                                                            <option value="PerLocationText">Per Location Text</option>
+                                                            <option value="PerPropertyText">Per Property Text</option>
+                                                            <option value="MultilineText">MultilineText</option>
+                                                            <option value="PerLocationMultilineText">Per Location Multiline Text</option>
+                                                            <option value="PerPropertyMultilineText">Per Property Multiline Text</option>
+                                                            <option value="NonDecimalCurrency">NonDecimalCurrency</option>
+                                                            <option value="Currency">Currency</option>
+                                                            <option value="Decimal">Decimal</option>
+                                                            <option value="Int">Int</option>
+                                                            <option value="Date">Date</option>
+                                                            <option value="Boolean">Boolean</option>
+                                                            <option value="Locations">Locations</option>
+                                                            <option value="Properties">Properties</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <input type="text" class="form-control" ng-model="field.FieldName" placeholder="Name">
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" ng-model="field.FieldDescription" placeholder="Description">
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <input type="text" class="form-control" ng-model="field.CharacterLimit" placeholder="Character Limit">
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <input type="text" class="form-control" ng-model="field.Value" placeholder="Default Value">
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <label>
+                                                            Mandatory
+                                                            <input type="checkbox" class="" ng-model="field.IsMandatory" placeholder="" tooltip="Mandatory">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <label>
+                                                            Opt Mandatory
+                                                            <input type="checkbox" class="" ng-model="field.IsOptionalMandatory" tooltip="Optional Mandatory">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <button class="btn btn-danger" ng-click="deleteField(field, table.Fields)"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-horizontal" ng-if="field.OptionItems.length > 0">
+                                                <div class="form-group" style="margin-bottom:10px">
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" ng-model="field.FieldName" placeholder="Name">
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" ng-model="field.FieldDescription" placeholder="Description">
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <input type="text" class="form-control" ng-model="field.CharacterLimit" placeholder="Character Limit">
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <label>
+                                                            Mandatory
+                                                            <input type="checkbox" class="" ng-model="field.IsMandatory" placeholder="" tooltip="Mandatory">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <label>
+                                                            Opt Mandatory
+                                                            <input type="checkbox" class="" ng-model="field.IsOptionalMandatory" tooltip="Optional Mandatory">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <button class="btn btn-danger" ng-click="deleteField(field, table.Fields)"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button ng-if="field.OptionItems.length > 0" class="btn btn-primary" ng-click="newOption(field)" style="margin-bottom:10px"><i class="fa fa-list margin-right"></i> Add Option</button>
+                                            <div class="form-horizontal" ng-if="field.OptionItems.length > 0">
+                                                <div class="form-group" style="margin-bottom:5px" ng-repeat="option in field.OptionItems">
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" ng-model="option.OptionId" placeholder="Option Id">
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <input type="text" class="form-control" ng-model="option.Description" placeholder="Option Description">
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <button class="btn btn-danger" ng-click="deleteOption(option, field.OptionItems)"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div ui-sortable ng-model="Form.Fields">
+                                    <div class="well well-sm movable" ng-repeat="field in Form.Fields" style="margin-top:20px;">
+                                        <div class="form-horizontal" ng-if="field.OptionItems == null || field.OptionItems.length == 0">
+                                            <div class="form-group" style="margin-bottom:5px">
+                                                <div class="col-sm-2">
+                                                    <select class="form-control" ng-model="field.FieldType">
+                                                        <option value="Label">Label</option>
+                                                        <option value="Text">Text</option>
+                                                        <option value="PerLocationText">Per Location Text</option>
+                                                        <option value="PerPropertyText">Per Property Text</option>
+                                                        <option value="MultilineText">MultilineText</option>
+                                                        <option value="PerLocationMultilineText">Per Location Multiline Text</option>
+                                                        <option value="PerPropertyMultilineText">Per Property Multiline Text</option>
+                                                        <option value="NonDecimalCurrency">NonDecimalCurrency</option>
+                                                        <option value="Currency">Currency</option>
+                                                        <option value="Decimal">Decimal</option>
+                                                        <option value="Int">Int</option>
+                                                        <option value="Date">Date</option>
+                                                        <option value="Boolean">Boolean</option>
+                                                        <option value="Locations">Locations</option>
+                                                        <option value="Properties">Properties</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" ng-model="field.FieldName" placeholder="Name">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" ng-model="field.FieldDescription" placeholder="Description">
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <input type="text" class="form-control" ng-model="field.CharacterLimit" placeholder="Character Limit">
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <input type="text" class="form-control" ng-model="field.Value" placeholder="Default Value">
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <label>
+                                                        Mandatory
+                                                        <input type="checkbox" class="" ng-model="field.IsMandatory" placeholder="" tooltip="Mandatory">
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <label>
+                                                        Opt Mandatory
+                                                        <input type="checkbox" class="" ng-model="field.IsOptionalMandatory" tooltip="Optional Mandatory">
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <button class="btn btn-danger" ng-click="deleteField(field, Form.Fields)"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-horizontal" ng-if="field.OptionItems.length > 0">
+                                            <div class="form-group" style="margin-bottom:10px">
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" ng-model="field.FieldName" placeholder="Name">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" ng-model="field.FieldDescription" placeholder="Description">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <input type="text" class="form-control" ng-model="field.Value" placeholder="Default Value">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <button class="btn btn-danger" ng-click="deleteField(field, Form.Fields)"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button ng-if="field.OptionItems.length > 0" class="btn btn-primary" ng-click="newOption(field)" style="margin-bottom:10px"><i class="fa fa-list margin-right"></i> Add Option</button>
+                                        <div ng-if="field.OptionItems.length > 0" class="form-horizontal">
+                                            <div class="form-group" style="margin-bottom:5px" ng-repeat="option in field.OptionItems">
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" ng-model="option.OptionId" placeholder="Option Id">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" ng-model="option.Description" placeholder="Option Description">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <button class="btn btn-danger" ng-click="deleteOption(option, field.OptionItems)"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        <div class="col-sm-12">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <h3 style="margin-top: 15px;">Add Note</h3>
+                                    <textarea ng-model="Form.Note" style="resize: none;" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group" ng-hide="!Form.Notes.length">
+                                    <h3 style="margin-top: 40px;">Notes</h3>
+                                    <table class="table" style="table-layout: fixed;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 45%">Content</th>
+                                                <th style="width: 15%">User Email</th>
+                                                <th style="width: 10%">Created Date</th>
+                                                <th style="width: 30%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="note in Form.Notes">
+                                                <td style="width: 45%; word-wrap: break-word;">{{note.Content}}</td>
+                                                <td style="width: 15%">{{note.CreatedByUserEmail}}</td>
+                                                <td style="width: 10%">{{note.CreatedDate | date : "MM/dd/y"}}</td>
+                                                <td style="width: 30%"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                            <div class="col-sm-12">
+                                <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+                                    <ul>
+                                        <li ng-repeat="error in Errors">{{error}}</li>
+                                    </ul>
+                                </div>
+                                <div class="pull-right" style="margin-top: 10px">
+                                    <button class="btn btn-danger btn-sm" ng-click="cancelForm(Form)">
+                                        <i class="fa fa-ban margin-right"></i>Cancel
+                                    </button>
+                                    <button class="btn btn-success btn-sm" ng-click="saveForm(Form)">
+                                        <i class="fa fa-save margin-right"></i>Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- This was a missing div closing tag -->
+</section>
+<!-- /.content -->

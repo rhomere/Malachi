@@ -1,0 +1,380 @@
+﻿<section class="content not-a-class">
+
+	<!-- BREAD CRUMBS -->
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="icon-home"></i>
+				<a href="#">Dashboard</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a href="#/claims">Claims</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a href="#" ng-click="openPolicyView()">Policy Details</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a href="#">Claim Details</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="module-box">
+		<!--Page Title-->
+		<div class="row">
+			<div class="col-md-12 bottom-buffer">
+				<div class="portlet box blue-soft" style="border-bottom: none;border-left: none;border-right: none;margin-bottom: 0;">
+					<div class="portlet-title" id="min-height-38">
+						<div ng-if="isFromFullPolicy" class="caption">
+						  CLAIM FOR POLICY <a href="#" ng-click="openFullPolicy()" style="color:white!important">{{claim.PolicyNumber}}</a>
+						</div>
+						<div ng-if="!isFromFullPolicy" class="caption">
+							CLAIM FOR POLICY {{claim.PolicyNumber}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br />
+		<div>
+			<button class="btn btn-cancel" ng-click="openPolicyView()">
+				<span style="vertical-align: text-top;">
+					<i class="glyphicon glyphicon-chevron-left"></i>
+					POLICY
+				</span>
+			</button>
+		</div>
+
+		<!-- GENERAL INFO -->
+		<div class="welcome-number-container">
+			<span class="welcome-number bgBase">General Info</span>
+		</div>
+
+		<div class="row mt20b30">
+			<div class="col-md-5">
+				<div class="form-group">
+					<label>Name Insured</label>
+					<input type="text" class="form-control input-display" value="{{claim.NamedInsured}}" readonly />
+				</div>
+				<div class="form-group">
+					<label>Account Executive</label>
+					<input type="text" class="form-control input-display" value="{{claim.UnderwriterName}}" readonly />
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label>Agency Name</label>
+					<input type="text" class="form-control input-display" value="{{claim.AgencyName}}" readonly />
+				</div>
+				<div class="form-group">
+					<label>Coverage</label>
+					<input type="text" class="form-control input-display" value="{{claim.Coverage}}" readonly />
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<label>Effective Period</label>
+					<input type="text" class="form-control input-display" value="{{claim.EffectiveDate | date}} - {{claim.ExpirationDate | date}}" readonly />
+				</div>
+				<div class="form-group">
+					<label>Office/Team</label>
+					<input type="text" class="form-control input-display" value="{{claim.TeamId}}" readonly />
+				</div>
+			</div>
+		</div>
+
+		<!-- CLAIM INFO FORM -->
+		<div class="welcome-number-container">
+			<span class="welcome-number bgBase">Claim Info</span>
+		</div>
+		<div class="mt20b30">
+			<!-- Number & Status Block -->
+      <div class="row">
+        <!--Claim Number-->
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Claim Number</label>
+            <input type="text" class="form-control input-display" value="{{claim.ClaimOfficialNumber}}" readonly />
+          </div>
+        </div>
+
+        <!-- PUBLIC CHECK BOX -->
+        <div ng-class="claim.AdjusterIsPublic == false ? 'col-md-5' : 'col-md-2'">
+          <div ng-if="claim.AdjusterIsPublic">
+            <label>Public Adjuster</label>
+            <div>
+              <input type="text"
+                     class="form-control input-display text-center square-input-sm modechoice"
+                     style="width: 34px; height: 33px;"
+                     value="{{isPublicValue}}" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Public Adjuster Name -->
+        <div class="col-md-3" ng-if="claim.AdjusterIsPublic">
+          <div class="input-group">
+            <label>Public Adjuster Company</label>
+            <input type="text" class="form-control input-display" value="{{claim.PublicAdjusterName}}" readonly />
+          </div>
+        </div>
+
+        <!-- Claim Status -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Claim Status</label>
+            <input type="text" class="form-control" value="{{getStatus(claim.Status)}}" style="background-color: {{getStatusColor(claim.Status)}}; color: white;" readonly />
+          </div>
+        </div>
+      </div>
+
+			<!-- ADDRESS BLOCK -->
+			<div class="row">
+				<!--Claim Adress (street, building)-->
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>Loss Location Address</label>
+						<input type="text" class="form-control input-display" value="{{claim.LossAddress.StreetAddress1}}" readonly />
+					</div>
+				</div>
+				<!--ZIP-->
+				<div class="col-md-1 pl0">
+					<div class="form-group">
+						<label>Zip</label>
+						<input type="text" class="form-control input-display" value="{{claim.LossAddress.Zip}}" readonly />
+					</div>
+				</div>
+				<!--City-->
+				<div class="col-md-3 pl0">
+					<div class="form-group">
+						<label>City</label>
+						<input type="text" class="form-control input-display" value="{{claim.LossAddress.City}}" readonly />
+					</div>
+				</div>
+				<!-- State -->
+				<div class="col-md-2 pl0">
+					<div class="form-group">
+						<label>State</label>
+						<input type="text" class="form-control input-display" value="{{claim.LossAddress.State}}" readonly />
+					</div>
+				</div>
+			</div>
+
+			<!-- LOSS BLOCK -->
+			<div class="row">
+
+				<!-- Loss Type -->
+				<div class="col-md-4">
+					<div class="form-group">
+						<label>Loss Type</label>
+						<input type="text" class="form-control input-display" value="{{claim.LossType}}" readonly />
+					</div>
+				</div>
+
+				<!-- Construction Type -->
+				<div class="col-md-4">
+					<label>Construction Type</label>
+					<input type="text" class="form-control input-display" value="{{claim.Construction}}" readonly />
+				</div>
+
+				<!-- Occupancy -->
+				<div class="col-md-4">
+					<div class="form-group">
+						<label>Occupancy</label>
+						<input type="text" class="form-control input-display" value="{{claim.Occupancy}}" readonly />
+					</div>
+				</div>
+			</div>
+
+			<!-- DATES & NAMES BLOCK  -->
+			<div class="row">
+				<!-- Date Reported -->
+				<div class="col-md-2">
+					<label>Date Reported</label>
+					<input type="text" class="form-control input-display" value="{{claim.DateReported | date}}" readonly />
+				</div>
+
+				<!-- Date of Loss -->
+				<div class="col-md-2">
+					<label>Date of Loss</label>
+					<input type="text" class="form-control input-display" value="{{claim.DateOfLoss | date}}" readonly />
+				</div>
+
+				<!-- Claimant Name -->
+				<div class="col-md-8">
+					<div class="form-group">
+						<label>Claimant Name</label>
+						<input type="text" class="form-control input-display" value="{{claim.ClaimantName}}" readonly />
+					</div>
+				</div>
+
+			</div>
+
+			<!-- Claim Description-->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label>Claim Description</label>
+						<textarea type="text" class="form-control input-display" value="{{claim.ClaimDescription}}" readonly></textarea>
+					</div>
+				</div>
+			</div>
+
+			<!-- Additional Notes -->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label>Additional Notes</label>
+						<textarea type="text" class="form-control input-display" value="{{claim.AdditionalNotes}}" readonly></textarea>
+					</div>
+				</div>
+			</div>
+		</div> <!-- END OF CLAIMS BLOCK -->
+		<!-- ADJUSTERS BLOCK -->
+		<div class="welcome-number-container">
+			<span class="welcome-number bgBase">Adjuster</span>
+		</div>
+
+		<div class="mt20b30">
+			<!-- TPA SELECTION -->
+			<div class="row">
+				<!-- TPA Selection -->
+				<div class="col-md-3">
+					<div class="form-group">
+						<label>TPA</label>
+						<input type="text" class="form-control input-display" value="{{claim.TpaName || 'N/A'}}" readonly />
+					</div>
+				</div>
+
+				<!-- Adjuster Selection -->
+				<div class="col-md-3 pl0">
+					<div class="form-group">
+						<label>Adjuster</label>
+						<input type="text" class="form-control input-display" value="{{claim.AdjusterName || 'N/A'}}" readonly />
+					</div>
+				</div>
+
+				<!-- Adjuster's email -->
+				<div class="col-md-3 pl0">
+					<div class="form-group">
+						<label>Adjuster's Email</label>
+						<input type="text" class="form-control input-display" value="{{claim.AdjusterEmail || 'N/A'}}" readonly />
+					</div>
+				</div>
+
+				<!-- Adjuster's Phone -->
+				<div class="col-md-2 pl0">
+					<div class="form-group">
+						<label>Adjuster's Phone</label>
+						<input type="text" class="form-control input-display" value="{{claim.AdjusterPhone || 'N/A'}}" readonly />
+					</div>
+				</div>
+
+				<!-- Adjuster's PhoneExtention -->
+				<div class="col-md-1 pl0">
+					<div class="form-group">
+						<label>Ext.</label>
+						<input type="text" class="form-control input-display" value="{{claim.AdjusterExtension || 'N/A'}}" readonly />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- MONEY BLOCK -->
+		<div class="welcome-number-container">
+			<span class="welcome-number bgBase">Reserves</span>
+		</div>
+
+        <div class="row mt20b30">
+
+            <!-- RESERVED -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Loss Reserved</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.LossReserve | number:2}}" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>LAE Reserved</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon2">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.LAEReserve | number:2}}" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAID -->
+            <div class="col-md-4">
+                <!-- Loss Paid -->
+                <div class="form-group">
+                    <label>Loss Paid</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon3">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.LossPaid | number:2}}" readonly />
+                    </div>
+                </div>
+
+                <!-- LAE Paid -->
+                <div class="form-group">
+                    <label>LAE Paid</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon4">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.LAEPaid | number:2}}" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subrogation -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Subrogation</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon5">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.Subrogation | number:2}}" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Incurred -->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Total Incurred</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon5">$</span>
+                        <input type="text" class="form-control input-display" value="{{claim.LossReserve + claim.LossPaid + claim.LAEReserve + claim.LAEPaid | number:2}}" readonly />
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+		<!--Error List-->
+		<div ng-if="Errors.length > 0">
+			<div class="alert alert-danger">
+				<ul>
+					<li ng-repeat="error in Errors">
+						{{error}}
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- SUBMIT BUTTON -->
+		<div class="form-actions">
+			<button class="btn btn-cancel" ng-click="openPolicyView()">
+				<i class="glyphicon glyphicon-chevron-left"></i>
+				POLICY
+			</button>
+			<button ng-disabled="!claimEditor" class="btn btn-cell" ng-click="updateClaim()">
+				UPDATE
+			</button>
+		</div>
+	</div>
+</section>

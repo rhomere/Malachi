@@ -1,0 +1,921 @@
+﻿<div class="page-header visible-xs">
+  <h3>Liability</h3>
+</div>
+<div id="listLiability" class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-sm-12">
+        <div>
+          <h3>Liability Limits</h3>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">Deductible</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.Deductible"
+                         ng-change="updatePolicy(true)"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a Deductible">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in Deductibles | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div style="clear: both"></div>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">General Aggregate / Each Occurrence</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.GeneralAggregateOccuranceLimit"
+                         ng-change="updateAggOccurance()"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a General Aggregate">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in GeneralAggregateOccuranceLimits | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">Products</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.ProductAggregateLimit"
+                         ng-change="updatePolicy(true)"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a Product">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in ProductAggregateLimits | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">Pers. & Adv. Injury</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.PersAndAdvInjuryLimit"
+                         ng-change="updatePolicy(true)"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a Pers. & Adv. Injury">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in PersAndAdvInjuryLimits | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">Damage to Premises</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.DamageToPremisesLimit"
+                         ng-change="updatePolicy(true)"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a Damage to Premise">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in DamageToPremisesLimits | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="" class="control-label">Medical Expenses</label>
+            <div>
+              <ui-select ng-model="parent.Policy.CurrentVersion.Liability.MedicalExpenseLimit"
+                         ng-change="updatePolicy(true)"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select a Medical Expense">{{$select.selected.Name}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in MedicalExpenseLimits | propsFilter: { Name: $select.search }">
+                  <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div style="clear: both"></div>
+          <div>
+            <div class="form-group col-sm-4">
+              <label for="" class="control-label">Liquor Liability (<a href="#" ng-click="showEligibleClassCodes()">eligible classes only</a>)</label>
+              <div>
+                <ui-select ng-model="parent.Policy.CurrentVersion.Liability.LiquorLiabilityLimit"
+                           ng-change="updatePolicy(true)"
+                           append-to-body="true"
+                           theme="bootstrap"
+                           ng-disabled="!parent.canModify()"
+                           reset-search-input="false">
+                  <ui-select-match placeholder="Select a Liquor Liability">{{$select.selected.Name}}</ui-select-match>
+                  <ui-select-choices repeat="value.Id as value in LiquorLiabilityLimits | propsFilter: {Name: $select.search}">
+                    <div ng-bind-html="value.Name | highlight: $select.search"></div>
+                  </ui-select-choices>
+                </ui-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 col-sm-12">
+        <h3>Class Code Schedule</h3>
+
+        <div class="row space-bottom">
+          <div class="col-md-12">
+            <button class="btn yellow-casablanca" ng-show="parent.canModify()" ng-click="addClassCode(false)" ng-disabled="parent.AllClassCodes.length == 0">
+              <i class="fa fa-spinner fa-spin right-buffer" style="margin-right: 10px" ng-if="parent.AllClassCodes.length == 0"></i>
+              <span class="glyphicon glyphicon-plus right-buffer" ng-if="parent.AllClassCodes.length > 0"></span>
+              Add Class Code
+            </button>
+            <button class="btn yellow-casablanca" ng-show="parent.canModify()" ng-click="addClassCode(true)" ng-disabled="parent.AllClassCodes.length == 0">
+              <i class="fa fa-spinner fa-spin right-buffer" style="margin-right: 10px" ng-if="parent.AllClassCodes.length == 0"></i>
+              <span class="glyphicon glyphicon-plus right-buffer" ng-if="parent.AllClassCodes.length > 0"></span>
+              Add Additional Insured
+            </button>
+            <button class="btn yellow-casablanca" ng-show="parent.canModify()" ng-click="addHNOClassCode()" ng-disabled="parent.AllClassCodes.length == 0"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Hired / Non-Owned Auto</button>
+            <button class="btn yellow-casablanca" ng-show="parent.canModify()" ng-click="addAssaultAndBattery()" ng-disabled="parent.AllClassCodes.length == 0"><span class="glyphicon glyphicon-plus right-buffer"></span>Add A&B Coverage</button>
+            <button class="btn yellow-casablanca" ng-if="canStopGap()" ng-disabled="disableStopGap() || parent.AllClassCodes.length == 0" ng-show="!Policy.Bound" ng-click="addStopGap()"><span class="glyphicon glyphicon-plus right-buffer"></span>Add Stop Gap Coverage</button>
+          </div>
+        </div>
+        <div ng-show="Errors.length > 0" class="alert alert-danger fade in" role="alert" style="margin-top:10px;">
+          <ul><li ng-repeat="error in Errors">{{error}}</li></ul>
+        </div>
+
+        <tabset>
+          <tab ng-repeat="riskCompany in RiskCompanies | orderBy : 'Name'" active="riskCompany.active" ng-click="changeRiskCompany(riskCompany)" heading="{{riskCompany.Name}}" class="riskCompanies" ng-if="!isCustomPackageRiskCompany(riskCompany)">
+
+            <!-- Make sure we are only showing the liability contracts list if it isnt an endorsement.
+  Users should not be able to change liability contract during an endorsement. --> 
+            <div class="col-sm-6" style="margin-bottom:10px; padding-left: 0px;" ng-show="getLiabilityContracts(riskCompany).length > 1 && !isAnEndorsement()">
+              <ui-select ng-model="riskCompany.ContractId"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         ng-disabled="!parent.canModify()"
+                         reset-search-input="false"
+                         ng-change="contractChange(riskCompany)">
+                <ui-select-match placeholder="Select a contract">{{$select.selected.InsurerName}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in getLiabilityContracts(riskCompany) | filter: $select.search | orderBy: 'InsurerName' : true">
+                  <div ng-bind-html="value.InsurerName | highlight: $select.search">
+                  </div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+
+            <div class="panel panel-default" style="clear:both" ng-repeat="location in parent.Policy.CurrentVersion.Locations | orderBy: 'LocationNumber'" ng-if="location.ClassCodes.length > 0">
+              <div class="panel-heading">
+                <div class="row" style="margin: 0;">
+                  <span class="col-xs-8" style="padding: 0;">
+                    <strong>Location {{location.LocationNumber}}:</strong>
+                    <span class="hidden-xs">{{location.Address.ShortAddress}}</span>
+                  </span>
+                  <span class="pull-right">Territory Code: {{location.TerritoryCode}} / PC: {{location.PropertyCrime}} / VC: {{location.ViolentCrime}}</span>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div style="margin-bottom: 10px;" ng-repeat="classcode in location.ClassCodes | orderBy: 'Number'">
+                  <div class="bg-blue-soft">
+                    <button class="btn btn-link" style="color: #fff;" ng-click="modify(classcode, riskCompany)" ng-show="canModifyClassCode(classcode, riskCompany) && !isPremisesProhibited(classcode, riskCompany)">{{classcode.Number}} - {{(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].Description | limitTo: 100}}</button>
+                    <button class="btn btn-link" style="color: #fff; opacity: 1;" ng-disabled="true" ng-show="!canModifyClassCode(classcode, riskCompany) || isPremisesProhibited(classcode, riskCompany)">{{classcode.Number}} - Prohibited</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Delete" ng-show="parent.canModify()" ng-click="delete(classcode)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Edit" ng-show="parent.canModify() && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, riskCompany)"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Copy" ng-show="parent.canModify() && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify && parent.Policy.CurrentVersion.Locations.length > 1" ng-click="copy(classcode)"><span class="glyphicon glyphicon-copy"></span> Copy</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="View" ng-show="Policy.Issued && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, riskCompany)"><span class="glyphicon glyphicon-eye-open"></span> View</button>
+                  </div>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-repeat="exposureGroup in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.PremisesExposureGroups" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'ISO'">
+                    <tr ng-repeat="exposure in exposureGroup.Exposures | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis && !(classcode.Number == '13454' && riskCompany.Name == 'RLI Insurance Company')">({{exposure.ExposureBasis}})</span><span ng-if="exposure.ExposureDisplayBasis && classcode.Number == '13454' && riskCompany.Name == 'RLI Insurance Company'">({{exposure.ExposureDisplayBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{((classcode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].IsoRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'ISO'">
+                    <tr ng-if="getAnswer(riskCompany, exposure, classcode).Answer" ng-repeat="exposure in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.AdditionalQuestions | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{getAnswer(riskCompany, exposure, classcode).Answer}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-repeat="exposureGroup in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.PremisesExposureGroups" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'Company'">
+                    <tr ng-if="((classcode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" ng-repeat="exposure in exposureGroup.Exposures | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{((classcode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-repeat="exposureGroup in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.ProductExposureGroups" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'Company'">
+                    <tr ng-if="((classcode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" ng-repeat="exposure in exposureGroup.Exposures | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{((classcode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'Company'">
+                    <tr ng-if="getAnswer(riskCompany, exposure, classcode).Answer" ng-repeat="exposure in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.AdditionalQuestions | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{getAnswer(riskCompany, exposure, classcode).Answer}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'If Any' && (classcode.ClassCodeRatingResults | filter: { ContractId: riskCompany.ContractId})[0].TotalPremium == (classcode.ClassCodeRatingResults | filter: { ContractId: riskCompany.ContractId})[0].TotalDevelopedPremium">
+                    <tr>
+                      <td><label class="col-md-12">If Any</label></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default" style="clear: both" ng-if="(parent.Policy.CurrentVersion.ClassCodes | filter:{ LocationNumber:null, Number: '!49950' }).length > 0 && showGeneralClassCodes(riskCompany)">
+              <div class="panel-heading">
+                <strong>General Class Codes</strong>
+              </div>
+              <div class="panel-body">
+                <div ng-repeat="classcode in parent.Policy.CurrentVersion.ClassCodes | filter: { LocationNumber : null, Number: '!49950' } | orderBy: 'Number'" ng-if="!canIgnoreClassCode(classcode, riskCompany)">
+                  <div class="bg-blue-soft">
+                    <button class="btn btn-link" style="color: #fff;" ng-click="modify(classcode, selectedRiskCompany)" ng-if="canModifyClassCode(classcode, riskCompany)">{{classcode.Number}} - {{(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].Description | limitTo: 100}}</button>
+                    <button class="btn btn-link" style="color: #fff;" ng-if="!canModifyClassCode(classcode, riskCompany)">{{classcode.Number}} - {{(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].Description | limitTo: 100}}</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Delete" ng-show="parent.canModify()" ng-click="delete(classcode)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Edit" ng-show="parent.canModify() && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, selectedRiskCompany)"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="View" ng-show="Policy.Issued && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, selectedRiskCompany)"><span class="glyphicon glyphicon-eye-open"></span> View</button>
+                  </div>
+                  <table class="table table-hover">
+                    <tr>
+                      <td class="col-sm-1" style="background-color: #e9edef; font-weight: bold">Applied</td>
+                      <td class="col-sm-2"></td>
+                      <td class="col-sm-2"></td>
+                      <td class="col-sm-2"></td>
+                      <td class="col-sm-2"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default" style="clear:both" ng-if="(parent.Policy.CurrentVersion.ClassCodes | filter:{ Number:'49950' }).length > 0">
+              <div class="panel-heading"><strong>Additional Insureds</strong></div>
+              <div class="panel-body">
+                <div style="margin-bottom: 10px;" ng-repeat="classcode in parent.Policy.CurrentVersion.ClassCodes | filter: { LocationNumber : null,  Number:'49950'} | orderBy: 'Number'">
+                  <div class="bg-blue-soft">
+                    <button class="btn btn-link" style="color: #fff;" ng-click="modify(classcode, selectedRiskCompany)" ng-if="canModifyClassCode(classcode, riskCompany)">{{classcode.Number}} - {{(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0] .Description | limitTo: 100}}</button>
+                    <button class="btn btn-link" style="color: #fff; opacity: 1;" ng-disabled="true" ng-if="!canModifyClassCode(classcode, riskCompany)">{{classcode.Number}} - Additional Insureds does not exist for this Market</button>
+                    <button class="btn btn-link" style="color: #fff;" ng-show="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0] .CanModify == false">{{classcode.Number}} - {{(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0] .Description | limitTo: 100}}</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Delete" ng-show="parent.canModify()" ng-click="delete(classcode)"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="Edit" ng-show="parent.canModify() && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, selectedRiskCompany)"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+                    <button class="btn btn-link pull-right" style="color: #fff;" tooltip-placement="top" tooltip="View" ng-show="Policy.Issued && (classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].CanModify" ng-click="modify(classcode, selectedRiskCompany)"><span class="glyphicon glyphicon-eye-open"></span> View</button>
+                  </div>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'ISO'">
+                    <tr ng-if="(answer = getAnswer(riskCompany, exposure, classcode)).Answer || answer.Address" ng-repeat="exposure in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.AdditionalQuestions">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{answer.Answer || answer.Address.ShortAddress}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'Company'">
+                    <tr ng-if="(answer = getAnswer(riskCompany, exposure, classcode)).Answer || answer.Address" ng-repeat="exposure in (classcode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.AdditionalQuestions | orderBy: 'QuestionID'">
+                      <td>
+                        <label class="col-md-7">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span></label>
+                        <label class="col-md-5">
+                          Exposure: {{answer.Answer || answer.Address.ShortAddress}}
+                        </label>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="margin-bottom: 0px;" class="table table-hover" ng-if="(classcode.ClassCodeRatingInputs | filter: { ContractId: riskCompany.ContractId})[0].RateBy == 'If Any' && (classcode.ClassCodeRatingResults | filter: { ContractId: riskCompany.ContractId})[0].TotalPremium == (classcode.ClassCodeRatingResults | filter: { ContractId: riskCompany.ContractId})[0].TotalDevelopedPremium">
+                    <tr>
+                      <td><label class="col-md-12">If Any</label></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </tab>
+        </tabset>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div>
+  <script type="text/ng-template" id="addClassCode.html">
+    <div class="modal-header">
+      <h4 class="modal-title">{{aiOnly == false ? "Add Code" : "Add Additional Insured"}}</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <form class="form-horizontal" role="form">
+          <div class="scrollable">
+            <div class="col-md-12">
+              <div class="col-md-12">
+                <div class="form-group select-box selectedClassCode">
+                  <label for="LocationNumber" class="control-label"><strong>{{aiOnly == false ? "Class Code" : "Additional Insured"}}</strong></label>
+                  <ui-select ng-if="!aiOnly"
+                             ng-model="ClassCode.Code"
+                             append-to-body="true"
+                             theme="bootstrap"
+                             reset-search-input="false">
+                    <ui-select-match placeholder="Enter a class code or description">{{$select.selected.Number + ' - ' + $select.selected.Description}}</ui-select-match>
+                    <ui-select-choices class="classCodeChoices" repeat="value in ClassCodes | propsFilter: { Number: $select.search, Description: $select.search }">
+                      <div ng-bind-html="value.Number + ' - ' + value.Description | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+                  <ui-select ng-if="aiOnly"
+                             ng-model="ClassCode.Code"
+                             append-to-body="true"
+                             theme="bootstrap"
+                             reset-search-input="false">
+                    <ui-select-match placeholder="Enter an Additional Insured code or description">{{$select.selected.Number + ' - ' + $select.selected.Description}}</ui-select-match>
+                    <ui-select-choices class="classCodeChoices" repeat="value in AIClassCodes | aiPropsFilter: { Description: $select.search }">
+                      <div ng-bind-html="value.Number + ' - ' + value.Description | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+                <div class="form-group" ng-if="!aiOnly">
+                  <label for="LocationNumber" class="control-label"><strong>Location</strong></label>
+                  <ui-select ng-model="ClassCode.selectedLocationNumber"
+                             append-to-body="true"
+                             theme="bootstrap"
+                             reset-search-input="false">
+                    <ui-select-match placeholder="Select a locaiton">{{'Location ' + $select.selected.LocationNumber + ' - ' + $select.selected.Address.ShortAddress }}</ui-select-match>
+                    <ui-select-choices repeat="location.LocationNumber as location in Locations | orderBy:'LocationNumber'">
+                      <div ng-bind-html="'Location ' + location.LocationNumber + ' - ' + location.Address.ShortAddress | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+              </div>
+              <div id="modalLiability_alert" class="alert alert-danger top-buffer" role="alert" style="display: none">Unexpected error occurred. Please try again.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+        <ul>
+          <li ng-repeat="error in Errors">{{error}}</li>
+        </ul>
+      </div>
+
+      <div class="modal-push">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="modalLiability_commands">
+        <button type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+        <button type="button" class="btn yellow-casablanca" ng-click="add()">Add</button>
+      </div>
+    </div>
+  </script>
+</div>
+
+<div>
+  <script type="text/ng-template" id="copyClassCode.html">
+    <div class="modal-header">
+      <h4 class="modal-title">Copy ClassCode: {{PolicyClassCode.Number}}</h4>
+    </div>
+    <div class="modal-body">
+      <div ng-if="!allLocationsContainCode()" class="row">
+        <div>{{(PolicyClassCode.ClassCodeRatingInputs | filter:{ContractId:ContractId})[0].Description}}</div>
+        <div class="col-md-12">
+          <div class="form-group" ng-if="Locations.length > 1">
+            <label><strong>Locations</strong></label>
+            <div style="max-height:200px;overflow-y:auto;">
+              <div class="col-xs-12" ng-repeat="location in Locations | orderBy: 'LocationNumber'">
+                <label ng-show="!locationHasCode(location)">
+                  <input style="margin-right:5px;" type="checkbox" checklist-model="selectedLocations" checklist-value="location.Id">
+                  {{location.LocationNumber}} - {{location.Address.ShortAddress}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ng-if="allLocationsContainCode()">
+        <label>All locations have current ClassCode: {{PolicyClassCode.Number}}</label>
+      </div>
+      <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+        <ul>
+          <li ng-repeat="error in Errors">{{error}}</li>
+        </ul>
+      </div>
+      <div class="modal-push">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="modalLiability_commands">
+        <button type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+        <button type="button" class="btn yellow-casablanca" ng-click="add()">Add</button>
+      </div>
+    </div>
+  </script>
+</div>
+
+<div>
+  <script type="text/ng-template" id="modifyClassCode.html">
+
+    <div class="modal-header">
+      <h4 class="modal-title">{{ClassCode.Number}}</h4>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <form class="form-horizontal" role="form">
+          <div class="scrollable">
+            <tabset>
+              <tab ng-repeat="riskCompany in RiskCompanies | orderBy : 'Name'" active="riskCompany.active" ng-click="changeRiskCompany(riskCompany)" heading="{{riskCompany.Name}}" class="riskCompanies" ng-show="!isCustomPackageRiskCompany(riskCompany)">
+                <div class="col-md-12">
+                  <!-- Allows the user to pick a contract for a risk company that has more than one -->
+                  <!--<div class="col-md-12" style="font-weight:bold;margin-bottom:10px;">
+                      <div class="col-sm-6" style="margin-bottom:10px; padding-left: 0px;" ng-show="riskCompany.Contracts.length > 1">
+                          <ui-select ng-model="riskCompany.ContractId"
+                                     append-to-body="true"
+                                     theme="bootstrap"
+                                     ng-disabled="!parent.canModify()"
+                                     reset-search-input="false"
+                                     ng-change="contractChange(riskCompany)">
+                              <ui-select-match placeholder="Select a contract">{{$select.selected.InsurerName}}</ui-select-match>
+                              <ui-select-choices repeat="value.Id as value in riskCompany.Contracts | filter: $select.search | orderBy: 'InsurerName' : true">
+                                  <div ng-bind-html="value.InsurerName | highlight: $select.search">
+                                  </div>
+                              </ui-select-choices>
+                          </ui-select>
+                      </div>
+                  </div>-->
+                  <div class="col-md-12 multiline-select" style="font-weight:bold;margin-bottom:10px;">
+                    <div class="selectedClassCode" ng-if="riskCompany.SubClassCodes.length > 1 && ClassCode.Number != '49950' && ClassCode.Number != '99999'">
+                      <ui-select ng-model="riskCompany.SubClassCode"
+                                 ng-change="subCodeChange(riskCompany)"
+                                 append-to-body="true"
+                                 ng-disabled="!parent.canModify()"
+                                 theme="bootstrap"
+                                 reset-search-input="false">
+                        <ui-select-match placeholder="Select a Class Code">{{$select.selected.Description}}</ui-select-match>
+                        <ui-select-choices class="classCodeChoices" repeat="value in riskCompany.SubClassCodes | propsFilter: { Description: $select.search }">
+                          <div ng-bind-html="value.Description | highlight: $select.search"></div>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                    <div ng-if="riskCompany.SubClassCodes.length <= 1 && (ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].Description != null || ClassCode.Number == '49950'">{{(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].Description}}</div>
+                  </div>
+                  <div class="col-md-12" style="text-align:center;margin-bottom: 10px;" ng-show="ClassCode.Number != '49950' && (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId}).length > 0">
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].RateBy" value="ISO" ng-disabled="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CanRateByISO == false || Policy.Issued" ng-change="syncIfAny((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0])"> ISO
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].RateBy" value="Company" ng-disabled="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CanRateByCompany == false || Policy.Issued" ng-change="syncIfAny((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0])"> Company
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" ng-model="(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].RateBy" value="If Any" ng-disabled="!parent.canModify() || IsHNOA(ClassCode)" ng-change="syncIfAny((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0])"> If Any
+                    </label>
+                  </div>
+                  <div ng-if="(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].RateBy =='ISO'">
+                    <div class="col-md-12">
+                      <div class="exposure">Exposures</div>
+                      <div class="well well-sm form-horizontal" ng-repeat="exposureGroup in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.PremisesExposureGroups">
+                        <div class="form-group" ng-repeat="exposure in exposureGroup.Exposures" style="margin-bottom: 0">
+                          <label class="col-xs-8" style="margin-top: 5px;">{{exposure.Question}} <span ng-if="exposure.ExposureBasis && !(ClassCode.Number == '13454' && riskCompany.Name == 'RLI Insurance Company')">({{exposure.ExposureBasis}})</span><span ng-if="exposure.ExposureDisplayBasis && ClassCode.Number == '13454' && riskCompany.Name == 'RLI Insurance Company'">({{exposure.ExposureDisplayBasis}})</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                          <div class="col-xs-4">
+                            <input class="form-control input-sm" ng-change="syncPremiseExposure('ISO', riskCompany.ContractId, exposure, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].IsoRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0])" ng-disabled="!parent.canModify()" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].IsoRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                            <span style="color:red" ng-show="exposure.AnswerLimit > 0 && checkLimit(exposure.AnswerLimit, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].IsoRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="well well-sm form-horizontal" ng-repeat="exposureGroup in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.ProductExposureGroups" ng-if="exposureGroup.IsDisplayable">
+                        <div class="form-group" ng-repeat="exposure in exposureGroup.Exposures" style="margin-bottom: 0" ng-if="exposure.IsDisplayable">
+                          <label class="col-xs-8" style="margin-top: 5px;">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                          <div class="col-xs-4">
+                            <input class="form-control input-sm" ng-change="syncProductExposure('ISO', riskCompany.ContractId, exposure, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0])" ng-disabled="!parent.canModify()" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].IsoRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                            <span style="color:red" ng-show="exposure.AnswerLimit > 0 && checkLimit(exposure.AnswerLimit, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12" ng-if="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.AdditionalQuestions.length > 0">
+                      <div class="exposure">Additional Questions</div>
+                      <div class="well well-sm form-horizontal">
+                        <div class="form-group" ng-repeat="exposure in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].IsoRateInfo.AdditionalQuestions" style="margin-bottom: 0" ng-if="exposure.IsDisplayable">
+                          <label class="col-xs-8" style="margin-top: 5px;" ng-if="exposure.ExposureDataType == 'Number'">{{exposure.Question}} <span ng-if="exposure.AdditionalChargeAmount">({{exposure.AdditionalChargeAmount | customCurrency}}/{{exposure.AdditionalChargeBasis}}<span ng-if="exposure.AssociatedClassCode">; class code {{exposure.AssociatedClassCode}}</span>)</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                          <div class="col-xs-4" ng-if="exposure.ExposureDataType == 'Number'">
+                            <input class="form-control input-sm" data-mask="#" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            <span style="color:red" ng-show="exposure.AnswerLimit > 0 && checkLimit(exposure.AnswerLimit, getAnswer(riskCompany, exposure).Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Amount'" style="padding:0;margin-top:10px">
+                            <div class="col-xs-8">
+                              <label>{{exposure.Question}} ({{exposure.ExposureBasis}})<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Text'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Yes/No'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-8">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="radio-inline">
+                                <input type="radio" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" value="Yes" ng-disabled="!parent.canModify()"> Yes
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" value="No" ng-disabled="!parent.canModify()"> No
+                              </label>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Text'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Multiline Text'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <textarea class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" ng-init=""></textarea>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Address'" style="padding:0;margin-top:20px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                              <label>(Manually Enter P.O. Boxes)</label>
+                            </div>
+                            <div class="col-sm-10">
+                              <input id="mailing-address" ng-autocomplete class="form-control input-sm" ng-disabled="parent.Policy.Issued" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.ShortAddress" details="details" />
+                            </div>
+                            <div class="col-sm-2" style="padding-left: 0px;">
+                              <input id="mailing-address2" class="form-control input-sm" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress2" placeholder="Suite #" />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px">
+                              <label style="color:#337ab7"><a ng-click="toggleManualAddressEntry = !toggleManualAddressEntry">Manually Enter Address</a></label>
+                              <input ng-show="toggleManualAddressEntry" id="address1" class="form-control input-sm" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress1" ng-disabled="Policy.Issued" placeholder="Address 1" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress2" ng-disabled="Policy.Issued" placeholder="Address 2" />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="zip" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.Zip" ng-disabled="Policy.Issued" placeholder="Zip" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="city" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.City" ng-disabled="Policy.Issued" placeholder="City" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="state" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.State" ng-disabled="Policy.Issued" placeholder="State" required />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Locations'" style="padding:0;margin-top:20px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <div style="max-height:200px;overflow-y:auto;">
+                                <div class="col-xs-12" ng-repeat="location in Locations | orderBy: 'LocationNumber'">
+                                  <label>
+                                    <input type="checkbox" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" checklist-model="exposure.Locations" checklist-value="location"><span style="margin-left:5px; margin-right:5px">{{location.LocationNumber}}</span> - <span style="margin-left:5px">{{location.Address.ShortAddress}}</span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="(ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].RateBy =='Company'">
+                    <div class="col-md-12" ng-if="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.PremisesExposureGroups.length > 0 || (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.ProductExposureGroups.length > 0">
+                      <div class="exposure">Exposures</div>
+                      <div class="well well-sm form-horizontal" ng-repeat="exposureGroup in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.PremisesExposureGroups">
+                        <div class="form-group" ng-repeat="exposure in exposureGroup.Exposures" style="margin-bottom: 0">
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Number'" style="padding:0;margin-top:10px">
+                            <label class="col-xs-8" style="margin-top: 5px;">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm" ng-change="syncPremiseExposure('Company', riskCompany.ContractId, exposure, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0])" ng-disabled="!parent.canModify()" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                              <span style="color:red" ng-show="exposureCheck(exposure.AnswerLimit, exposure.ExposureQuestion.Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Amount'" style="padding:0;margin-top:10px">
+                            <div class="col-xs-8">
+                              <label>{{exposure.Question}} ({{exposure.ExposureBasis}})<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm"
+                                     ng-disabled="!parent.canModify()"
+                                     ng-change="syncPremiseExposure('Company', riskCompany.ContractId, exposure, ((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0])"
+                                     ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Yes/No'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-8">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="radio-inline">
+                                <input type="radio" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" value="Yes" ng-disabled="!parent.canModify()"> Yes
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" value="No" ng-disabled="!parent.canModify()"> No
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="well well-sm form-horizontal" ng-repeat="exposureGroup in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.ProductExposureGroups" ng-if="exposureGroup.IsDisplayable">
+                        <div class="form-group" ng-repeat="exposure in exposureGroup.Exposures" style="margin-bottom: 0" ng-if="exposure.IsDisplayable">
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Number'" style="padding:0;margin-top:10px">
+                            <label class="col-xs-8" style="margin-top: 5px;">{{exposure.Question}} <span ng-if="exposure.ExposureBasis">({{exposure.ExposureBasis}})</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                              <span style="color:red" ng-show="exposureCheck(exposure.AnswerLimit, exposure.ExposureQuestion.Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Amount'" style="padding:0;margin-top:10px">
+                            <div class="col-xs-8">
+                              <label>{{exposure.Question}} ({{exposure.ExposureBasis}})<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Yes/No'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-8">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="radio-inline">
+                                <input type="radio" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" value="Yes" ng-disabled="!parent.canModify()"> Yes
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.ExposureAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Answer" value="No" ng-disabled="!parent.canModify()"> No
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12" ng-if="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.AdditionalQuestions.length > 0">
+                      <div class="exposure">Additional Questions</div>
+                      <div class="well well-sm form-horizontal">
+                        <div class="form-group" ng-repeat="exposure in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].CompanyRateInfo.AdditionalQuestions | orderBy: 'QuestionID'" style="margin-bottom: 0" ng-if="exposure.IsDisplayable">
+                          <label class="col-xs-8" style="margin-top: 5px;" ng-if="exposure.ExposureDataType == 'Number'">{{exposure.Question}} <span ng-if="exposure.AdditionalChargeAmount">({{exposure.AdditionalChargeAmount | customCurrency}}/{{exposure.AdditionalChargeBasis}}<span ng-if="exposure.AssociatedClassCode">; class code {{exposure.AssociatedClassCode}}</span>)</span><span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                          <div class="col-xs-4" ng-if="exposure.ExposureDataType == 'Number'">
+                            <input class="form-control input-sm" data-mask="#" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            <span style="color:red" ng-show="exposure.AnswerLimit > 0 && checkLimit(exposure.AnswerLimit, getAnswer(riskCompany, exposure).Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Amount'" style="padding:0;margin-top:10px">
+                            <div class="col-xs-8">
+                              <label>{{exposure.Question}} ({{exposure.ExposureBasis}})<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-xs-4">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Yes/No'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-8">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <label class="radio-inline">
+                                <input type="radio" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" value="Yes" ng-disabled="!parent.canModify()"> Yes
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" ng-change="syncAdditionalQuestion('ISO', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" value="No" ng-disabled="!parent.canModify()"> No
+                              </label>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Text'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Multiline Text'" style="padding:0;margin-top:10px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <textarea class="form-control input-sm" ng-disabled="!parent.canModify()" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Answer" ng-init=""></textarea>
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Address'" style="padding:0;margin-top:20px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                              <label>(Manually Enter P.O. Boxes)</label>
+                            </div>
+                            <div class="col-sm-10">
+                              <input id="mailing-address" ng-autocomplete class="form-control input-sm" ng-disabled="parent.Policy.Issued" ng-model="((ClassCode.ClassCodeRatingInputs | filter:{ContractId:riskCompany.ContractId})[0].CompanyRatingInput.AdditionalQuestionAnswers  | filter:{ QuestionID: exposure.QuestionID }: true)[0].Address.ShortAddress" details="details" />
+                            </div>
+                            <div class="col-sm-2" style="padding-left: 0px;">
+                              <input id="mailing-address2" class="form-control input-sm" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress2" placeholder="Suite #" />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px">
+                              <label style="color:#337ab7"><a ng-click="toggleManualAddressEntry = !toggleManualAddressEntry">Manually Enter Address</a></label>
+                              <input ng-show="toggleManualAddressEntry" id="address1" class="form-control input-sm" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress1" ng-disabled="Policy.Issued" placeholder="Address 1" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.StreetAddress2" ng-disabled="Policy.Issued" placeholder="Address 2" />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="zip" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.Zip" ng-disabled="Policy.Issued" placeholder="Zip" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="city" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.City" ng-disabled="Policy.Issued" placeholder="City" required />
+                            </div>
+                            <div class="col-sm-8" style="margin-top: 10px" ng-show="toggleManualAddressEntry">
+                              <input class="form-control input-sm" id="state" ng-change="syncAdditionalQuestion('Company', riskCompany.Id, riskCompany.ContractId, exposure, getAnswer(riskCompany, exposure))" ng-model="getAnswer(riskCompany, exposure).Address.State" ng-disabled="Policy.Issued" placeholder="State" required />
+                            </div>
+                          </div>
+                          <div class="col-xs-12" ng-if="exposure.ExposureDataType == 'Locations'" style="padding:0;margin-top:20px">
+                            <div class="col-sm-12">
+                              <label style="font-weight:bold">{{exposure.Question}}<span ng-if="exposure.IsMandatory" style="color: red;"> *</span></label>
+                            </div>
+                            <div class="col-sm-12">
+                              <div style="max-height:200px;overflow-y:auto;">
+                                <div class="col-xs-12" ng-repeat="location in Locations | orderBy: 'LocationNumber'">
+                                  <label>
+                                    <input type="checkbox" ng-disabled="!parent.canModify()" checklist-change="syncLocations(exposure, riskCompany.ContractId, ClassCode.ClassCodeRateInfo)" checklist-model="exposure.Locations" checklist-value="location.Id" checklist-comparator="compareLocations"><span style="margin-left:5px; margin-right:5px">{{location.LocationNumber}}</span> - <span style="margin-left:5px">{{location.Address.ShortAddress}}</span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- old ways -->
+                          <!--<label class="col-xs-9" style="margin-top: 5px;">{{exposure.Question}} <span ng-if="exposure.AdditionalChargeAmount">({{exposure.AdditionalChargeAmount | currency : $ : 0}}/{{exposure.AdditionalChargeBasis}}<span ng-if="exposure.AssociatedClassCode">; class code {{exposure.AssociatedClassCode}}</span>)</span></label>
+                          <div class="col-xs-3">
+                              <input class="form-control input-sm" ng-disabled="!parent.canModify()" ng-model="getAnswer(riskCompany, exposure).Answer" />
+                              <span style="color:red" ng-show="exposure.AnswerLimit > 0 && checkLimit(exposure.AnswerLimit, getAnswer(riskCompany, exposure).Answer)">Maximum exposure allowed is {{exposure.AnswerLimit}} {{exposure.ExposureBasis}}</span>
+                          </div>-->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="exposure">Risk Summary</div>
+                  <div>
+                    <div class="well well-sm" ng-show="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId}).length > 0">
+                      <span style="margin-right:35px;"><span style="margin-right:5px;">Premises:</span><span ng-class="{'text-primary': (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].PremisesAuthority == 'Authorized' || (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].PremisesAuthority == 'Included', 'text-danger': (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].PremisesAuthority == 'Submit' || (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].PremisesAuthority == 'Prohibited'}">{{(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].PremisesAuthority}}</span></span>
+                      <span style="margin-right:35px;"><span style="margin-right:5px;">Products:</span><span ng-class="{'text-primary': (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].ProductsAuthority == 'Authorized' || (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].ProductsAuthority == 'Included', 'text-danger': (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].ProductsAuthority == 'Submit' || (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].ProductsAuthority == 'Prohibited'}">{{(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].ProductsAuthority}}</span></span>
+                    </div>
+                    <div class="well well-sm" ng-show="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId}).length == 0">
+                      <span style="margin-right:35px;"><span style="margin-right:5px;">Premises:</span><span class="text-danger">Prohibited</span></span>
+                      <span style="margin-right:35px;"><span style="margin-right:5px;">Products:</span><span class="text-danger">Prohibited</span></span>
+                    </div>
+                  </div>
+                  <div ng-if="IsAssaultAndBattery(ClassCode, riskCompany)">
+                    <div ng-if="riskCompany.ContractId == '6caf110d-7252-4c98-8637-98404096f43c'">
+                      <div class="exposure">Notes</div>
+                      <div>
+                        <div class="well well-sm">
+                          <div><strong>Note:</strong> By leaving the occurrence and aggregate limit fields empty you agree to adding Assault and Battery coverage with no sublimit.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].Note.length > 0">
+                    <div ng-if="(riskCompany.ContractId != '73ae986e-ca1b-42df-bf42-949fd3acf1d8' && (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].Note != 'None')">
+                      <div class="exposure">Underwriting Rules</div>
+                      <div>
+                        <div class="well well-sm">
+                          <div ng-bind-html="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].Note"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-show="(ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].Errors.length > 0" class="alert alert-danger fade in" role="alert" style="margin-top:10px;">
+                    <ul>
+                      <li ng-repeat="error in (ClassCode.ClassCodeRateInfo | filter:{ContractId:riskCompany.ContractId})[0].Errors">{{error}}</li>
+                    </ul>
+                  </div>
+
+                </div>
+              </tab>
+            </tabset>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <div ng-show="" style="margin-top: 10px; margin-bottom: 10px;">
+      <h3><strong>Note: By leaving the occurence and aggregate limit fields empty you agree to adding Assault and Battery coverage with no sublimit.</strong></h3>
+    </div>
+
+    <div ng-show="Errors.length > 0" class="alert alert-danger fade in" role="alert" style="margin-top:10px;">
+      <ul><li ng-repeat="error in Errors">{{error}}</li></ul>
+    </div>
+
+    <div class="modal-push"></div>
+
+    <div class="modal-footer">
+      <div>
+        <button type="button" class="btn btn-default" ng-if="!justAdded && (!parent.canModify())" ng-disabled="busy" ng-click="close('closeView')">Close</button>
+        <button type="button" class="btn btn-default" ng-if="justAdded" ng-disabled="busy" ng-click="close('cancel')">Cancel</button>
+        <button type="button" class="btn yellow-casablanca" ng-if="parent.canModify()" ng-disabled="busy" ng-click="close('save')">Save</button>
+      </div>
+    </div>
+  </script>
+</div>
+
+<script type="text/ng-template" id="eligibleClassCodes.html">
+  <div class="modal-header">
+    <h4 class="modal-title">Classes Eligible for Liquor Coverage</h4>
+  </div>
+  <div class="modal-body">
+    <div data-ng-include="'/Views/Company/test/LiquorLiability.html'"></div>
+    <div class="modal-push">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div id="modalProperty_commands">
+      <button id="modalProperty_close" type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+    </div>
+  </div>
+</script>
+
+<div>
+  <script type="text/ng-template" id="test_Commercial_Lines_addHNOClassCode.html">
+    <div class="modal-header">
+      <h4 class="modal-title">Add HNO Code</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <form class="form-horizontal" role="form">
+          <div class="scrollable">
+            <div class="col-md-12">
+              <div class="col-md-12">
+                <div class="form-group select-box">
+                  <label for="LocationNumber" class="control-label"><strong>Class Code</strong></label>
+                  <ui-select ng-model="ClassCode.Code"
+                             append-to-body="true"
+                             theme="bootstrap"
+                             reset-search-input="false">
+                    <ui-select-match placeholder="Enter a class code or description">{{$select.selected.Number + ' - ' + $select.selected.Description  | limitTo: 85 }}</ui-select-match>
+                    <ui-select-choices repeat="value in ClassCodes">
+                      <div ng-bind-html="value.Number + ' - ' + value.Description | highlight: $select.search">
+                      </div>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+              </div>
+              <div id="modalLiability_alert" class="alert alert-danger top-buffer" role="alert" style="display: none">Unexpected error occurred. Please try again.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div ng-show="Errors.length > 0" class="alert alert-danger alert-dismissible fade in" role="alert" style="margin-top:10px;">
+        <ul>
+          <li ng-repeat="error in Errors">{{error}}</li>
+        </ul>
+      </div>
+
+      <div class="modal-push">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="modalLiability_commands">
+        <button type="button" data-dismiss="modal" class="btn btn-default" ng-click="close()">Close</button>
+        <button type="button" class="btn yellow-casablanca" ng-click="add()">Add</button>
+      </div>
+    </div>
+  </script>
+</div>

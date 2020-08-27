@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js" data-ng-app="MALACHIAPP"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="MALACHIAPP"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" data-ng-app="MALACHIAPP">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+  <title data-ng-bind="Organization['Name'] + ' | ' + $state.current.data.pageTitle"></title>
+  <meta http-equiv="cache-control" content="max-age=0" />
+  <meta http-equiv="cache-control" content="no-cache" />
+  <meta http-equiv="expires" content="0" />
+  <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+  <meta http-equiv="pragma" content="no-cache" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <meta content="" name="description" />
+  <meta content="" name="author" />
+  <!-- BEGIN GLOBAL MANDATORY STYLES --> 
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+  <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet"> <!-- MUST BE FIRST -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="Content/plugins/simple-line-icons/simple-line-icons.css" rel="stylesheet" />
+  <link href="plugins/bootstrap-switch/css/bootstrap-switch.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+  <!-- END GLOBAL MANDATORY STYLES -->
+  <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
+  <link id="ng_load_plugins_before" />
+  <!-- END DYMANICLY LOADED CSS FILES -->
+  <!-- BEGIN THEME STYLES -->
+  <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
+  <link href="Content/plugins/components.css" rel="stylesheet" />
+  <link href="Content/plugins/plugins.css" rel="stylesheet" />
+  <link href="Content/plugins/layout.css" rel="stylesheet" />
+  <link href="Content/plugins/themes/darkblue.css" rel="stylesheet" />
+  <link href="Plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+  <link href="Content/site.css?v=0010" rel="stylesheet" />
+  <link href="Content/controllers/Contracts/Submits.css?v=0010" rel="stylesheet" />
+  <!-- END THEME STYLES -->
+  <link href="Plugins/angularjs/plugins/select2/select.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.16/toaster.min.css" rel="stylesheet" />
+  <!-- AMCHARTS JS FILE -->
+  <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+  <link rel="shortcut icon" ng-href="{{'data:image/png;base64,' + Organization['Favicon']}}" />
+  <script src="Plugins/leaflet/leaflet.js"></script>
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
+<body ng-controller="AppController" ng-class="authentication.isAuth == false ? 'login' : ''">
+  <div ng-if="authentication.isAuth == false">
+    <div ui-view class="fade-in-up">
+    </div>
+  </div>
+  <div ng-if="authentication.isAuth == true" class="page-header-fixed page-quick-sidebar-over-content" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
+    <!-- BEGIN PAGE SPINNER -->
+    <div ng-spinner-bar class="page-spinner-bar">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+    <!-- END PAGE SPINNER -->
+    <!-- BEGIN HEADER -->
+    <div data-ng-include="'/Views/TPL/header.html'" data-ng-controller="HeaderController" class="page-header navbar navbar-fixed-top">
+    </div>
+    <!-- END HEADER -->
+    <div class="clearfix">
+    </div>
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+      <!-- BEGIN SIDEBAR -->
+      <div data-ng-include="'/Views/Company/'+Organization['UniqueUrl']+'/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper" ng-if="Organization != null" style="height:0">
+      </div>
+      <!-- END SIDEBAR -->
+      <!-- BEGIN CONTENT -->
+      <div class="page-content-wrapper">
+        <div class="page-content">
+          <!-- BEGIN ACTUAL CONTENT -->
+          <div ui-view class="fade-in-up">
+          </div>
+          <!-- END ACTUAL CONTENT -->
+        </div>
+      </div>
+      <!-- END CONTENT -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div data-ng-include="'/Views/Company/'+Organization['UniqueUrl']+'/footer.html'" class="page-sidebar-wrapper" ng-if="Organization != null">
+    </div>
+    <!-- END FOOTER -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <!-- BEGIN CORE JQUERY PLUGINS -->
+    <!--[if lt IE 9]>
+        <script src="plugins/respond.min.js"></script>
+        <script src="plugins/excanvas.min.js"></script>
+    <![endif]-->
+    <toaster-container toaster-options="{'time-out': 3000, 'close-button': true}"></toaster-container>
+  </div>
+  <script>
+    var isProduction = false;
+    if (isProduction) {
+        /* CHHANGE */
+        window.commissionUri = 'https://accountingdevservicebassuw.azurewebsites.net/';
+        window.documentServiceBase = 'https://malachiboldocumentservicedev.azurewebsites.net/';
+        window.authServiceUri = 'https://test-identity.azurewebsites.net/';
+        window.affidavitCUrl = 'https://agpdev.azurewebsites.net/affidavitC/';
+        window.reportsAPI = 'https://malachireportsapidev.azurewebsites.net/';
+        window.buwiis = 'https://buwiisdev.azurewebsites.net/';
+    }
+
+    window.serviceBase = 'http://localhost:1025/';
+    window.documentServiceBase = 'http://localhost:53432/';
+    window.authServiceUri = 'https://test-identity.azurewebsites.net/'; 
+
+    window.reportsAPI = 'http://localhost:52346/';
+
+    if (window.location.href.indexOf("test-client") > -1) {
+        window.serviceBase = 'https://test-service.azurewebsites.net/';
+        window.documentServiceBase = 'https://test-document.azurewebsites.net/';
+        window.authServiceUri = 'https://test-identity.azurewebsites.net/';
+
+        /* CHANGE OR REMOVE!! */
+        window.appInsightKey = '88a3e74c-0152-4ce9-af99-37d30bafc59c';
+        window.commissionUri = 'https://accountingdevservicebassuw.azurewebsites.net/';
+        window.affidavitCUrl = 'https://agpdev.azurewebsites.net/affidavitC/';
+        window.reportsAPI = 'https://malachireportsapidev.azurewebsites.net/';
+        window.buwiis = 'https://buwiisdev.azurewebsites.net/';
+    }
+    if (window.location.href.indexOf("test-client-dev") > -1) {
+        window.serviceBase = 'https://test-service-dev.azurewebsites.net/';
+        window.documentServiceBase = 'https://test-document-dev.azurewebsites.net/';
+        window.authServiceUri = 'https://test-identity.azurewebsites.net/';
+
+        /* CHANGE OR REMOVE!! */
+        window.appInsightKey = '88a3e74c-0152-4ce9-af99-37d30bafc59c';
+        window.commissionUri = 'https://accountingdevservicebassuw.azurewebsites.net/';
+        window.affidavitCUrl = 'https://agpdev.azurewebsites.net/affidavitC/';
+        window.reportsAPI = 'https://malachireportsapidev.azurewebsites.net/';
+        window.buwiis = 'https://buwiisdev.azurewebsites.net/';
+    }  
+  </script>
+  <script src="Plugins/detect.js"></script>
+  <script src="Scripts/parseurl-js.js"></script>
+  <script src="plugins/jquery.min.js"></script>
+  <script src="plugins/jquery-migrate.min.js"></script>
+  <script src="Plugins/jquery-ui/jquery-ui.min.js"></script>
+  <script src="plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+  <script src="plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+  <script src="plugins/jquery.blockui.min.js" type="text/javascript"></script>
+  <script src="plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+  <script src="plugins/jquery.cokie.min.js" type="text/javascript"></script>
+  <script src="plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+  <script src="Scripts/jquery.signalR-2.2.2.min.js"></script>
+  <script type="text/javascript">
+      if (window.serviceBase.includes("malachibol") || window.serviceBase.includes("localhost"))
+          $.getScript(window.serviceBase + "signalr/hubs", function () {
+              console.log("Script loaded but not necessarily executed.");
+          });
+  </script>
+  <!-- BEGIN CORE ANGULARJS PLUGINS -->
+  <script src="plugins/angularjs/angular.min.js" type="text/javascript"></script>
+  <script src="plugins/angularjs/angular-sanitize.min.js" type="text/javascript"></script>
+  <script src="plugins/angularjs/angular-touch.min.js" type="text/javascript"></script>
+  <script src="plugins/angularjs/plugins/angular-ui-router.min.js" type="text/javascript"></script>
+  <script src="plugins/angularjs/plugins/ocLazyLoad.min.js" type="text/javascript"></script>
+  <script src="plugins/angularjs/plugins/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+  <script src="Scripts/angular-local-storage.min.js"></script>
+  <script src="Scripts/loading-bar.min.js"></script>
+  <script src="plugins/angularjs/plugins/select2/select.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKlshPYqK-FpmxtVj-IMuXpoYc0NQodnM&libraries=places,geometry,visualization&sensor=false"></script>
+  <script src="plugins/jquery-maskedinput/angular-jquery-maskedinput.js" type="text/javascript"></script>
+  <script src="plugins/jquery-maskedinput/jquery.maskedinput.min.js" type="text/javascript"></script>
+  <script src="plugins/checklist-model/checklist-model.js"></script>
+  <script src="Plugins/sortable/sortable.js"></script>
+  <script src="Plugins/toastr/toastr.js"></script>
+  <script src="Plugins/file-upload/ng-file-upload.min.js"></script>
+  <script src="Plugins/azure-storage.blob.min.js"></script>
+  <script src="Plugins/azure-storage.file.min.js"></script>
+  <!------------SSO------------------------->
+  <script src="Scripts/oidc-client.min.js"></script>
+  <!------------Bootstrap Dialog------------------------->
+  <link href="Plugins/bootstrap-dialog/css/bootstrap-dialog.min.css" rel="stylesheet" />
+  <script src="Plugins/bootstrap-dialog/js/bootstrap-dialog.min.js"></script>
+  <!-- END CORE ANGULARJS PLUGINS -->
+  <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
+  <script id="appjs" src="Scripts/app.js?v=0010"></script>
+  <script src="Scripts/filters.js?v=0010"></script>
+  <script src="Scripts/directives.js?v=0010"></script>
+  <script src="Scripts/angular-cache-buster.js?v=0010"></script>
+  <script src="Scripts/services/authInterceptorService.js?v=0010"></script>
+  <script src="Scripts/services/authService.js?v=0010"></script>
+  <script src="Scripts/services/policyService.js?v=0010"></script>
+  <script src="Scripts/services/tokensManagerService.js?v=0010"></script>
+  <script src="Scripts/services/adminService.js?v=0010"></script>
+  <script src="Scripts/services/organizationService.js?v=0010"></script>
+  <script src="Scripts/services/sharedService.js?v=0010"></script>
+  <script src="Scripts/services/customPackageService.js?v=0010"></script>
+  <script src="Scripts/services/rateService.js?v=0010"></script>
+  <!------------------------------------->
+  <script src="Scripts/access.js"></script>
+  <script src="Scripts/notificationsHub.js"></script>
+  <script src="Plugins/angular-translate.min.js"></script>
+  <script src="Plugins/angular-translate-loader-static-files.min.js"></script>
+  <script src="Plugins/angular-validation.min.js"></script>
+  <script src="Plugins/xtForm.tpl.min.js"></script>
+  <script src="Plugins/moment.min.js"></script>
+  <script src="Plugins/ng-infinite-scroll.js?v=0010"></script>
+  <!-- END APP LEVEL ANGULARJS SCRIPTS -->
+  <!-- BEGIN APP LEVEL JQUERY SCRIPTS -->
+  <script src="Scripts/metronic/metronic.js"></script>
+  <script src="Scripts/metronic/layout.js"></script>
+  <script src="Scripts/metronic/quick-sidebar.js"></script>
+  <script src="Scripts/metronic/demo.js"></script>
+  <!-- END APP LEVEL JQUERY SCRIPTS -->
+  <!-- BEGIN GLOBAL ANGULARJS CONTROLLERS -->
+  <script src="Scripts/controllers/shared/structureInsights.js?v=0010"></script>
+  <!-- END GLOBAL ANGULARJS CONTROLLERS -->
+  <script type="text/javascript">
+      /* Init Metronic's core jquery plugins and layout scripts */
+      $(document).ready(function () {
+          Metronic.init();
+      });
+
+      window.CLIENTVERSION = '0011';</script>
+  <!-- END JAVASCRIPTS -->
+  <!--
+  To collect end-user usage analytics about your application,
+  insert the following script into each page you want to track.
+  Place this code immediately before the closing </head> tag,
+  and before any other scripts. Your first data will appear
+  automatically in just a few seconds.
+  -->
+  <script type="text/javascript">
+      var appInsights = window.appInsights || function (config) {
+          function i(config) { t[config] = function () { var i = arguments; t.queue.push(function () { t[config].apply(t, i) }) } } var t = { config: config }, u = document, e = window, o = "script", s = "AuthenticatedUserContext", h = "start", c = "stop", l = "Track", a = l + "Event", v = l + "Page", y = u.createElement(o), r, f; y.src = config.url || "https://az416426.vo.msecnd.net/scripts/a/ai.0.js"; u.getElementsByTagName(o)[0].parentNode.appendChild(y); try { t.cookie = u.cookie } catch (p) { } for (t.queue = [], t.version = "1.0", r = ["Event", "Exception", "Metric", "PageView", "Trace", "Dependency"]; r.length;) i("track" + r.pop()); return i("set" + s), i("clear" + s), i(h + a), i(c + a), i(h + v), i(c + v), i("flush"), config.disableExceptionTracking || (r = "onerror", i("_" + r), f = e[r], e[r] = function (config, i, u, e, o) { var s = f && f(config, i, u, e, o); return s !== !0 && t["_" + r](config, i, u, e, o), s }), t
+      }({
+          instrumentationKey: window.appInsightKey
+      });
+
+      window.appInsights = appInsights;
+      window.appInsights.trackPageView();</script>
+  <!-- AMCARTS JS FILES -->
+  <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+  <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+  <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+  <script src="https://www.amcharts.com/lib/3/themes/none.js"></script>
+</body>
+<!-- END BODY -->
+</html>

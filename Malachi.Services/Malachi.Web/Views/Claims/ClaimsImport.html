@@ -1,0 +1,89 @@
+﻿<section class="content not-a-class">
+
+	<!-- BREAD CRUMBS -->
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="icon-home"></i>
+				<a href="#">Dashboard</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a href="#">Claims Import</a>
+			</li>
+		</ul>
+	</div>
+
+    <div class="module-box">
+
+        <!--Page Title-->
+        <div class="row">
+            <div class="col-md-12 bottom-buffer">
+                <div class="portlet box blue-soft" style="border-bottom: none; border-left: none; border-right: none; margin-bottom: 0;">
+                    <div class="portlet-title" id="min-height-38">
+                        <div class="caption">
+                            CLAIMS IMPORT
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <!-- SEARCH OPIONS -->
+        <div class="welcome-number-container">
+            <span class="welcome-number bgBase">Raphael &amp; Associates Claims Import</span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    Please upload the claim import template to update a batch of claims from Raphael &amp; Associates. If you need a new, fresh
+                    tempalte, please download a clean template below and fill it with the correct data and then upload it on this page.
+                </p>
+
+                <p>
+                    <strong>Results be downloaded when finished with the import, please be patient.</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="custom-file">
+                        <!--<input type="file" class="custom-file-input" id="inputGroupFile01" file-model="importFile" aria-describedby="inputGroupFileAddon01">-->
+                        <input type="file" class="custom-file-input" id="inputGroupFile01" onchange="angular.element(this).scope().updateFile(this.files)" aria-describedby="inputGroupFileAddon01">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-md-12">
+                <!--<button class="btn btn-primary" ng-click="getOrUploadTemplate(false)">
+                    <i class="fa fa-level-down"></i>
+                    Download New Template
+                </button>-->
+                <button class="btn btn-primary" ng-click="getOrUploadTemplate(true)">
+                    <i class="fa fa-cogs"></i>
+                    Upload Completed Template
+                </button>
+            </div>
+        </div>
+
+
+
+        <!--Error List-->
+        <div ng-show="Errors.length > 0">
+            <div class="alert alert-danger" style="margin: 30px 0 0 0;">
+                <ul>
+                    <li ng-repeat="error in Errors">
+                        {{error}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,939 @@
+ <!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="/Dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">Quote / Policy</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <!-- col -->
+        <div class="col-md-12">
+            <div class="portlet light" style="padding: 0">
+                <div class="portlet-title">
+                    <div class="caption font-blue-sharp">
+                        <i class="icon-paper-plane wc-blue" style="font-size: 20px;"></i>
+                        <span class="caption-subject bold wc-blue" style="font-size: 20px;"> Create New Quote</span>
+                        <span class="caption-helper">Choose an app to begin your quote</span>
+                    </div>
+                </div>
+                <div class="portlet-body row">
+                    <div class="col-sm-1" ng-repeat="app in Apps | orderBy: 'Index'" style="text-align: center; padding-bottom: 10px; min-width: 130px;" ng-if="app.Name != 'RLI Commercial Underwriting Portal' && app.Name != 'Agency Portal Homeowners' && app.Name != 'Flood Portal'">
+                        <a href="#" ng-click="newQuote(app)">
+                            <div style="display: inline-block; width: 60px;">
+                                <img ng-src="{{'data:image/png;base64,' + app.Icon}}" style="width: 60px; margin-bottom: 5px;" />
+                            </div>
+                            <br>
+                            <div style="display: inline-block; width: 100%;">
+                                {{app.Name}}
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col -->
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer">
+            <div class="portlet box blue-soft" style="border-bottom: none; border-left: none; border-right: none; margin-bottom: 0;">
+                <div class="portlet-title">
+                    <ul class="nav nav-tabs pull-left">
+                        <li class="active">
+                            <a data-toggle="tab" href="#" aria-expanded="false" ng-click="show('Quotes')">Quotes</a>
+                        </li>
+                        <li class="" ng-if="false">
+                            <a data-toggle="tab" href="#" aria-expanded="true" ng-click="show('Binders')">Binders</a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#" aria-expanded="true" ng-click="show('Policies')">Policies</a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#" aria-expanded="true" ng-click="show('RenewalManager')">Renewal Manager</a>
+                        </li>
+                    </ul>
+                    <div class="actions" ng-if="!showRenewalManager && !showPolicyImportManager">
+                        <button class="btn btn-link" style="color: white" type="button" ng-click="setShowAdvancedSearch()">Advanced Search</button>
+                        <div class="portlet-input input-inline" ng-if="!showAdvancedSearch">
+                            <div class="input-icon right input-icon-overlay-container">
+                                <span class="input-icon-overlay"><i class="fa fa-user" ng-class="{ 'input-icon-overlay-selected' : searchObj.searchByInsured }" title="Search By Insured"  ng-click="searchObj.searchByInsured=!searchObj.searchByInsured; searchObj.searchByNumber= false"></i></span>
+                                <span class="input-icon-overlay" style="margin-right: 15px;"><i class="fa fa-sort-numeric-asc" ng-class="{ 'input-icon-overlay-selected' : searchObj.searchByNumber }" title="Search By Number" ng-click="searchObj.searchByNumber=!searchObj.searchByNumber; searchObj.searchByInsured= false"></i></span>
+                                <input type="text" placeholder="search..." class="form-control input-sm input-icon-overlay-field" ng-keyup="keyPress($event.keyCode, searchObj.search)" ng-model="searchObj.search">
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary yellow-casablanca" type="button" ng-click="search(searchObj.search, Filter,'','','')" ng-show="!showAdvancedSearch">Search</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                </div>
+            </div>
+
+            <div id="advancedSearch" ng-if="showAdvancedSearch && !showRenewalManager">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>Policy Number or Named Insured</label>
+                                <input type="text" class="form-control" ng-model="policySearch">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>Quoted By</label>
+                                <input type="text" class="form-control" ng-model="quotedBy">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>App</label>
+                                <select class="form-control" ng-options="app.Id as app.Name for app in Apps" ng-model="appId"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="margin-bottom: 10px">
+                        <button class="btn btn-secondary yellow-casablanca" type="button" ng-click="advancedSearch(policySearch, quotedBy, agency, appId)">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="alert" class="alert alert-danger top-buffer" role="alert" style="display: none">Unexpected error occurred. Please try again.</div>
+
+            <table class="table table-stats table-condensed" style="margin-bottom: 0px;" ng-if="!showRenewalManager && !showPolicyImportManager">
+                <thead>
+                    <tr>
+                        <th style="width:10%">Number</th>
+                        <th style="width:20%" ng-show="(getResults() | filter: { HasEndorsements:true }).length > 0">Named Insured </th>
+                        <th style="width:20%" ng-show="(getResults() | filter: { HasEndorsements:true }).length == 0">Named Insured </th>
+                        <th style="width:10%">Effective</th>
+                        <th style="width:5%">State</th>
+                        <th style="width:10%" ng-if="!getResults()[0].Issued">Quoted By</th>
+                        <th style="width:10%" ng-if="getResults()[0].Issued">Bound By</th>
+                        <!--<th style="width:10%">Status</th>-->
+                        <th style="width:10%">Coverage</th>
+                        <!--<th style="width:10%">Organization</th>-->
+                        <th style="width:15%">App </th>
+                        <th style="width:5%">Premium </th>
+                        <th style="width:5%"> </th>
+                    </tr>
+                </thead>
+            </table>
+
+            <table ng-if="!showRenewalManager && !showPolicyImportManager" id="policy-list" class="table table-condensed table-hover" style="margin-bottom: 0;">
+                <tr ng-repeat="policy in getResults()">
+                    <td style="width: 10%" ng-if="!policy.Issued && !policy.Bound && Filter != 'WorkflowBinders'"><a href="#" ng-click="openParentPolicy(policy)">{{policy.SubmissionNumber}}</a></td>
+                    <td style="width: 10%" ng-if="!policy.Issued && Filter == 'WorkflowBinders'"><a href="#" ng-click="openParentPolicy(policy)">{{policy.Number}}</a></td>
+                    <td style="width: 10%" ng-if="policy.Issued || policy.Bound">
+                        <a href="#" ng-click="openParentPolicy(policy)">{{policy.Number}}</a>
+                        <span ng-if="policy.HasClaims" style="color: #f13e46; font-size: 16px;">
+                            <i class="fa fa-exclamation-circle" title="This policy has claims!"></i>
+                        </span>
+                    </td>
+                    <td style="width: 20%">{{policy.Insured | limitTo:50 }}</td>
+                    <td style="width: 10%">{{policy.Effective | date:'MM/dd/yyyy'}}</td>
+                    <td style="width: 5%">{{policy.HomeState}}</td>
+                    <td style="width: 10%" ng-if="!policy.Issued && !policy.Bound">{{policy.QuotedBy}}</td>
+                    <td style="width: 10%" ng-if="policy.Issued || policy.Bound">{{policy.BoundBy}}</td>
+                    <!--<td style="width: 10%">{{ !policy.Issued ? "Quote" : policy.IsCanceled ? "Canceled" : "Issued"}}</td>-->
+                    <td style="width: 10%">{{policy.Coverage}}</td>
+                    <!--<td style="width: 10%">{{policy.ManagingGeneralAgent}}</td>-->
+                    <td style="width: 15%">{{policy.App}} </td>
+                    <td style="width: 5%">{{policy.Premium | currency:"$":0 }}</td>
+                    <td style="width: 5%" ng-show="policy.Issued || policy.Bound">
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-cog"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" ng-if="!policy.IsCanceled">
+                                <li ng-show="policy.Issued || policy.Bound"><a href="#" ng-click="downloadPolicy(policy)">Download Policy</a></li>
+                                <li ng-show="(policy.Endorsements == null || policy.Endorsements.length == 0) && !policy.NonRenewal" role="separator" class="divider" style="margin: 0;"></li>
+                                <li ng-show="(policy.Endorsements == null || policy.Endorsements.length == 0) && !policy.NonRenewal"><a href="#" ng-click="copyPolicy(policy)">Copy to New Submission</a></li>
+                                <li ng-show="policy.Issued || policy.Bound" role="separator" class="divider" style="margin: 0;"></li>
+                                <li ng-show="(policy.Issued || policy.Bound) && !policy.Number.includes('FLDP')"><a href="#" ng-click="showEndorsements(policy)">Process Endorsements ({{policy.Endorsements != null ? policy.Endorsements.length : 0 }})</a></li>
+                                <li ng-show="(policy.Issued || policy.Bound) && policy.AppId != '001d0418-a168-4be3-84a8-0168eda970fd'" role="separator" class="divider" style="margin: 0;"></li>
+                                <!--<li ng-show="canRenew(policy) "><a href="#" ng-click="renewPolicy(policy)">Renew</a></li>-->
+                                <li ng-show="(policy.Issued || policy.Bound) && policy.EndorsementId != null && !isCurrentEndorsementBound(policy)"><a href="#" ng-click="editPolicy(policy, policy.EndorsementId)">Edit Endorsement</a></li>
+                                <li ng-show="(policy.Issued || policy.Bound) && policy.EndorsementId != null" role="separator" class="divider" style="margin: 0;"></li>
+                                <li ng-show="(policy.Issued || policy.Bound) && policy.EndorsementId != null && policy.AgencyName != 'Insurance Hero' && !isCurrentEndorsementBound(policy)"><a href="#" ng-click="deleteEndorsement(policy, policy.EndorsementId)">Delete Endorsement</a></li>
+                                <li ng-show="(policy.Issued || policy.Bound) && NonRenewalAdmin && !policy.NonRenewal" role="separator" class="divider" style="margin: 0;"></li>
+                                <!--<li ng-show="(policy.Issued || policy.Bound) && NonRenewalAdmin && !policy.NonRenewal"><a href="#" ng-click="markNonRenewal(policy, policy.EndorsementGroupId)">Mark as Non-Renewal</a></li>
+                                <li ng-show="(policy.Issued ||  policy.Bound) && NonRenewalAdmin && policy.NonRenewal"><a href="#" ng-click="rescindNonRenewal(policy, policy.EndorsementGroupId)">Rescind Non-Renewal</a></li>-->
+                                <li ng-show="policy.HasClaims" role="separator" class="divider" style="margin: 0;"></li>
+                                <li ng-show="policy.HasClaims"><a href="#" ng-click="showClaimsForPolicy(policy)">Show Claims</a></li>
+                            </ul>
+                            <ul class="dropdown-menu dropdown-menu-right" ng-if="policy.IsCanceled">
+                                <li ng-show="!policy.NonRenewal"><a href="#" ng-click="copyPolicy(policy)">Copy to New Submission</a></li>
+                                <li ng-show="!policy.NonRenewal" role="separator" class="divider" style="margin: 0;"></li>
+                                <li><a href="#" ng-click="showEndorsements(policy)">Process Endorsements ({{policy.Endorsements != null ? policy.Endorsements.length : 0 }})</a></li>
+                                <li ng-show="policy.HasClaims" role="separator" class="divider" style="margin: 0;"></li>
+                                <li ng-show="policy.HasClaims"><a href="#" ng-click="showClaimsForPolicy(policy)">Show Claims</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td style="width: 5%" ng-show="(!policy.Issued && !policy.Bound)">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-cog"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" ng-if="!policy.IsCanceled">
+                                <li ng-show="policy.Issued"><a href="#" ng-click="downloadPolicy(policy)">Download Policy</a></li> <!-- WIERD -->
+                                <li ng-show="policy.Issued && !policy.NonRenewal" role="separator" class="divider"></li>
+                                <li ng-show="!policy.NonRenewal"><a href="#" ng-click="copyPolicy(policy)">Copy to New Submission</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="width: 100%; display: block; text-align: center; margin-top:40px" ng-show="loading['Quotes'] && Filter == 'Quotes'"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span style="display: inline-block;vertical-align: top;">Loading...</span></div>
+            <div style="width: 100%; display: block;text-align:center; margin-top:40px" ng-show="loading['Binders'] && Filter == 'Binders'"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span style="display: inline-block;vertical-align: top;">Loading...</span></div>
+            <div style="width: 100%; display: block;text-align:center; margin-top:40px" ng-show="loading['Policies'] && Filter == 'Policies'"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span style="display: inline-block;vertical-align: top;">Loading...</span></div>
+            <div style="width: 100%; display: block;text-align:center; margin-top:40px" ng-show="loading['WorkflowBinders'] && Filter == 'WorkflowBinders'"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> <span style="display: inline-block;vertical-align: top;">Loading...</span></div>
+
+            <div ng-if="showRenewalManager">
+                <div class="col-md-4 col-sm-5 col-xs-6">
+                    <div class="form-horizontal">
+                        <div class="form-group" ng-show="Request.ManagingGeneralAgentId == null || ManagingGeneralAgents.length > 1">
+                            <label class="col-sm-4 control-label">Managing General Agency</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="Request.ManagingGeneralAgentId"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select a Managing General Agent">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="value.Id as value in ManagingGeneralAgents | filter: $select.search">
+                                        <div ng-bind-html="value.Name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="PolicyTerm" class="col-sm-4 control-label">Date Range</label>
+                            <div class="col-sm-8">
+                                <ui-select id="PolicyTerm"
+                                           ng-model="Request.DateRange"
+                                           theme="bootstrap"
+                                           reset-search-input="false"
+                                           ng-change="dateTermChanged()">
+                                    <ui-select-match placeholder="Select a Date Range">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="value.id as value in TermOptions | filter: $select.search">
+                                        <div ng-bind-html="value.name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="expirationDate" class="col-sm-4 control-label">Expiration</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control " id="expirationDate" ng-model="Request.Expiration" jqdatepicker datechange="dateTermChanged()" />
+                                    <span class="input-group-addon">To</span>
+                                    <input type="text" class="form-control " id="expirationToDate" ng-model="Request.ExpirationTo" jqdatepicker />
+                                </div>
+                                <div ng-if="showDateRangeWarning" style="font-size: 12px; margin-left: 5px; color: #a94442;">Warning: This search might take a few minutes to complete.</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Account Executive</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="Request.UnderwriterId"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           ng-change="accountExecSelected()"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select an Account Executive">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="value.Id as value in AccountExecutives | filter: $select.search">
+                                        <div ng-bind-html="value.Name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="false">
+                            <label class="col-sm-4 control-label">Office</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="Request.Office"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select an office">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="value.Code as value in Offices | filter: $select.search">
+                                        <div ng-bind-html="value.Name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-5 col-xs-6">
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Retail Agencies</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="Request.RetailAgency"
+                                           append-to-body="true"
+                                           theme="bootstrap"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select a retail agency">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="value.AgencyName as value in RetailAgencies | filter: $select.search">
+                                        <div ng-bind-html="value.Name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="false">
+                            <label class="col-sm-4 control-label">Home State</label>
+                            <div class="col-sm-8">
+                                <ui-select ng-model="Request.HomeStateCode"
+                                           theme="bootstrap"
+                                           reset-search-input="false"
+                                           ng-required="true">
+                                    <ui-select-match placeholder="Select Home State">{{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="state.Code as state in States | filter: { Name: $select.search}">
+                                        <div ng-bind-html="state.Name | highlight: $select.search">
+                                        </div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="PolicyPrefix" class="col-sm-4 control-label">Policy Number Prefix</label>
+                            <div class="col-sm-8">
+                                <input class="form-control input-sm" id="PolicyPrefix" name="PolicyPrefix" ng-model="Request.PolicyPrefix" />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="PolicyPrefix" class="col-sm-4 control-label">Hide Quoted Renewals</label>
+                            <div class="col-sm-8">
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-value="true" ng-model="Request.HideQuotedRenewals"> Yes
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-value="false" ng-model="Request.HideQuotedRenewals"> No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12" style="margin-top: 40px;">
+                    <div style="margin: 0 auto; display: block; width: 500px;">
+                        <button class="btn yellow-casablanca" style="display: inline-block; width: 200px; margin-right:25px" ng-click="searchRenewals()">Search</button>
+
+                        <button class="btn green-jungle" style="display: inline-block; width: 200px;" ng-click="exportToExcel()">Export to Excel</button>
+                    </div>
+                </div>
+
+                <div class="col-xs-12" style="margin-top: 40px;">
+                    <div class="alert alert-info" ng-if="RenewalItems.length == 0 && !RenewalSearched">Results will appear below once search is clicked.</div>
+                    <div class="alert alert-warning" ng-if="RenewalItems.length == 0 && RenewalSearched">No policies were found with the given parameters.</div>
+
+                    <table class="table table-stats table-condensed" ng-if="RenewalItems.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Policy Number</th>
+                                <th>Named Insured </th>
+                                <th>Effective</th>
+                                <th>Expiration</th>
+                                <th>Agency Name</th>
+                                <th>Account Executive</th>
+                                <th>Bound Premium</th>
+                                <th>Office</th>
+                                <th>Risk Company</th>
+                                <th>Quoted By</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in RenewalItems">
+                                <td>{{item.PolicyNumber}}</td>
+                                <td>{{item.NamedInsured}}</td>
+                                <td>{{item.Effective}}</td>
+                                <td>{{item.Expiration}}</td>
+                                <td>{{item.AgencyName}}</td>
+                                <td>{{item.AccountExecutive}}</td>
+                                <td>{{item.BoundPremium | currency:"$":0 }}</td>
+                                <td>{{item.OfficeCode}}</td>
+                                <td>{{item.RiskCompany}}</td>
+                                <td>{{item.QuotedBy}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-default btn-xs" ng-click="renew(item)" ng-if="item.PolicyId != null && item.AppId != null && item.RenewalSetup == 'N' && item.ActivePolicyFlag == 'Y'">
+                                        Renew
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script type="text/ng-template" id="endorsementsModelContent.html">
+    <div class="modal-header">
+        <h4 class="modal-title">{{policy.Number}}</h4>
+    </div>
+    <div class="modal-body" id="form-body">
+        <div class="row" ng-if="!checkSourceOrgId(policy)">
+            <div class="col-sm-12">
+                <p style="font-size: 1.2em;">Imported policies can only be viewed in this system. Please refer to the home system of the policy in order to endorse this policy.</p>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-md-12">
+                <!-- Endorsement Dropdown Button -->
+                <div class="btn-group" ng-show="showEndorsementDropdown(policy)">
+                    <button class="btn btn-default dropdown-toggle"
+                            style="border-color: #4bc8b5; border-right-color: #ccc"
+                            data-toggle="dropdown"
+                            ng-disabled="policy.EndorsementId != null && policy.Bound == false">
+                        Endorsements
+                    </button>
+                    <button class="btn btn-default dropdown-toggle"
+                            style="border-color: #4bc8b5; border-left-color: #ccc"
+                            data-toggle="dropdown"
+                            ng-disabled="policy.EndorsementId != null && policy.Bound == false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <style>
+                        a.disabled {
+                            pointer-events: none;
+                            cursor: default;
+                        }
+                    </style>
+                    <ul class="dropdown-menu">
+                        <li ng-show="CancelAuthority">
+                        <a ng-class="{disabled: !canCreateEndorsement()}" ng-click="cancelPolicy(policy)" href="#">Cancel Policy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-12" style="margin-top: 15px;" ng-if="!policy.IsCanceled && (policy.Number.startsWith('USA') || policy.Number.startsWith('VBA') || policy.Number.startsWith('CCP') || isNoEndorsementRiskCompany(policy))">
+                <div class="alert alert-info">Endorsement must be processed outside the system by the underwriting support team.</div>
+            </div>
+
+            <div class="col-md-12" style="margin-top: 30px">
+                <table class="table table-stats table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <th class="col-md-4"></th>
+                            <th class="col-md-1">Status</th>
+                            <th class="col-md-2">Effective</th>
+                            <th class="col-md-2">Quoted By</th>
+                            <th class="col-md-2">Premium </th>
+                            <th style="width:24px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-md-4"><a href="#" ng-click="openParentPolicy(policy)">Policy - {{policy.Number}}</a></td>
+                            <td class="col-md-1">Issued</td>
+                            <td class="col-md-2">{{policy.Effective | date:'MM/dd/yyyy'}}</td>
+                            <td class="col-md-2">{{policy.QuotedBy}}</td>
+                            <td class="col-md-2">{{policy.Premium | currency:"$":0}}</td>
+                            <td style="width: 24px;">
+                                <div class="btn-group dropup">
+                                    <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fa fa-cog"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li ng-show="!policy.NonRenewal"><a href="#" ng-click="copyPolicy(policy.EndorsementGroupId, policy.AppId)">Copy to New Submission</a></li>
+                                        <li ng-show="policy.Issued"><a href="#" ng-click="downloadPolicy(policy)">Download Policy</a></li>
+                                        <li ng-show="policy.Issued && !policy.NonRenewal" role="separator" class="divider"></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="endorsement in policy.Endorsements | orderBy: 'EndorsementNumber'">
+                            <td class="col-md-4"><a href="#" ng-click="openPolicy(endorsement)">Endorse. {{ endorsement.EndorsementNumber }} - {{ endorsement.EndorsementType }}</a></td>
+                            <td class="col-md-1" ng-if="endorsement.Issued == false && endorsement.Bound == false" style="color:#26C281;font-weight:bold">Quote</td>
+                            <td class="col-md-1" ng-if="endorsement.Issued == false && endorsement.Bound == true" style="color:#26C281;font-weight:bold">Bound</td>
+                            <td class="col-md-2" ng-if="endorsement.Issued">Issued</td>
+                            <td class="col-md-2">{{endorsement.EndorsementEffective | date:'MM/dd/yyyy'}}</td>
+                            <td class="col-md-2">{{endorsement.QuotedBy}}</td>
+                            <td class="col-md-2" ng-if="endorsement.PremiumType != 0">{{endorsement.Premium | currency:"$":0 }}</td>
+                            <td class="col-md-2" ng-if="endorsement.PremiumType == 0">Non-Premium</td>
+                            <td style="width:24px">
+                              <div class="btn-group dropup">
+                                <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <span class="fa fa-cog"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                  <li ng-show="endorsement.Issued || endorsement.Bound"><a href="#" ng-click="downloadEndorsement(policy, endorsement.Id)">Download Endorsement</a></li>
+                                  <li ng-show="endorsement.Issued && endorsement.EndorsementType != 'Reinstate' && endorsement.EndorsementType != 'Cancellation'"><a href="#" ng-click="downloadPolicy(endorsement)">Download Policy</a></li>
+                                  <li ng-show="!endorsement.Issued && !endorsement.Bound"><a href="#" ng-click="editPolicy(policy, endorsement.Id)">Edit Endorsement</a></li>
+                                  <li ng-show="!endorsement.Issued && !endorsement.Bound"><a href="#" ng-click="deleteEndorsement(policy, endorsement.Id)">Delete Endorsement</a></li>
+                                  <li ng-show="!endorsement.NonRenewal" role="separator" class="divider"></li>
+                                  <li ng-show="!endorsement.NonRenewal"><a href="#" ng-click="copyPolicy(endorsement.Id, endorsement.AppId)">Copy to New Submission</a></li>
+                                </ul>
+                              </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div ng-if="policy.Endorsements == null || policy.Endorsements.length == 0">
+                    This policy does not have any endorsements.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger" ng-show="Errors.length > 0">
+                    <h4>Oops...</h4>
+                    <ul>
+                        <li ng-repeat="error in Errors">
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="endorsementModelContent.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Endorsement</h4>
+    </div>
+    <div class="modal-body" id="form-body">
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-md-12" ng-if="!policy.IsCanceled && !policy.Number.startsWith('USA') && !policy.Number.startsWith('CCP')">
+
+                <div class="radio">
+                    <label style="padding-left: 10px;">
+                        <input type="radio" name="endorsementTypeRadios" id="endorsementType1" ng-model="Endorsement.Type" value="1" style="margin-right: 10px;">
+                        General Endorsement
+                    </label>
+                </div>
+
+                <div class="radio" ng-if="AppId == 'bc2acae0-80a2-4642-bfce-821722a6984b'">
+                    <label style="padding-left: 10px;">
+                        <input type="radio" name="endorsementTypeRadios" id="endorsementType2" ng-model="Endorsement.Type" value="2" style="margin-right: 10px;">
+                        Add/Remove Tria Endorsement
+                    </label>
+                </div>
+
+                <div class="form-group" style="margin-top:30px;clear:both" ng-if="Endorsement.Type == 1">
+                    <label class="col-md-4"><strong>Number</strong></label>
+                    <div class="col-md-8">
+                        <input disabled class="form-control input-sm" ng-model="Endorsement.Number" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="padding-top:10px;clear:both" ng-if="Endorsement.Type == 1">
+                    <label class="col-md-4"><strong>Effective</strong></label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control input-sm" ng-model="Endorsement.Effective" jqdatepickerendorsement ng-min-date="PolicyEffective" ng-max-date="PolicyExpiration" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger" ng-show="ErrorList.length > 0">
+                    <h4>Oops...</h4>
+                    <ul>
+                        <li ng-repeat="error in ErrorList">
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="create()">Create</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="endorsementPolicyTermModelContent.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Policy Term Endorsement</h4>
+    </div>
+    <div class="modal-body" id="form-body">
+        <div class="row" style="margin-bottom: 10px">
+
+            <div class="col-md-12" ng-if="canEndorsePolicyTerm()">
+                <div class="form-group">
+                    <label class="col-md-4"><strong>Number</strong></label>
+                    <div class="col-md-8">
+                        <input disabled class="form-control input-sm" ng-model="Endorsement.Number" />
+                    </div>
+                </div>
+                <div class="form-group" style="padding-top:10px;clear:both">
+                    <label class="col-md-4"><strong>Policy Term Effective</strong></label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control input-sm" ng-model="Endorsement.Effective" jqdatepicker ng-change="effectiveDateChanged()" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-if="!canEndorsePolicyTerm()">
+                <div class="alert alert-info" role="alert">
+                    This policy already has a premium endorsement. Please cancel and rewrite the policy in order to change the Policy Term.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger" ng-show="ErrorList.length > 0">
+                    <h4>Oops...</h4>
+                    <ul>
+                        <li ng-repeat="error in ErrorList">
+                            {{error}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="create()" ng-if="canEndorsePolicyTerm()">Create</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="test_showPolicyCoverages.html">
+    <div class="modal-header">
+        <h4 class="modal-title">Select Coverages</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <form class="form-horizontal" role="form">
+                <div class="scrollable">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>AIM Submission Number <span style="font-size:0.8em">(Optional, import submission setup from AIM)</span></label>
+                                <input class="form-control input-sm" ng-model="SubmissionNumber" placeholder="Leave blank if none" />
+                            </div>
+                        </div>
+                        <div class="col-md-12" ng-if="!isHomeowners">
+                            <div class="form-group">
+                                <label>Select Coverages</label>
+                                <ul class="check-listbox">
+                                    <li ng-repeat="coverage in Coverages | orderBy: 'Name'">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" checklist-model="SelectedCoverages" checklist-value="coverage">
+                                                {{coverage}}
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div ng-show="Errors.length > 0" class="alert alert-danger" role="alert" style="margin-top:10px;">
+                                    <ul>
+                                        <li ng-repeat="error in Errors">
+                                            {{error}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-push">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-default" ng-click="close()">Cancel</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="save()" ng-disabled="!isHomeowners && SelectedCoverages.length == 0">OK</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="cceEndorsementLiability.html">
+    <div id="cce-endorsement">
+        <div class="modal-header">
+            <h4 class="modal-title">CCE Endorsement - Liability</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Contract Split Table -->
+            <div class="row" style="margin-left: 8px; margin-right: 8px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col-md-4">Contract Number</th>
+                            <th class="col-md-3">Split</th>
+                            <th class="col-md-1"></th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="row form-group">
+                    <ui class="col-md-5">
+                        <!-- Contract Selection List -->
+                        <ui-select ng-model="contract.SelectedContract"
+                                   append-to-body="false"
+                                   theme="bootstrap"
+                                   on-select="assignSelectedContract(contract)"
+                                   ng-disabled="isContractsEmpty()"
+                                   reset-search-input="false">
+                            <ui-select-match placeholder="{{originalLiabilityContract.InsurerName}} - {{originalLiabilityContract.Name}}">{{$select.selected.InsurerName}} - {{$select.selected.Name}}</ui-select-match>
+                            <ui-select-choices repeat="contract in liabilityContracts">
+                                <ui ng-bind-html="contract.InsurerName + ' - ' + contract.Name | highlight: $select.search"></ui>
+                            </ui-select-choices>
+                        </ui-select>   
+                    </ui>
+                    <ui class="col-md-5">
+                        <ui class="input-group" style="padding-left: 65px; padding-right: 0px">
+                            <input disabled placeholder="100" class="form-control" type="text" ng-model="contract.Split" />
+                            <div class="input-group-addon">%</div>
+                        </ui>
+                    </ui>
+                </div>
+            </div>
+
+            <!-- Errors -->
+            <div class="row" ng-show="errors.length > 0">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <h4>Oops...</h4>
+                        <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="saveLiability()" ng-disabled="selectedContract == null || selectedContract.Name == originalLiabilityContract.Name">Endorse</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="cceEndorsement.html">
+    <div id="cce-endorsement">
+        <div class="modal-header">
+            <h4 class="modal-title">CCE Endorsement - Property</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Contract Split Table -->
+            <div class="row" style="margin-left: 8px; margin-right: 8px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col-md-4">Contract Number</th>
+                            <th class="col-md-3">Split</th>
+                            <th class="col-md-1"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="contract in splitContracts | orderBy: contract.Index">
+                            <td class="col-md-4">
+                                <!-- Contract Selection List -->
+                                <ui-select ng-model="contract.SelectedContract"
+                                           append-to-body="false"
+                                           theme="bootstrap"
+                                           on-select="filterContracts()"
+                                           ng-disabled="isContractsEmpty()"
+                                           reset-search-input="false">
+                                    <ui-select-match placeholder="Select a Contract">{{$select.selected.InsurerName}} - {{$select.selected.Name}}</ui-select-match>
+                                    <ui-select-choices repeat="contract in filteredContracts | filter: $select.search">
+                                        <div ng-bind-html="contract.InsurerName + ' - ' + contract.Name | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td class="col-md-3">
+                                <div class="input-group">
+                                    <input class="form-control" type="text" ng-model="contract.Split" />
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </td>
+                            <td class="col-md-1">
+                                <button class="btn btn-default" ng-click="removeSplitContract(contract.Index)">
+                                    <i class="fa fa-trash" style="color: #000" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-12" style="padding-left: 0px; padding-right: 0px" colspan="4">
+                                <!-- Add Contract Button -->
+                                <div class="button-group pull-right">
+                                    <button class="btn yellow-casablanca" ng-click="addSplitContract()" ng-disabled="isContractsEmpty() || isSplitContractsMaxedOut()">
+                                        <i class="fa fa-plus" aria-hidden="true"></i> Add Contract
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Errors -->
+            <div class="row" ng-show="errors.length > 0">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <h4>Oops...</h4>
+                        <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="save()" ng-disabled="isSplitContractsEmpty()">Endorse</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="updateContact.html">
+    <div id="update-contact">
+        <div class="modal-header">
+            <h4 class="modal-title">Update Contact</h4>
+        </div>
+        <div class="modal-body">
+          <!-- Agency Name (static display) -->
+          <div class="row form-group">
+            <label class="col-md-3 control-label" style="margin-top: 7px; text-align: right">Retail Agency</label>
+            <label class="col-md-9 control-label" style="margin-top: 7px; padding-left: 28px" ng-if="AgencyDetails.AgencyName">{{AgencyDetails.AgencyName + ' - ' + AgencyDetails.AgencyCode + ' - ' + AgencyDetails.AgencyPhysicalAddress.City }}</label>
+          </div>
+
+          <!-- Contact Name Selection List -->
+          <div class="row form-group">
+            <label class="col-md-3 control-label" style="margin-top: 7px; text-align: right">Contact Name</label>
+            <div class="col-md-9">
+              <ui-select ng-model="SelectedContact.Id"
+                         append-to-body="true"
+                         theme="bootstrap"
+                         reset-search-input="false">
+                <ui-select-match placeholder="Select Agent">{{$select.selected.Name + ($select.selected.Email ? ' - ' + $select.selected.Email : '')}}</ui-select-match>
+                <ui-select-choices repeat="value.Id as value in AgencyContacts | filter: $select.search">
+                  <div ng-bind-html="value.Name + (value.Email ? ' - ' + value.Email : '') | highlight: $select.search">
+                  </div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+
+          <!-- Errors -->
+          <div class="row" ng-show="errors.length > 0">
+            <div class="col-md-12">
+              <div class="alert alert-danger">
+                <h4>Oops...</h4>
+                <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="save()">Save</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="updateAccountExec.html">
+    <div id="update-exec">
+        <div class="modal-header">
+            <h4 class="modal-title">Update Account Executive</h4>
+        </div>
+        <div class="modal-body">
+            <!-- Account Executive -->
+            <div class="row form-group">
+                <label class="col-md-3 control-label" style="margin-top: 7px; text-align: right">Account Executive</label>
+                <div class="col-md-9">
+                    <ui-select ng-model="policy.UnderwriterId"
+                               theme="bootstrap"
+                               reset-search-input="false"
+                               on-select="accountExecutiveSelected()"
+                               append-to-body="true">
+                        <ui-select-match placeholder="Select an account executive.">{{$select.selected.Name}}</ui-select-match>
+                        <ui-select-choices repeat="user.Id as user in accountExecutives | filter: $select.search: searchByBeginsWith">
+                            <div ng-bind-html="user.Name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            
+            <!-- Office -->
+            <div class="row form-group">
+                <label class="col-md-3 control-label" style="margin-top: 7px; text-align: right">Office</label>
+                <div class="col-md-9">
+                    <ui-select ng-model="policy.OfficeId"
+                               theme="bootstrap"
+                               reset-search-input="false"
+                               append-to-body="true">
+                        <ui-select-match placeholder="Select an office.">{{$select.selected.Name}}</ui-select-match>
+                        <ui-select-choices repeat="office.Id as office in offices | filter: $select.search: searchByBeginsWith">
+                            <div ng-bind-html="office.Name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+
+            <div class="row" ng-show="errors.length > 0">
+                <div class="col-md-12">
+                    <div class="alert alert-danger">
+                        <h4>Oops...</h4>
+                        <ul><li ng-repeat="error in errors">{{error}}</li></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="close()">Close</button>
+            <button type="button" class="btn yellow-casablanca" ng-click="save()">Save</button>
+        </div>
+    </div>
+</script>

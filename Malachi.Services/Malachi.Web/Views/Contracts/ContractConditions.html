@@ -1,0 +1,924 @@
+﻿<div class="col-sm-3">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Condition Type</label>
+            <select class="form-control" ng-model="condition.ConditionName">
+                <option value="Additional Coverages">Additional Coverages</option>
+                <option value="Characteristic">Characteristic</option>
+                <option value="Characteristic Year">Characteristic Year</option>
+                <option value="Claim Amount">Claim Amount</option>
+                <option value="Zones">County Zones</option>
+                <option value="DTC">Distance to Coast</option>
+                <option value="Eligibility Question Answer">Eligibility Question Answer</option>
+                <option value="Insurance Score">Insurance Score</option>
+                <option value="Limit Ratio">Limit Ratio</option>
+                <option value="Number of Claims">Number of Claims</option>
+                <option value="Property Limits">Property Limits</option>
+                <option value="Property Crime">Property Crime</option>
+                <option value="Property Deductibles">Property Deductibles</option>
+                <option value="Property Sublimits">Property Sublimits</option>
+                <option value="Protection Class">Protection Class</option>
+                <option value="Property TIV">Property TIV</option>
+                <option value="Roof Age with Shape">Roof Age with Shape</option>
+                <option value="Region Zones">Region Zones</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Property Coverages' || condition.ConditionName == 'Insurance Score' || condition.ConditionName == 'Coverage' || condition.ConditionName == 'Personal Property'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">Included</option>
+                <option value="1">Excluded</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Renewal' || condition.ConditionName == 'Policy Endorsement' || condition.ConditionName == 'Claims' || condition.ConditionName == 'Wind Only' || condition.ConditionName == 'Vacant Home' || condition.ConditionName == 'CLUE'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">Yes</option>
+                <option value="1">No</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'OFAC'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">Hit</option>
+                <option value="1">Not Hit</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Coverage'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Coverages</label>
+            <div style="max-height:200px;overflow-y:auto;">
+                <div class="col-xs-12" ng-repeat="value in Coverages">
+                    <label>
+                        <input type="checkbox" checklist-model="condition.Coverages" checklist-value="value.Name"> {{value.Name}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Characteristic' || condition.ConditionName == 'Characteristic Year' ">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Characteristics</label>
+            <select class="form-control" ng-options="c.Id as c.Name for c in Characteristics | orderBy:'Name'" ng-model="condition.CharacteristicId"></select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Number of Claims' || condition.ConditionName == 'Claim Amount'">
+    <div class="form-body">
+        <div class="form-group" style="width: 150px;">
+            <label>Cause of Loss</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Any">Any</option>
+                <option value="Water">Water</option>
+                <option value="Fire">Fire</option>
+                <option value="Weather">Weather</option>
+                <option value="Theft">Theft</option>
+                <option value="Non-CAT">Non-CAT</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Number of Claims' || condition.ConditionName == 'Claim Amount'">
+    <div class="form-body">
+        <div class="form-group" style="width: 75px;">
+            <label>In Prior</label>
+            <select class="form-control" ng-model="condition.Supplementary">
+                <option value="1">1 yrs</option>
+                <option value="2">2 yrs</option>
+                <option value="3">3 yrs</option>
+                <option value="4">4 yrs</option>
+                <option value="5">5 yrs</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Eligibility Question Answer'">
+    <div class="form-body">
+        <div class="form-group" style="width: 75px;">
+            <label>Question Text</label>
+            <input class="form-control" ng-model="condition.Supplementary" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Eligibility Question Answer' || condition.ConditionName == 'Number of Claims' || condition.ConditionName == 'Claim Amount' || condition.ConditionName == 'DTC'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">=</option>
+                <option value="1">&lt;&gt;</option>
+                <option value="2">&lt;</option>
+                <option value="3">&gt;</option>
+                <option value="4">&lt;=</option>
+                <option value="5">&gt;=</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Number of Claims' || condition.ConditionName == 'Claim Amount'">
+    <div class="form-body">
+        <div class="form-group">
+            <label ng-show="condition.ConditionName == 'Number of Claims'">Total Num of Claims</label>
+            <label ng-show="condition.ConditionName == 'Claim Amount'">Total Claim Amount</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'DTC'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Num. of Miles</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Eligibility Question Answer'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Question Answer</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Coverages'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Property Coverage</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Loss Payee">Loss Payee</option>
+                <option value="Protective Safeguard">Protective Safeguard</option>
+                <option value="Mortgagee">Mortgagee</option>
+                <option value="Scheduled Property">Scheduled Property</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Location TIV'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>TIV (Per Location)</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Total TIV">Total TIV</option>
+                <option value="Total TIV (RCV)">Total TIV (RCV)</option>
+                <option value="Total TIV (ACV)">Total TIV (ACV)</option>
+                <option value="Building Value">Building Value</option>
+                <option value="Building Value (RCV)">Building Value (RCV)</option>
+                <option value="Building Value (ACV)">Building Value (ACV)</option>
+                <option value="BPP & Content">BPP & Content</option>
+                <option value="BPP & Content (RCV)">BPP & Content (RCV)</option>
+                <option value="BPP & Content (ACV)">BPP & Content (ACV)</option>
+                <option value="IMP/BETT">IMP/BETT</option>
+                <option value="IMP/BETT (RCV)">IMP/BETT (RCV)</option>
+                <option value="IMP/BETT (ACV)">IMP/BETT (ACV)</option>
+                <option value="Business Income">Business Income</option>
+                <option value="Business Income (w/EE)">Business Income (w/EE)</option>
+                <option value="Business Income (wo/EE)">Business Income (wo/EE)</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Policy TIV'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>TIV (Policy Level)</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Total TIV">Total TIV</option>
+                <option value="Total TIV (RCV)">Total TIV (RCV)</option>
+                <option value="Total TIV (ACV)">Total TIV (ACV)</option>
+                <option value="Building Value">Building Value</option>
+                <option value="Building Value (RCV)">Building Value (RCV)</option>
+                <option value="Building Value (ACV)">Building Value (ACV)</option>
+                <option value="BPP & Content">BPP & Content</option>
+                <option value="BPP & Content (RCV)">BPP & Content (RCV)</option>
+                <option value="BPP & Content (ACV)">BPP & Content (ACV)</option>
+                <option value="IMP/BETT">IMP/BETT</option>
+                <option value="IMP/BETT (RCV)">IMP/BETT (RCV)</option>
+                <option value="IMP/BETT (ACV)">IMP/BETT (ACV)</option>
+                <option value="Business Income">Business Income</option>
+                <option value="Business Income (w/EE)">Business Income (w/EE)</option>
+                <option value="Business Income (wo/EE)">Business Income (wo/EE)</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property TIV'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>TIV</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Total TIV">Total</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Property Limits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Building Limit</label>
+            <select class="form-control" ng-options="limit for limit in Limits" ng-model="condition.Condition"></select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Property Limits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" ng-model="condition.Supplementary">
+                <option value="Amount">Amount</option>
+                <!--<option value="Valuation Basis">Valuation Basis</option>
+                <option value="Cause Of Loss">Cause Of Loss</option>
+                <option value="Co-Insurance">Co-Insurance</option>
+                <option value="EE">EE</option>
+                <option value="Payout">Payout</option>-->
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Limit Ratio'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Building Limit</label>
+            <select class="form-control" ng-options="limit for limit in Limits" ng-model="condition.Supplementary"></select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Limit Ratio'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Divided</label>
+            <label>/</label>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Limit Ratio'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Building Limit</label>
+            <select class="form-control" ng-options="limit for limit in Limits" ng-model="condition.Condition"></select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Inland Marine'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Coverages</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="ContractorsEquipments">Contractor's Equipments</option>
+                <option value="InstallationFloater">Installation Floater</option>
+                <option value="ElectronicData">Electronic Data</option>
+                <option value="AccountsReceivable">Account's Receivable</option>
+                <option value="ValuablePapers">Valuable Papers</option>
+                <option value="Bailees">Bailees' Coverage</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Inland Marine'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" ng-model="condition.Supplementary">
+                <option value="Included/Excluded">Included / Excluded</option>
+                <option value="CoverageForm">Coverage Form</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Inland Marine' && condition.Supplementary == 'Included/Excluded'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">Included</option>
+                <option value="1">Excluded</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Inland Marine' && condition.Supplementary == 'CoverageForm' || condition.ConditionName == 'Characteristic' && condition.CharacteristicId == '9510b484-2294-4aa1-895e-bb5462e5b559'">
+    <div class="form-body">
+        <div class="form-group" style="width: 70px;">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">=</option>
+                <option value="1"><></option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Inland Marine' && condition.Supplementary == 'CoverageForm'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Basic">Basic</option>
+                <option value="Special">Special</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Liability Limits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Limit</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Deductible">Deductible</option>
+                <option value="General Aggregate Limit">General Aggregate Limit</option>
+                <option value="Product Aggregate Limit">Product Aggregate Limit</option>
+                <option value="Damage to Premises Limit">Damage to Premises Limit</option>
+                <option value="Each Occurrence Limit">Each Occurrence Limit</option>
+                <option value="Medical Expense Limit">Medical Expense Limit</option>
+                <option value="Pers. and Adv. Injury Limit">Pers. and Adv. Injury Limit</option>
+                <option value="Products Excluded">Products Excluded</option>
+                <option value="Products Included">Products Included</option>
+                <option value="Liquor Assault & Battery">Liquor Assault & Battery Limit</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Deductibles'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Deductibles</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Wind Deductible">Wind Deductible</option>
+                <option value="Water Backup Deductible">Water Backup Deductible</option>
+                <option value="Dollar Deductible">Dollar Deductible</option>
+                <option value="Pressurized Water Damage Deductible">Pressurized Water Damage Deductible</option>
+                <option value="Named Storm Deductible">Named Storm Deductible</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Sublimits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Sublimits</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Pressurized Water Damage Sublimit">Pressurized Water Damage Sublimit</option>
+                <option value="Water Backup Sublimit">Water Backup Sublimit</option>
+                <option value="Theft Sublimit">Theft Sublimit</option>
+                <option value="Personal Injury Sublimit">Personal Injury Sublimit</option>
+                <option value="Mold Buyback Sublimit">Mold Buyback Sublimit</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'Protection Class' || condition.ConditionName == 'Roof Age with Shape' || condition.ConditionName == 'Wind' || condition.ConditionName == 'Premium' ||condition.ConditionName == 'Property Crime' || condition.ConditionName == 'Violent Crime' || condition.ConditionName == 'Property Type' || condition.ConditionName == 'Policy Term' || condition.ConditionName == 'Characteristic' && condition.CharacteristicId != '9510b484-2294-4aa1-895e-bb5462e5b559' || condition.ConditionName == 'Location TIV' || condition.ConditionName == 'Policy TIV' || condition.ConditionName == 'Property TIV' || condition.ConditionName == 'Characteristic Year' || (condition.ConditionName == 'Liability Limits'  && condition.Condition != 'Products Excluded' && condition.Condition != 'Products Included') || condition.ConditionName == 'Property Limits' || condition.ConditionName == 'Property Deductibles' || condition.ConditionName == 'Property Sublimits' || condition.ConditionName == 'Inspection Type' || condition.ConditionName == 'Property Mod' || condition.ConditionName == 'Discretionary Mod'  || condition.ConditionName == 'Limit Ratio'">
+    <div class="form-body">
+        <div class="form-group" style="width: 70px;">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">=</option>
+                <option value="1">&lt;&gt;</option>
+                <option value="2">&lt;</option>
+                <option value="3">&gt;</option>
+                <option value="4">&lt;=</option>
+                <option value="5">&gt;=</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Wind'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="0">Included</option>
+                <option value="1">Excluded</option>
+                <option value="3">Only</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Premium'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Base Premium</label>
+            <input type="text" class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Mod' || condition.ConditionName == 'Discretionary Mod'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Base Rate</label>
+            <input type="text" class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Crime' || condition.ConditionName == 'Violent Crime'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Crime Index</label>
+            <input type="text" class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Property Type'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Property Type</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Building">Building</option>
+                <option value="Awning">Awning</option>
+                <option value="Bridge">Bridge</option>
+                <option value="Canopy">Canopy</option>
+                <option value="Deck">Deck</option>
+                <option value="Docks/Slips">Docks/Slips</option>
+                <option value="Fence/Wall">Fence/Wall</option>
+                <option value="Glass">Glass</option>
+                <option value="Lightpost">Lightpost</option>
+                <option value="Other Structures">Other Structures</option>
+                <option value="Pool">Pool</option>
+                <option value="Pumps">Pumps</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Policy Term'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Policy Term</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Property Limits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <input class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'Amount'" />
+            <select class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'Valuation Basis'">
+                <option value="RCV">RCV</option>
+                <option value="ACV">ACV</option>
+                <option value="Agreed Value" ng-if="condition.Condition == 'Building'">Agreed Value</option>
+            </select>
+            <select class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'Cause Of Loss'">
+                <option value="Basic">Basic</option>
+                <option value="Special">Special</option>
+                <option value="Special Excluding Theft">Special Excluding Theft</option>
+                <option value="Broad">Broad</option>
+            </select>
+            <select class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'Co-Insurance'">
+                <option value="N/A" ng-if="condition.Condition == 'Building'">N/A</option>
+                <option value="80%">80%</option>
+                <option value="90%">90%</option>
+                <option value="100%">100%</option>
+            </select>
+            <select class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'EE'">
+                <option value="w/EE">w/EE</option>
+                <option value="wo/EE">wo/EE</option>
+            </select>
+            <select class="form-control" ng-model="condition.ConditionValue" ng-show="condition.Supplementary == 'Payout'">
+                <option value="1/3">1/3</option>
+                <option value="1/4">1/4</option>
+                <option value="1/6">1/6</option>
+                <option value="1/12">1/12</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Protection Class'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Class</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Roof Age with Shape'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Age</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Roof Age with Shape'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Shape</label>
+            <input class="form-control" ng-model="condition.Supplementary" />
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Characteristic Year' ">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <input class="form-control" ng-model="condition.ConditionValue" placeholder="Number of years in age from (today)" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Characteristic' && !CharacteristicValues(condition.CharacteristicId).length">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Characteristic Value</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Limit Ratio' ">
+    <div class="form-body">
+        <div class="form-group">
+            <label>% of Coverage A</label>
+            <input class="form-control" ng-model="condition.ConditionValue" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Location TIV' || condition.ConditionName == 'Policy TIV' || condition.ConditionName == 'Property TIV' || condition.ConditionName == 'Property Deductibles' || condition.ConditionName == 'Property Sublimits'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <input class="form-control" ng-model="condition.ConditionValue" mask data-mask="#" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="(condition.ConditionName == 'Liability Limits' && condition.Condition != 'Liquor Assault & Battery' && condition.Condition != 'Products Excluded' && condition.Condition != 'Products Included')">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Excluded">Excluded</option>
+                <option value="500">$500</option>
+                <option value="750">$750</option>
+                <option value="1,000">$1,000</option>
+                <option value="2,000">$2,000</option>
+                <option value="2,500">$2,500</option>
+                <option value="5,000">$5,000</option>
+                <option value="10,000">$10,000</option>
+                <option value="15,000">$15,000</option>
+                <option value="20,000">$20,000</option>
+                <option value="25,000">$25,000</option>
+                <option value="50,000">$50,000</option>
+                <option value="100,000">$100,000</option>
+                <option value="150,000">$150,000</option>
+                <option value="200,000">$200,000</option>
+                <option value="250,000">$250,000</option>
+                <option value="300,000">$300,000</option>
+                <option value="500,000">$500,000</option>
+                <option value="600,000">$600,000</option>
+                <option value="750,000">$750,000</option>
+                <option value="1,000,000">$1,000,000</option>
+                <option value="1,500,000">$1,500,000</option>
+                <option value="2,000,000">$2,000,000</option>
+                <option value="3,000,000">$3,000,000</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="(condition.ConditionName == 'Liability Limits' && condition.Condition == 'Liquor Assault & Battery')">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Excluded">Excluded</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Characteristic' && CharacteristicValues(condition.CharacteristicId).length">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Characteristic Values</label>
+            <div style="max-height: 200px; overflow-y: auto;">
+                <div class="col-xs-12" ng-repeat="value in CharacteristicValues(condition.CharacteristicId)">
+                    <label>
+                        <input type="checkbox" checklist-model="condition.CharacteristicValues" checklist-value="value.Id"> {{value.Name}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'ClassCode'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" ng-model="condition.Condition">
+                <option value="Contains">Contains</option>
+                <option value="Exposure">Exposure</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Attributes' || condition.ConditionName == 'Additional Coverages' || condition.ConditionName == 'State' || condition.ConditionName == 'Apps' || condition.ConditionName == 'Origin' || (condition.ConditionName == 'ClassCode' && condition.Condition != 'Exposure') || condition.ConditionName == 'Zones' || condition.ConditionName == 'Region Zones'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">Contains</option>
+                <option value="1">Excludes</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6" ng-show="condition.ConditionName == 'Zones'">
+    <div class="form-body">
+        <div class="form-group">
+            <div class="col-sm-6">
+                <button ng-if="ActiveConditionZoneTree == condition" class="btn btn-default btn-block btn-success" ng-click="addSelectedConditionZone(condition);">Add Selected</button>
+                <div>
+                    <div ng-if="ActiveConditionZoneTree != condition"><button class="btn btn-default btn-block" ng-click="selectConditionZoneTree(condition)">Click to See Zones</button></div>
+                    <div ng-if="ActiveConditionZoneTree == condition" tree="condition.treeInstance" js-tree="ZoneConditionConfig" ng-model="ConditionZoneTree" style="height: 150px; border: 1px solid #000; overflow: auto"></div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <button class="btn btn-default pull-right btn-success" ng-click="deleteSelectedConditionZones(condition);">Delete Selected</button>
+                <select id="zonesList" class="form-control" ng-multiple="true" multiple style="height: 150px;" ng-options="zone.Name for zone in condition.AssignedZones" ng-model="condition.SelectedZones"></select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<select class="form-control" multiple ng-multiple="true" ng-model="condition.States" ng-options="state.Code as state.Name for state in States"></select>-->
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'State'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>States</label><br />
+            <input class="form-control" type="text" ng-model="searchTerm" placeholder="Search" style="margin-bottom: 3px;" ng-init="searchTerm = ''">
+            <ul class="check-listbox">
+                <li ng-repeat="state in States | filter : {'Name' : searchTerm}">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="condition.States" checklist-value="state.Code">
+                            {{state.Name}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Attributes'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Attributes</label><br />
+            <ul class="check-listbox">
+                <li ng-repeat="attr in Attributes">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="condition.Attributes" checklist-value="attr.Id">
+                            {{attr.Name}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Apps'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Apps</label><br />
+            <input class="form-control" type="text" ng-model="appSearchTerm" placeholder="Search" style="margin-bottom: 3px;" ng-init="appSearchTerm = ''">
+            <ul class="check-listbox">
+                <li ng-repeat="app in Apps | filter : {'Name' : appSearchTerm}">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="condition.Apps" checklist-value="app.Id">
+                            {{app.Name}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Additional Coverages'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Coverages</label><br />
+            <ul class="check-listbox">
+                <li ng-repeat="additionalCoverage in [
+                    'Extended Replacement Cost', 'Increased Special Contents Limits', 'Mold Buyback', 'Personal Injury', 'Water Backup']">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="condition.AdditionalCoverages" checklist-value="additionalCoverage">
+                            {{additionalCoverage}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Insurance Score'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Insurance Score Bands</label><br />
+            <ul class="check-listbox">
+                <li ng-repeat="insuranceScoreBand in [
+                    '0-0',
+                    '1-579',
+                    '580-610',
+                    '611-636',
+                    '637-661',
+                    '662-690',
+                    '691-715',
+                    '716-738',
+                    '739-762',
+                    '763-784',
+                    '785-810',
+                    '811-831',
+                    '832-849',
+                    '850-866',
+                    '867-880',
+                    '881-896',
+                    '897-911',
+                    '912-927',
+                    '928-997',
+                    '998-998',
+                    '999-999'
+                    ]">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checklist-model="condition.ConditionValue" checklist-value="insuranceScoreBand">
+                            {{insuranceScoreBand}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Origin'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Value</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Insurance Hero">Insurance Hero</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'Region Zones'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Region</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="Inland">Inland</option>
+                <option value="Panhandle">Panhandle</option>
+                <option value="Northeast">Northeast</option>
+                <option value="Southeast">Southeast</option>
+                <option value="Southwest">Southwest</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-3" ng-show="condition.ConditionName == 'ClassCode'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Class Codes</label>
+            <textarea class="form-control" ng-model="condition.ClassCodes"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'ClassCode' && condition.Condition == 'Exposure'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Question ID</label>
+            <input class="form-control" ng-model="condition.Supplementary" mask data-mask="#" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-1" ng-show="condition.ConditionName == 'ClassCode' && condition.Condition == 'Exposure'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Operator</label>
+            <select class="form-control" ng-model="condition.Operator">
+                <option value="0">=</option>
+                <option value="1">&lt;&gt;</option>
+                <option value="2">&lt;</option>
+                <option value="3">&gt;</option>
+                <option value="4">&lt;=</option>
+                <option value="5">&gt;=</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'ClassCode' && condition.Condition == 'Exposure'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Exposure</label>
+            <input class="form-control" ng-model="condition.ConditionValue" mask data-mask="#" />
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2" ng-show="condition.ConditionName == 'Inspection Type'">
+    <div class="form-body">
+        <div class="form-group">
+            <label>Inspection Type</label>
+            <select class="form-control" ng-model="condition.ConditionValue">
+                <option value="0">On Site</option>
+                <option value="1">Phone</option>
+                <option value="2">Exterior Only - Fly Over</option>
+            </select>
+        </div>
+    </div>
+</div>

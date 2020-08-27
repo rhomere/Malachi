@@ -1,0 +1,309 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/statetaxes">Taxes</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-calculator"></i>Taxes
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <select class="form-control" ng-options="state.Code as state.Name for state in States" ng-model="CurrentStateCode" ng-change="stateChange()"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12" ng-if="CurrentStateCode">
+                            <div ng-show="!newTax">
+                                <div class="row" style="margin-bottom:10px">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary" ng-click="newTaxClick()">New Tax</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Code</th>
+                                                    <th>Amount</th>
+                                                    <th>Minimum Amount</th>
+                                                    <th>Maximum Amount</th>
+                                                    <th>Type</th>
+                                                    <th>Tax Fees</th>
+                                                    <th>Effective</th>
+                                                    <th>Expiration</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="tax in stateTaxes()">
+                                                    <td>{{tax.Name}}</td>
+                                                    <td>{{tax.Code}}</td>
+                                                    <td>{{tax.Amount}}</td>
+                                                    <td>{{tax.MinAmount}}</td>
+                                                    <td>{{tax.MaxAmount}}
+                                                    <td>{{tax.CalculateType == 0 ? 'Percent' : 'Flat'}}</td>
+                                                    <td>{{tax.TaxableFee ? 'Yes' : 'No'}}</td>
+                                                    <td>{{tax.Effective | date:'MM/dd/yyyy'}}</td>
+                                                    <td>{{tax.Expiration | date:'MM/dd/yyyy'}}</td>
+                                                    <td style="text-align: right">
+                                                        <button class="btn default margin-right" type="button" ng-click="selectTax(tax)">Edit</button>
+                                                        <!--<button class="btn default margin-right" type="button" ng-click="copyTax(tax)">Copy</button>
+                                                        <button class="btn default" type="button" ng-click="deleteTax(tax)">Delete</button>-->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-show="newTax">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" ng-model="Tax.Name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Code</label>
+                                                <input type="text" class="form-control" ng-model="Tax.Code">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label>Effective Date</label>
+                                        <div class="input-group date-picker input-daterange">
+                                            <input name="from" class="form-control" ng-model="Tax.Effective" jqdatepicker>
+                                            <span class="input-group-addon">to </span>
+                                            <input name="to" class="form-control" ng-model="Tax.Expiration" jqdatepicker>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Type</label>
+                                                <select class="form-control" ng-model="Tax.CalculateType">
+                                                    <option value="0">Percent of Total Premium</option>
+                                                    <option value="1">Flat</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Tax.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Tax.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Tax.Amount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Minimum Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Tax.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Tax.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Tax.MinAmount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Maximum Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Tax.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Tax.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Tax.MaxAmount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Rounding Rule</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i ng-show="Tax.CalculateType == 1" class="fa fa-dollar"></i>
+                                                        <span ng-show="Tax.CalculateType == 0">%</span>
+                                                    </span>
+                                                    <input type="text" class="form-control" ng-model="Tax.RoundingRule">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label>Settings</label>
+                                        <div class="checkbox-list">
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Tax.TaxableFee">
+                                                Tax Fees
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Tax.FullyEarned">
+                                                Fully Earned
+                                            </label>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" ng-model="Tax.IncludeForEndorsements">
+                                                Include For Endorsements
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label>Conditions</label>
+                                                <div class="row" style="margin-bottom: 10px">
+                                                    <div class="col-sm-12">
+                                                        <button class="btn btn-primary" ng-click="newConditionalGroup()">New Condition Group </button>
+                                                    </div>
+                                                </div>
+
+                                                <accordion close-others="true">
+                                                    <accordion-group ng-repeat="group in Tax.Conditions | orderBy: 'GroupIndex'">
+                                                        <accordion-heading>
+                                                            {{group.Name}}
+                                                        </accordion-heading>
+
+                                                        <div class="row" ng-repeat="condition in group.Conditions | orderBy: 'Index'">
+                                                            <div ng-include src="'views/contracts/ContractConditions.html'"></div>
+
+                                                            <div class="col-sm-1 pull-right" style="width: auto;">
+                                                                <div class="form-body">
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-danger" ng-click="deleteCondition(condition, group)" ng-mouseenter="hoverParent($event,true)" ng-mouseleave="hoverParent($event,false)" ng-if="group[0] != condition" style="margin-top:25px">Delete</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class="form-body">
+                                                                    <div class="form-group">
+                                                                        <button class="btn btn-warning" ng-click="newCondition(group)">And Condition</button>
+                                                                        <button class="btn btn-danger pull-right" ng-click="deleteGroup(group, Tax.Conditions)">Delete Group</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </accordion-group>
+                                                </accordion>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Notes -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <h3>Add Note</h3>
+                                                <textarea class="form-control" style="resize: none;" ng-model="Tax.Note"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" ng-show="Tax.Notes.length > 0">
+                                        <h3>Notes</h3>
+                                        <table class="table" style="table-layout: fixed;">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 45%;">Content</th>
+                                                <th style="width: 15%;">User Email</th>
+                                                <th style="width: 10%;">Created Date</th>
+                                                <th style="width: 30%;"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="note in Tax.Notes">
+                                                <th style="width: 45%; word-wrap: break-word;">{{note.Content}}</th>
+                                                <th style="width: 15%;">{{note.CreatedByUserEmail}}</th>
+                                                <th style="width: 10%;">{{note.CreatedDate | date : "MM/dd/y"}}</th>
+                                                <th style="width: 30%;"></th>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12" ng-show="Errors.length > 0">
+                                        <div role="alert" class="alert alert-danger alert-dismissible fade in">
+                                            <ul>
+                                                <li ng-repeat="error in Errors">{{error}}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="pull-right" style="margin-top: 10px">
+                                            <button class="btn btn-danger btn-sm" ng-click="cancelTax(Tax)">
+                                                <i class="fa fa-ban margin-right"></i>Cancel
+                                            </button>
+                                            <button class="btn btn-success btn-sm" ng-click="saveTax(Tax)">
+                                                <i class="fa fa-save margin-right"></i>Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->

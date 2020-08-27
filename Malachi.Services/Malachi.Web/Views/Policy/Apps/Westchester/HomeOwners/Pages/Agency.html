@@ -1,0 +1,68 @@
+﻿<div class="row">
+    <div class="col-md-6">
+        <form name="form" class="form-horizontal" role="form" id="submission-form">
+            <div class="alert alert-danger" role="alert" ng-show="ErrorMessage.length > 0">{{ErrorMessage}}</div>
+            <div class="alert alert-warning" role="alert" ng-show="WarningMessage.length > 0">{{ErrorMessage}}</div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Agency Name</label>
+                <div class="col-sm-8">
+                    <input type="text" ng-model="parent.AgencyDetail.AgencyName" typeahead-wait-ms="500" typeahead="agency for agency in getAgencies($viewValue)" ng-blur="agencySelected()" class="form-control" ng-disabled="parent.Policy.Issued" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Contact Name</label>
+                <div class="col-sm-8">
+                    <input type="text" ng-model="parent.AgencyDetail.ContactName"  typeahead="contact for contact in getContacts($viewValue)"  ng-blur="contactSelected()" class="form-control" ng-disabled="parent.Policy.Issued" >
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Contact Phone</label>
+                <div class="col-sm-8">
+                    <input type="text" ng-model="parent.AgencyDetail.ContactPhone" class="form-control" ng-disabled="parent.Policy.Issued" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Contact Email</label>
+                <div class="col-sm-8">
+                    <input type="text" ng-model="parent.AgencyDetail.ContactEmail"  class="form-control" ng-disabled="parent.Policy.Issued" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Licensed Agent Name</label>
+                <div class="col-sm-8">
+                    <input type="text" ng-model="parent.AgencyDetail.LicensedAgentName" typeahead="agent for agent in getLicensedAgents($viewValue)" class="form-control" ng-disabled="parent.Policy.Issued" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mailing-address" class="col-sm-4 control-label">Agency Address</label>
+                <div class="col-sm-8">
+                    <label style="color:#0096db">Search Address</label>
+                    <input id="mailing-address" ng-autocomplete class="form-control input-sm" ng-model="parent.AgencyDetail.ShortAddress" details="details" />
+                </div>
+                <div class="col-sm-offset-4 col-sm-8" style="margin-top: 10px">
+                    <label style="color:#337ab7"><a ng-click="toggleManaulAddressEntry = !toggleManaulAddressEntry">Manually Enter Address</a></label>
+                    <input ng-show="toggleManaulAddressEntry" class="form-control input-sm" ng-model="parent.AgencyDetail.StreetAddress1" ng-disabled="parent.Policy.Issued" placeholder="Address 1" />
+                </div>
+                <div class="col-sm-offset-4 col-sm-8" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                    <input class="form-control input-sm" ng-model="parent.AgencyDetail.StreetAddress2" ng-disabled="parent.Policy.Issued" placeholder="Address 2" />
+                </div>
+                <div class="col-sm-offset-4 col-sm-8" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                    <input class="form-control input-sm" ng-model="parent.AgencyDetail.Zip" ng-disabled="parent.Policy.Issued" placeholder="Zip" />
+                </div>
+                <div class="col-sm-offset-4 col-sm-8" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                    <input class="form-control input-sm" ng-model="parent.AgencyDetail.City" ng-disabled="parent.Policy.Issued" placeholder="City" />
+                </div>
+                <div class="col-sm-offset-4 col-sm-8" style="margin-top: 10px" ng-show="toggleManaulAddressEntry">
+                    <input class="form-control input-sm" ng-model="parent.AgencyDetail.State" ng-disabled="parent.Policy.Issued" placeholder="State" />
+                </div>
+            </div>
+
+            <button ng-if="parent.PolicyId != null" type="submit" class="btn btn-primary" ng-click="saveChanges()">Save Changes</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿.currentHandsontableRow {
+    background-color: #e7e8ef !important;
+}
+
+.currentHandsontableCol {
+    /*background-color: #e7e8ef !important;*/
+}
+
+.ht_master .wtHolder {
+    background-color: #f7f7f7;
+}
+
+.handsontable .handsontable:not(.ht_master) table {
+    box-shadow: none;
+}

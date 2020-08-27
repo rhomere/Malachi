@@ -1,0 +1,12 @@
+﻿
+#spinner tr:first-child {
+    display: none;
+}
+
+#spinner tr:last-child {
+    display: none;
+}
+
+.ui-datepicker{
+    z-index:9999 !important;
+}

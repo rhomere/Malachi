@@ -1,0 +1,134 @@
+﻿<!-- Main content -->
+<section class="content">
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="icon-home"></i>
+                <a href="#/dashboard">Dashboard</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#/Broker">Brokers</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12 bottom-buffer" ng-show="newBroker == false">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-settings"></i>Brokers
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="page-bar">
+                        <div class="page-toolbar">
+                            <div class="btn-group pull-right">
+                                <button class="btn btn-fit-height yellow-casablanca" type="button" ng-click="addNewBroker()">
+                                    <i class="fa fa-plus margin-right"></i>New Broker
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Enabled</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="broker in Brokers">
+                                <td>{{$index+1}}</td>
+                                <td>{{broker.Name}}</td>
+                                <td>{{broker.Enabled ? 'Enabled' : 'Disabled'}}</td>
+                                <td style="text-align: right">
+                                    <button class="btn default margin-right" type="button" ng-click="selectBroker(broker)">Edit</button>
+                                    <button class="btn default" type="button" ng-click="deleteBroker(broker)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 bottom-buffer" ng-show="newBroker == true">
+            <div class="portlet box blue-soft">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-settings"></i> Broker {{Broker.Name}}
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="form-control" ng-model="Broker.Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-body">
+                                    <div class="form-group">
+                                        <label>Code</label>
+                                        <input type="text" class="form-control" ng-model="Broker.Code">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label>Settings</label>
+                                <div class="checkbox-list">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" ng-model="Broker.Enabled">
+                                        Enabled
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Assigned to Insurers</label>
+                                    <ul class="check-listbox">
+                                        <li ng-repeat="insurer in Insurers | orderBy: 'Name'">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" checklist-model="Broker.AssignedInsurers" checklist-value="insurer.Id">
+                                                    {{insurer.Name}}
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="pull-right" style="margin-top: 10px">
+                                    <button class="btn btn-danger btn-sm" ng-click="cancelBroker(Broker)">
+                                        <i class="fa fa-ban margin-right"></i>Cancel
+                                    </button>
+                                    <button class="btn btn-success btn-sm" ng-click="saveBroker(Broker)">
+                                        <i class="fa fa-save margin-right"></i>Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- /.content -->

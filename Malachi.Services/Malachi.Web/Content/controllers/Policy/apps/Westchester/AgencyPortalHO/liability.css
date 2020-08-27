@@ -1,0 +1,28 @@
+﻿
+.exposure {
+    font-weight: bold;
+    color: #337ab7;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 1em;
+}
+
+hr {
+    margin: 2px;
+}
+
+
+div .blue-steel {
+    background-color: #4B77BE;
+}
+
+    div .blue-steel .btn {
+        color: #fff;
+    }
+
+        div .blue-steel .btn:hover {
+            color: #fff;
+        }
