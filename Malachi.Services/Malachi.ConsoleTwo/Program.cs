@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Malachi.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ExcelLibrary.SpreadSheet;
-using Malachi.Data;
-using Malachi.Models;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace Malachi.Console
+namespace Malachi.ConsoleTwo
 {
     class Program
     {
@@ -36,7 +34,7 @@ namespace Malachi.Console
             //var zipCol = 22;
             var count = 1;
             var na = "Unknown";
-            
+
             for (int row = 2; row <= rowCount; row++)
             {
                 var municipalityId = $"{xlRange.Cells[row, muniIdCol].Value2}";
@@ -57,10 +55,10 @@ namespace Malachi.Console
                     Zip = zip
                 };
 
-                using (var context = new governmentdbEntities())
+                using (var context = new governmentdbEntities1())
                 {
                     context.Addresses.Add(pocoAddress);
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
 
                 System.Console.WriteLine($"#{count} - {address} {city} {zip}");
