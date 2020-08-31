@@ -57,11 +57,11 @@ namespace Malachi.Console
                     Zip = zip
                 };
 
-                using (var context = new governmentdbEntities())
-                {
-                    context.Addresses.Add(pocoAddress);
-                    context.SaveChangesAsync();
-                }
+                //using (var context = new governmentdbEntities())
+                //{
+                //    context.Addresses.Add(pocoAddress);
+                //    context.SaveChangesAsync();
+                //}
 
                 System.Console.WriteLine($"#{count} - {address} {city} {zip}");
                 count++;
