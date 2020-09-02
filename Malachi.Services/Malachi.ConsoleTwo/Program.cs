@@ -106,7 +106,7 @@ namespace Malachi.ConsoleTwo
 
         public static void PoliciticianBulkUpload()
         {
-            var fileName = @"C:\Users\rhomere\Desktop\Current.xlsx";
+            var fileName = @"C:\Users\rhomere\Desktop\Current2.xlsx";
             //Workbook book = Workbook.Load(fileName);
             //Worksheet sheet = book.Worksheets[1];
             Excel.Application xlApp = new Excel.Application();
@@ -114,12 +114,12 @@ namespace Malachi.ConsoleTwo
             Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
             Excel.Range xlRange = xlWorksheet.UsedRange;
 
-            var rowCount = 86;
+            var rowCount = 256;
             var cityCol = 1;
             var politicianName = 2;
             var positionCol = 3;
 
-            var count = 86;
+            var count = 1;
             //var na = "Unknown";
 
             // Create data table
@@ -131,7 +131,7 @@ namespace Malachi.ConsoleTwo
             //dt.Columns.Add("CountyId", typeof(int));
             //dt.Columns.Add("StateId", typeof(int));
 
-            for (int row = 2; row <= rowCount; row++)
+            for (int row = 1; row <= rowCount; row++)
             {
                 var city = $"{xlRange.Cells[row, cityCol].Value2}";
                 var fullName = $"{xlRange.Cells[row, politicianName].Value2}";
