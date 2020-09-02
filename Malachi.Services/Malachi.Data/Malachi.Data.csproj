@@ -71,6 +71,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GovernmentContext.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Official.cs">
+      <DependentUpon>GovernmentContext.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

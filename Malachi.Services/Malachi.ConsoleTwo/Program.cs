@@ -17,7 +17,14 @@ namespace Malachi.ConsoleTwo
         {
             //AddressBulkUpload();
 
-            PoliciticianBulkUpload();
+            //PoliciticianBulkUpload();
+            var res = false;
+            while (!res)
+            {
+                res = GetOfficialsByAddress();
+            }
+
+            Console.ReadLine();
         }
 
         public static void AddressBulkUpload()
@@ -242,6 +249,62 @@ namespace Malachi.ConsoleTwo
                     return 37;
                 default:
                     return 0;
+            }
+        }
+
+        public static bool GetOfficialsByAddress()
+        {
+            var input = string.Empty;
+            Console.Write("Enter Dade Address: ");
+            START:
+            var address = Console.ReadLine();
+            using(var context = new governmentdbEntities1())
+            {
+                var addressRes = context.Addresses.FirstOrDefault(x => x.Address1 == address || x.Address1.ToLower().Contains(address));
+                if (addressRes == null)
+                {
+                    Console.WriteLine("\nAddress not found\n");
+                    TRYAGAIN:
+                    Console.WriteLine("Try Again? Y/N\n");
+                    input = Console.ReadLine();
+                    if (input.ToLower() == "y")
+                    {
+                        goto START;
+                    }
+                    else if (input.ToLower() == "n")
+                    {
+                        Console.WriteLine("Goodbye :)");
+                        return true;
+                    }
+                    Console.WriteLine("Invalid Input\n");
+                    goto TRYAGAIN;
+                }
+                var officials = context.Officials.Where(x => x.MunicipalityId == addressRes.MunicipalityId).ToList();
+                if (officials.Count == 0)
+                {
+                    Console.WriteLine("\nOfficials not found.\n");
+                    return false;
+                }
+                Console.WriteLine($"\n{officials.First().MunicipalityId}");
+                foreach (var official in officials)
+                {
+                    Console.WriteLine($"{official.Name} - {official.Position}");
+                }
+
+                TRYAGAIN2:
+                Console.WriteLine("\nTry Again? Y/N\n");
+                input = Console.ReadLine();
+                if (input.ToLower() == "y")
+                {
+                    return false;
+                }
+                else if (input.ToLower() == "n")
+                {
+                    Console.WriteLine("Goodbye :)");
+                    return true;
+                }
+                Console.WriteLine("Invalid Input\n");
+                goto TRYAGAIN2;
             }
         }
     }

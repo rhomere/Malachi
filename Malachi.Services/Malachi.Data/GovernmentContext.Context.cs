@@ -26,5 +26,6 @@ namespace Malachi.Data
         }
     
         public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Official> Officials { get; set; }
     }
 }
