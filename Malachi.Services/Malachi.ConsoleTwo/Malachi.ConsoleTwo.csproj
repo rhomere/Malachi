@@ -70,6 +70,10 @@
       <Project>{3d5fa36f-8b44-4d0b-973d-0c6428c8c57f}</Project>
       <Name>Malachi.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Malachi.Models\Malachi.Models.csproj">
+      <Project>{02bfc89c-1926-4c9b-b1ff-3c227951b2eb}</Project>
+      <Name>Malachi.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

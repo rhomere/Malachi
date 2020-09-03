@@ -23,8 +23,6 @@ namespace Malachi.ConsoleTwo
             {
                 res = GetOfficialsByAddress();
             }
-
-            Console.ReadLine();
         }
 
         public static void AddressBulkUpload()
@@ -258,6 +256,7 @@ namespace Malachi.ConsoleTwo
             Console.Write("Enter Dade Address: ");
             START:
             var address = Console.ReadLine();
+            Console.WriteLine("searching...");
             using(var context = new governmentdbEntities1())
             {
                 var addressRes = context.Addresses.FirstOrDefault(x => x.Address1 == address || x.Address1.ToLower().Contains(address));
@@ -280,13 +279,15 @@ namespace Malachi.ConsoleTwo
                     goto TRYAGAIN;
                 }
                 var officials = context.Officials.Where(x => x.MunicipalityId == addressRes.MunicipalityId).ToList();
-                if (officials.Count == 0)
+                var officialsList = officials.Select(x => new Malachi.Models.Official(x)).OrderBy(x => x.Index).ToList();
+                if (officialsList.Count == 0)
                 {
                     Console.WriteLine("\nOfficials not found.\n");
+                    Console.WriteLine("Try again\n");
                     return false;
                 }
-                Console.WriteLine($"\n{officials.First().MunicipalityId}");
-                foreach (var official in officials)
+                Console.WriteLine($"\n{officialsList.First().MunicipalityId}");
+                foreach (var official in officialsList)
                 {
                     Console.WriteLine($"{official.Name} - {official.Position}");
                 }
@@ -296,6 +297,7 @@ namespace Malachi.ConsoleTwo
                 input = Console.ReadLine();
                 if (input.ToLower() == "y")
                 {
+                    Console.WriteLine();
                     return false;
                 }
                 else if (input.ToLower() == "n")

@@ -43,7 +43,14 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="Base.cs" />
+    <Compile Include="Official.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Malachi.Data\Malachi.Data.csproj">
+      <Project>{3d5fa36f-8b44-4d0b-973d-0c6428c8c57f}</Project>
+      <Name>Malachi.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

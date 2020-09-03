@@ -88,12 +88,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Malachi.Models\Malachi.Models.csproj">
-      <Project>{02bfc89c-1926-4c9b-b1ff-3c227951b2eb}</Project>
-      <Name>Malachi.Models</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
