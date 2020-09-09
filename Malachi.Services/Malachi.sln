@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malachi.ConsoleTwo", "Malac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malachi.Services.Api", "Malachi.Services.Api\Malachi.Services.Api.csproj", "{BBD777AE-029A-4ED7-ACC1-99A5A90E92AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malachi.Web", "Malachi.Web\Malachi.Web.csproj", "{F98C8719-2139-45DC-9DB7-1A9D0BEF1C41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{BBD777AE-029A-4ED7-ACC1-99A5A90E92AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBD777AE-029A-4ED7-ACC1-99A5A90E92AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBD777AE-029A-4ED7-ACC1-99A5A90E92AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F98C8719-2139-45DC-9DB7-1A9D0BEF1C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F98C8719-2139-45DC-9DB7-1A9D0BEF1C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F98C8719-2139-45DC-9DB7-1A9D0BEF1C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F98C8719-2139-45DC-9DB7-1A9D0BEF1C41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
