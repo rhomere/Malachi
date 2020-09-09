@@ -1,8 +1,0 @@
-﻿.leaflet-control-draw-measure {
-    background-image: url(images/measure-control.svg);
-    background-position: center center;
-}
-
-.leaflet-control.enabled a {
-    background-color: yellow;
-}
